@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase/client";
@@ -7,37 +8,48 @@ import { getTranslation } from "@/lib/i18n/translations";
 
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = getSupabase();
+
   const { language } = useLanguage();
-  const t = getTranslation(language || "fr");
+  const t = getTranslation(language);
 
-  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [error, setError] = useState(null); const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function handleLogin(e) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setError(null); setLoading(true);
-    try {
-      const supabase = getSupabase();
-      const resp = await supabase.auth.signInWithPassword({ email, password });
-      if (resp.error) throw resp.error;
-      router.push("/calculator");
-    } catch (err) {
-      setError(err?.message || "Erreur de connexion");
-    } finally {
+    setLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      setError(error.message);
       setLoading(false);
+      return;
     }
+
+    router.push("/calculator");
   }
 
   return (
     <div style={{ padding: 24 }}>
       <h1>{t.loginTitle}</h1>
+
       <form onSubmit={handleLogin}>
-        <div><label>{t.email}</label><br/><input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" required/></div>
-        <div style={{ marginTop: 8 }}><label>{t.password}</label><br/><input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" required/></div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <div style={{ marginTop: 12 }}>
-          <button type="submit" disabled={loading}>{loading ? t.connecting : t.login}</button>
-          <button type="button" onClick={()=>router.push('/auth/sign-up')} style={{ marginLeft: 8 }}>{t.signUp}</button>
-        </div>
+        <label>{t.email}</label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} />
+
+        <label>{t.password}</label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? t.connecting : t.login}
+        </button>
       </form>
     </div>
   );

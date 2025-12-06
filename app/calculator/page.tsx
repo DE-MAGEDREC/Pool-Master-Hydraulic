@@ -9,15 +9,15 @@ import { getTranslation } from "@/lib/i18n/translations";
 
 export default function CalculatorPage() {
   const router = useRouter();
-  const supabase = getSupabase();
 
   const { language } = useLanguage();
   const t = getTranslation(language);
 
   const [sessionChecked, setSessionChecked] = useState(false);
 
-  // Vérifier que l'utilisateur est connecté
   useEffect(() => {
+    const supabase = getSupabase();  // ← déplacer ici
+
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
         router.push("/auth/login");
@@ -25,9 +25,10 @@ export default function CalculatorPage() {
         setSessionChecked(true);
       }
     });
-  }, []);
+  }, [router]); // ← ajouter router en dépendance
 
   async function handleLogout() {
+    const supabase = getSupabase(); // ← même correction
     await supabase.auth.signOut();
     router.push("/auth/login");
   }
@@ -48,9 +49,7 @@ export default function CalculatorPage() {
         </button>
       </div>
 
-      {/* 👉 Voici ton calculateur */}
       <PoolHydraulicsCalculator />
     </div>
   );
 }
-

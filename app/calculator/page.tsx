@@ -1,45 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
-
 import PoolHydraulicsCalculator from "@/components/PoolHydraulicsCalculator";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { getTranslation } from "@/lib/i18n/translations";
 
 export default function CalculatorPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
+  const supabase = getSupabase();
 
+  const { language } = useLanguage();
+  const t = getTranslation(language);
+
+  const [sessionChecked, setSessionChecked] = useState(false);
+
+  // Vérifier que l'utilisateur est connecté
   useEffect(() => {
-    async function check() {
-      const supabase = getSupabase();
-      const { data } = await supabase.auth.getSession();
-      const sess = data?.session ?? null;
-
-      if (!sess) {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
         router.push("/auth/login");
-        return;
+      } else {
+        setSessionChecked(true);
       }
+    });
+  }, []);
 
-      setSession(sess);
-      setLoading(false);
-    }
-    check();
-  }, [router]);
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push("/auth/login");
+  }
 
-  if (loading) return <div>Chargement...</div>;
+  if (!sessionChecked) {
+    return <p>Chargement...</p>;
+  }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Calculateur hydraulique - Piscine</h1>
-      <p>Bienvenue, vous êtes connecté.</p>
+    <div className="p-6 max-w-5xl mx-auto">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-3xl font-bold">{t.calculatorTitle}</h1>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          {t.logout}
+        </button>
+      </div>
 
+      {/* 👉 Voici ton calculateur */}
       <PoolHydraulicsCalculator />
-
-      <p style={{ marginTop: 30 }}>
-        <a href="/auth/logout">Se déconnecter</a>
-      </p>
     </div>
   );
 }

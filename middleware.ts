@@ -1,20 +1,31 @@
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  // ❗ autoriser Next.js assets (NE PAS BLOQUER ces routes)
+  const publicFiles = [
+    "/favicon.ico",
+    "/manifest.json",
+    "/icon.png",
+    "/logo.png",
+    "/_next",
+    "/assets",
+  ];
 
+  if (publicFiles.some((p) => req.nextUrl.pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
+  const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // Récupérer la session
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const protectedRoutes = ["/calculator"];
-
-  if (protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))) {
+  // Routes protégées
+  if (req.nextUrl.pathname.startsWith("/calculator")) {
     if (!session) {
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = "/auth/login";
@@ -26,9 +37,7 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
+// IMPORTANT : seul /calculator est protégé
 export const config = {
-  matcher: [
-    "/calculator",
-    "/calculator/:path*",
-  ],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

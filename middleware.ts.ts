@@ -4,19 +4,8 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-
-  // Ignore *all* static files and manifest
-  if (
-    req.nextUrl.pathname.startsWith("/_next") ||
-    req.nextUrl.pathname.startsWith("/favicon") ||
-    req.nextUrl.pathname.startsWith("/manifest") ||
-    req.nextUrl.pathname.startsWith("/icons") ||
-    req.nextUrl.pathname.match(/\.(png|jpg|jpeg|svg|ico|json|txt|xml|webp)$/)
-  ) {
-    return res;
-  }
-
   const supabase = createMiddlewareClient({ req, res });
+
   const { data } = await supabase.auth.getSession();
   const session = data.session;
 
@@ -32,6 +21,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.json|icons|.*\\..*).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon|icons|manifest.json|.*\\..*).*)",
   ],
 };

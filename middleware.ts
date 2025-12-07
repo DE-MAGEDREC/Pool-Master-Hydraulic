@@ -5,14 +5,13 @@ import type { NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
-  // CRITIQUE : ignorer tous les assets, manifest, images, favicons, fonts, etc.
+  // Ignore *all* static files and manifest
   if (
     req.nextUrl.pathname.startsWith("/_next") ||
     req.nextUrl.pathname.startsWith("/favicon") ||
     req.nextUrl.pathname.startsWith("/manifest") ||
     req.nextUrl.pathname.startsWith("/icons") ||
-    req.nextUrl.pathname.startsWith("/images") ||
-    req.nextUrl.pathname.match(/\.(png|jpg|jpeg|svg|ico|json|txt|xml)$/)
+    req.nextUrl.pathname.match(/\.(png|jpg|jpeg|svg|ico|json|txt|xml|webp)$/)
   ) {
     return res;
   }
@@ -21,7 +20,6 @@ export async function middleware(req: NextRequest) {
   const { data } = await supabase.auth.getSession();
   const session = data.session;
 
-  // Protection uniquement pour /calculator
   if (req.nextUrl.pathname.startsWith("/calculator") && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = "/auth/login";
@@ -32,10 +30,8 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
-// Nouveau matcher CORRECT
 export const config = {
   matcher: [
-    // n'intercepte que les routes pages, PAS les assets !
-    "/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\..*).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|icons|.*\\..*).*)",
   ],
 };

@@ -1,115 +1,90 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useLanguage } from "@/lib/i18n/language-context"
-import { getTranslation } from "@/lib/i18n/translations"
-import { LanguageSelector } from "@/components/language-selector"
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getSupabase } from "@/lib/supabase/client";
+import PoolHydraulicsCalculator from "@/components/PoolHydraulicsCalculator";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { getTranslation } from "@/lib/i18n/translations";
 
-export default function HomePage() {
-  const { language } = useLanguage()
-  const t = getTranslation(language)
+export default function CalculatorPage() {
+  const router = useRouter();
+  const { language } = useLanguage();
+  const t = getTranslation(language || "fr");
+
+  const [checking, setChecking] = useState(true);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    // create client inside effect to avoid SSR/SSR-mismatch
+    const supabase = getSupabase();
+
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      const sess = data?.session ?? null;
+      if (!sess) {
+        // not logged -> go to login
+        router.replace("/auth/login");
+      } else {
+        setIsAuthed(true);
+      }
+      setChecking(false);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [router]);
+
+  async function handleLogout() {
+    try {
+      const supabase = getSupabase();
+      await supabase.auth.signOut();
+    } finally {
+      router.push("/auth/login");
+    }
+  }
+
+  if (checking) {
+    return (
+      <div style={{ padding: 24 }}>
+        <p>{t?.connecting ?? "Vérification de la session..."}</p>
+      </div>
+    );
+  }
+
+  if (!isAuthed) {
+    // if not authed we already redirected, but render fallback
+    return (
+      <div style={{ padding: 24 }}>
+        <p>{t?.login ?? "Connexion requise"}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 flex items-center justify-center p-6">
-      <div className="absolute top-4 right-4">
-        <LanguageSelector />
-      </div>
-
-      <div className="max-w-4xl w-full">
-        <div className="text-center mb-10">
-          <div className="text-6xl mb-4">💧</div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-4">
-            {t.appName}
-          </h1>
-          <p className="text-xl text-muted-foreground">{t.appDescription}</p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <Card className="hover:shadow-xl transition-shadow border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <span className="text-2xl">🎯</span>
-                {t.preciseCalculations}
-              </CardTitle>
-              <CardDescription>{t.preciseCalculationsDesc}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span> {t.calcSurface}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span> {t.filtrationFlow}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span> {t.headLoss}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-primary">✓</span> {t.tdhPressure}
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-xl transition-shadow border-accent/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <span className="text-2xl">📁</span>
-                {t.projectManagement}
-              </CardTitle>
-              <CardDescription>{t.projectManagementDesc}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="text-accent">✓</span> {t.secureAccount}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-accent">✓</span> {t.unlimitedProjects}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-accent">✓</span> {t.accessAnywhere}
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-accent">✓</span> {t.exportResults}
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="flex gap-4 justify-center">
-          <Button asChild size="lg" className="text-lg px-8 shadow-lg hover:shadow-xl transition-shadow">
-            <Link href="/auth/login">
-              <span className="mr-2">🔐</span>
-              {t.login}
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="text-lg px-8 border-2 hover:bg-primary/5 bg-transparent"
+    <div style={{ padding: 24, maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+        <h1 style={{ margin: 0 }}>{t?.calculatorTitle ?? "Calculateur hydraulique - Piscine"}</h1>
+        <div>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: "#e11d48",
+              color: "white",
+              border: "none",
+              padding: "8px 12px",
+              borderRadius: 6,
+              cursor: "pointer",
+            }}
           >
-            <Link href="/auth/sign-up">
-              <span className="mr-2">✨</span>
-              {t.signUp}
-            </Link>
-          </Button>
-        </div>
-
-        <div className="mt-12 text-center">
-          <Card className="bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur border-primary/20 hover:shadow-xl transition-shadow">
-            <CardContent className="pt-6">
-              <div className="text-4xl mb-3">📱</div>
-              <h3 className="font-semibold text-lg mb-2">{t.mobileOptimized}</h3>
-              <p className="text-sm text-muted-foreground">{t.mobileOptimizedDesc}</p>
-            </CardContent>
-          </Card>
+            {t?.logout ?? "Se déconnecter"}
+          </button>
         </div>
       </div>
+
+      <PoolHydraulicsCalculator />
     </div>
-  )
+  );
 }

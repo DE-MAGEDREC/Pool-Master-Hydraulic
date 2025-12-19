@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pool Master Hydraulic</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+body {font-family:'Segoe UI', sans-serif; background:#f4f6f9;}
+#container-principal {display:flex; flex-wrap:wrap;}
+#onglets {flex:1; min-width:300px;}
+#res_droite {
+    flex:1; min-width:250px; padding:15px; border-left:3px solid #007BFF;
+    background:#e9f2ff; max-height:90vh; overflow:auto; border-radius:5px;
+}
+.tab-content>.tab-pane {padding:15px;}
+.btn-suivant {margin-top:10px;}
+@media (max-width:992px) {
+    #container-principal {flex-direction:column;}
+    #res_droite {border-left:none; border-top:3px solid #007BFF; max-height:300px; margin-top:10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container mt-3" id="container-principal">
+
+    <!-- Onglets et formulaires -->
+    <div id="onglets">
+        <h2 class="text-center">Pool Master Hydraulic</h2>
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine">Piscine</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations">Canalisations</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres">Pertes singulières</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp">Pression & Température</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf">Résultats / PDF</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Onglet Piscine -->
+            <div class="tab-pane fade show active" id="piscine">
+                <h4>Dimensions de la piscine</h4>
+                <input class="form-control mb-2" id="L" type="number" placeholder="Longueur (m)">
+                <input class="form-control mb-2" id="l" type="number" placeholder="Largeur (m)">
+                <input class="form-control mb-2" id="p" type="number" placeholder="Profondeur (m)">
+                <input class="form-control mb-2" id="t" type="number" placeholder="Temps filtration (h)" value="5">
+                <button class="btn btn-primary btn-suivant" id="btn-piscine">Suivant</button>
+            </div>
+
+            <!-- Onglet Canalisations -->
+            <div class="tab-pane fade" id="canalisations">
+                <h4>Canalisations</h4>
+                <input class="form-control mb-2" id="D" type="number" placeholder="Diamètre tuyau (mm)">
+                <select class="form-control mb-2" id="materiau">
+                    <option value="PVC_rigide">PVC Rigide λ=0.02</option>
+                    <option value="PVC_souple">PVC Souple λ=0.035</option>
+                    <option value="Turbulence">Turbulence anormale λ=0.316</option>
+                </select>
+                <input class="form-control mb-2" id="L_asp" type="number" placeholder="Longueur aspiration (m)">
+                <input class="form-control mb-2" id="v_asp" type="number" placeholder="Vitesse aspiration (m/s)">
+                <input class="form-control mb-2" id="L_ref" type="number" placeholder="Longueur refoulement (m)">
+                <input class="form-control mb-2" id="v_ref" type="number" placeholder="Vitesse refoulement (m/s)">
+                <select class="form-control mb-2" id="pac">
+                    <option value="non">PAC non</option>
+                    <option value="oui">PAC oui</option>
+                </select>
+                <input class="form-control mb-2" id="L_pac" type="number" placeholder="Longueur PAC supplémentaire (m)">
+                <button class="btn btn-primary btn-suivant" id="btn-canalisations">Suivant</button>
+            </div>
+
+            <!-- Onglet Pertes singulières -->
+            <div class="tab-pane fade" id="pertes_singulieres">
+                <h4>Pertes singulières</h4>
+                <input class="form-control mb-2" id="coudes_asp" type="number" placeholder="Coudes aspiration">
+                <input class="form-control mb-2" id="tes_asp" type="number" placeholder="Tés aspiration">
+                <input class="form-control mb-2" id="vannes_asp" type="number" placeholder="Vannes aspiration">
+                <input class="form-control mb-2" id="coudes_ref" type="number" placeholder="Coudes refoulement">
+                <input class="form-control mb-2" id="tes_ref" type="number" placeholder="Tés refoulement">
+                <input class="form-control mb-2" id="vannes_ref" type="number" placeholder="Vannes refoulement">
+                <button class="btn btn-primary btn-suivant" id="btn-pertes">Suivant</button>
+            </div>
+
+            <!-- Onglet Pression & Température -->
+            <div class="tab-pane fade" id="pression_temp">
+                <h4>📊 Pression & Température</h4>
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Température eau (°C):</label>
+                    <div class="col-sm-6"><input class="form-control" id="temp_eau" type="number" value="20"></div>
+                    </div>
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Pression différ. filtre (en mCe) :</label>
+                    <div class="col-sm-6"><input class="form-control" id="dp_filtre" type="number"></div>
+                    
+                   
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-6 col-form-label">Hauteur géométrique (en m):</label>
+                    <div class="col-sm-6"><input class="form-control" id="H_geo" type="number"></div>
+                    
+                </div>
+                <button class="btn btn-primary btn-suivant" id="btn-pression_temp">Suivant</button>
+            </div>
+
+            <!-- Onglet Résultats / PDF -->
+            <div class="tab-pane fade" id="resultats_pdf">
+                <h4>Résultats & PDF</h4>
+                <div id="res" style="overflow:auto;"></div>
+                <button class="btn btn-success mt-3" id="btn-pdf">Télécharger PDF</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Résumé à droite -->
+    <div id="res_droite"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

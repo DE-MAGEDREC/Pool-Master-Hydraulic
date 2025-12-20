@@ -40,10 +40,10 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <div class="container mt-3">
 <h2 class="text-center" id="page-title">Pool Master Hydraulic</h2>
 
-<div class="layout">
+<div class="layout d-flex">
 
 <!-- ⬅️ FORMULAIRES -->
-<div>
+<div class="flex-fill mr-3">
 
 <!-- 🌐 Sélection de langue -->
 <div class="text-right mb-2">
@@ -89,7 +89,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label id="lbl-recyclage">Temps de recyclage de l’eau (h)</label>
   <input id="t_renouv" type="number" step="0.01" class="form-control input-small" value="5">
 
-  <button class="btn btn-primary mt-3" id="btn-suivant-piscine">Suivant →</button>
+  <button class="btn btn-primary mt-3 btn-suivant" data-next="#canalisations">Suivant →</button>
 </div>
 
 <!-- 🚰 CANALISATIONS -->
@@ -116,7 +116,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label id="lbl-v-ref">Vitesse refoulement (m/s)</label>
   <input id="v_ref" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" id="btn-suivant-canalisations">Suivant →</button>
+  <button class="btn btn-primary mt-3 btn-suivant" data-next="#pertes_singulieres">Suivant →</button>
 </div>
 
 <!-- 🔧 PERTES SINGULIÈRES -->
@@ -137,7 +137,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label id="lbl-vannes-ref">Vannes</label>
   <input id="vannes_ref" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" id="btn-suivant-pertes">Suivant →</button>
+  <button class="btn btn-primary mt-3 btn-suivant" data-next="#pression_temp">Suivant →</button>
 </div>
 
 <!-- 🌡️ PRESSION & TEMP -->
@@ -148,7 +148,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label id="lbl-dp-filtre">Perte de charge filtre (mCE)</label>
   <input id="dp_filtre" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" id="btn-suivant-pression">Suivant →</button>
+  <button class="btn btn-primary mt-3 btn-suivant" data-next="#resultats_pdf">Suivant →</button>
 </div>
 
 <!-- 📄 RÉSULTATS -->
@@ -161,7 +161,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 </div>
 
 <!-- ➡️ RÉSULTATS TEMPS RÉEL -->
-<div id="res_droite">
+<div id="res_droite" class="flex-fill ml-3">
   <h5 id="res-title">Résultats</h5>
   <p>En attente de données…</p>
 </div>

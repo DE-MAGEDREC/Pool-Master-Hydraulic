@@ -9,22 +9,13 @@
 </head>
 <body>
 
-<button class="logout-btn btn btn-danger" onclick="logout()">Déconnexion</button>
+<button class="logout-btn btn btn-danger mb-2" onclick="logout()">Déconnexion</button>
 
-<div class="container mt-3">
-<h2 class="text-center" id="title">Pool Master Hydraulic</h2>
+<div class="container-fluid">
+  <h2 class="text-center" id="title">Pool Master Hydraulic</h2>
 
-<div class="d-flex justify-content-between mb-3">
-  <div>
-    <ul class="nav nav-tabs">
-      <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" id="tab-piscine">Piscine</a></li>
-      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
-      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres" id="tab-pertes">Pertes singulières</a></li>
-      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp" id="tab-pression">Pression & Température</a></li>
-      <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf" id="tab-resultats">Résultats / PDF</a></li>
-    </ul>
-  </div>
-  <div>
+  <!-- Choix de la langue -->
+  <div class="text-right mb-2">
     <label for="lang-select"><b>Langue:</b></label>
     <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
       <option value="fr" selected>Français</option>
@@ -32,101 +23,104 @@
       <option value="es">Español</option>
     </select>
   </div>
-</div>
 
-<div class="row">
-  <!-- Formulaires -->
-  <div class="col-md-6">
-    <div class="tab-content mt-3">
-      <!-- Piscine -->
-      <div class="tab-pane fade show active" id="piscine">
-        <h6 id="lbl-forme">Forme de la piscine</h6>
-        <label><input type="radio" name="forme" value="rectangle" checked> Rectangle</label>
-        <label><input type="radio" name="forme" value="carre"> Carré</label>
-        <label><input type="radio" name="forme" value="ronde"> Ronde</label>
-        <label><input type="radio" name="forme" value="ovale"> Ovale</label>
-        <label><input type="radio" name="forme" value="libre"> Forme libre</label>
+  <div class="row">
+    <!-- FORMULAIRES -->
+    <div class="col-md-6">
+      <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" id="tab-piscine">Piscine</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres" id="tab-pertes">Pertes singulières</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp" id="tab-pression">Pression & Température</a></li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf" id="tab-resultats">Résultats / PDF</a></li>
+      </ul>
 
-        <div class="mt-3">
-          <label id="lbl-longueur">Longueur (m)</label>
-          <input id="L" type="number" step="0.01" class="form-control">
-          <label id="lbl-largeur">Largeur (m)</label>
-          <input id="l" type="number" step="0.01" class="form-control">
-          <label id="lbl-profondeur">Profondeur (m)</label>
-          <input id="p" type="number" step="0.01" class="form-control">
-          <label id="lbl-recyclage">Temps de recyclage (h)</label>
-          <input id="t" type="number" step="0.01" class="form-control" value="5">
-        </div>
-        <button class="btn btn-primary mt-3" onclick="suivant('#canalisations')" id="btn-suivant-piscine">Suivant →</button>
-      </div>
+      <div class="tab-content mt-3">
+        <!-- PISCINE -->
+        <div class="tab-pane fade show active" id="piscine">
+          <h6 id="lbl-forme">Forme de la piscine</h6>
+          <label><input type="radio" name="forme" value="rectangle" checked> Rectangle</label>
+          <label><input type="radio" name="forme" value="carre"> Carré</label>
+          <label><input type="radio" name="forme" value="ronde"> Ronde</label>
+          <label><input type="radio" name="forme" value="ovale"> Ovale</label>
+          <label><input type="radio" name="forme" value="libre"> Forme libre</label>
 
-      <!-- Canalisations -->
-      <div class="tab-pane fade" id="canalisations">
-        <label id="lbl-dn">DN (mm)</label>
-        <input id="D" type="number" step="0.01" class="form-control">
-        <label id="lbl-materiau">Matériau</label>
-        <select id="materiau" class="form-control">
-          <option value="PVC_rigide">PVC Rigide</option>
-          <option value="PVC_souple">PVC Souple</option>
-          <option value="Turbulence">Turbulence</option>
-        </select>
-        <label id="lbl-long-asp">Longueur aspiration (m)</label>
-        <input id="L_asp" type="number" step="0.01" class="form-control">
-        <label id="lbl-v-asp">Vitesse aspiration (m/s)</label>
-        <input id="v_asp" type="number" step="0.01" class="form-control">
-        <label id="lbl-long-ref">Longueur refoulement (m)</label>
-        <input id="L_ref" type="number" step="0.01" class="form-control">
-        <label id="lbl-v-ref">Vitesse refoulement (m/s)</label>
-        <input id="v_ref" type="number" step="0.01" class="form-control">
-        <button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')" id="btn-suivant-canalisations">Suivant →</button>
-      </div>
-
-      <!-- Pertes singulières -->
-      <div class="tab-pane fade" id="pertes_singulieres">
-        <h6 id="lbl-pertes">Pertes singulières</h6>
-        <div id="accessoires-list">
-          <div class="row font-weight-bold mb-2">
-            <div class="col-6">Accessoire</div>
-            <div class="col-3">Aspiration</div>
-            <div class="col-3">Refoulement</div>
+          <div class="mt-3">
+            <label id="lbl-longueur">Longueur (m)</label>
+            <input id="L" type="number" step="0.01" class="form-control">
+            <label id="lbl-largeur">Largeur (m)</label>
+            <input id="l" type="number" step="0.01" class="form-control">
+            <label id="lbl-profondeur">Profondeur (m)</label>
+            <input id="p" type="number" step="0.01" class="form-control">
+            <label id="lbl-recyclage">Temps de recyclage (h)</label>
+            <input id="t" type="number" step="0.01" class="form-control" value="5">
           </div>
-          <!-- Accessoires générés par JS -->
+          <button class="btn btn-primary mt-3" onclick="suivant('#canalisations')" id="btn-suivant-piscine">Suivant →</button>
         </div>
-        <button class="btn btn-primary mt-3" onclick="suivant('#pression_temp')" id="btn-suivant-pertes">Suivant →</button>
-      </div>
 
-      <!-- Pression & Température -->
-      <div class="tab-pane fade" id="pression_temp">
-        <label id="lbl-hauteur">Hauteur géométrique (m)</label>
-        <input id="H_geo" type="number" step="0.01" class="form-control">
-        <label id="lbl-filtre">Perte de charge filtre (mCE)</label>
-        <input id="dp_filtre" type="number" step="0.01" class="form-control">
-        <button class="btn btn-primary mt-3" onclick="suivant('#resultats_pdf')" id="btn-suivant-pression">Suivant →</button>
-      </div>
+        <!-- CANALISATIONS -->
+        <div class="tab-pane fade" id="canalisations">
+          <label id="lbl-dn">DN (mm)</label>
+          <input id="D" type="number" step="0.01" class="form-control">
+          <label id="lbl-materiau">Matériau</label>
+          <select id="materiau" class="form-control">
+            <option value="PVC_rigide">PVC Rigide</option>
+            <option value="PVC_souple">PVC Souple</option>
+            <option value="Turbulence">Turbulence</option>
+          </select>
+          <label id="lbl-long-asp">Longueur aspiration (m)</label>
+          <input id="L_asp" type="number" step="0.01" class="form-control">
+          <label id="lbl-v-asp">Vitesse aspiration (m/s)</label>
+          <input id="v_asp" type="number" step="0.01" class="form-control">
+          <label id="lbl-long-ref">Longueur refoulement (m)</label>
+          <input id="L_ref" type="number" step="0.01" class="form-control">
+          <label id="lbl-v-ref">Vitesse refoulement (m/s)</label>
+          <input id="v_ref" type="number" step="0.01" class="form-control">
+          <button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')" id="btn-suivant-canalisations">Suivant →</button>
+        </div>
 
-      <!-- Résultats / PDF -->
-      <div class="tab-pane fade" id="resultats_pdf">
-        <div id="res"></div>
-        <button id="btn-pdf" class="btn btn-success mt-3">Exporter PDF</button>
+        <!-- PERTES SINGULIERES -->
+        <div class="tab-pane fade" id="pertes_singulieres">
+          <h6 id="lbl-pertes">Pertes singulières</h6>
+          <div id="accessoires-list" class="mb-3">
+            <!-- Accessoires générés par JS -->
+          </div>
+          <button class="btn btn-primary mt-3" onclick="suivant('#pression_temp')" id="btn-suivant-pertes">Suivant →</button>
+        </div>
+
+        <!-- PRESSION & TEMP -->
+        <div class="tab-pane fade" id="pression_temp">
+          <label id="lbl-hauteur">Hauteur géométrique (m)</label>
+          <input id="H_geo" type="number" step="0.01" class="form-control">
+          <label id="lbl-filtre">Perte de charge filtre (mCE)</label>
+          <input id="dp_filtre" type="number" step="0.01" class="form-control">
+          <button class="btn btn-primary mt-3" onclick="suivant('#resultats_pdf')" id="btn-suivant-pression">Suivant →</button>
+        </div>
+
+        <!-- RESULTATS / PDF -->
+        <div class="tab-pane fade" id="resultats_pdf">
+          <div id="res"></div>
+          <button id="btn-pdf" class="btn btn-success mt-3">Exporter PDF</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Résultats à droite -->
-  <div class="col-md-6">
-    <h5>Résultats en direct</h5>
-    <table class="table table-bordered" id="res_droite">
-      <thead>
-        <tr>
-          <th>Paramètre</th>
-          <th>Valeur (mCE)</th>
-          <th>Valeur (bar)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Rempli par JS -->
-      </tbody>
-    </table>
+    <!-- RESULTATS EN DIRECT -->
+    <div class="col-md-6">
+      <h5>Résultats en direct</h5>
+      <table class="table table-bordered" id="res_droite">
+        <thead>
+          <tr>
+            <th>Paramètre</th>
+            <th>Valeur (mCE)</th>
+            <th>Valeur (bar)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rempli par JS -->
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

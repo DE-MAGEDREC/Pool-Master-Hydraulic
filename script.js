@@ -99,7 +99,7 @@ let currentLang = "fr";
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
-  calculerResultats(); // Valide avant de passer
+  calculerResultats();
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');

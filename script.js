@@ -97,19 +97,19 @@ const translations = {
 
 let currentLang = "en";
 
-// ====== COEFFICIENTS ======
+// ====== COEFFICIENTS ACCESSOIRES ======
 const coeffs = {
-  coude90l: 20,
-  coude90c: 30,
-  coude45: 12.5,
-  te_droit: 40,
-  te_deriv: 80,
-  manchon: 2.5,
-  clapet: 125,
-  vanne: 8
+  "Coude 90° long rayon": 20,
+  "Coude 90° court rayon": 30,
+  "Coude 45°": 12.5,
+  "Té – passage droit": 40,
+  "Té – dérivation": 80,
+  "Manchon": 2.5,
+  "Clapet anti‑retour": 125,
+  "Vanne": 8
 };
 
-// Coefficient lambda selon matériau
+// ====== COEFFICIENT LAMBDA ======
 function getLambda(mat){
   if(mat == "PVC_rigide") return 0.02;
   if(mat == "PVC_souple") return 0.035;
@@ -117,65 +117,49 @@ function getLambda(mat){
   return 0.02;
 }
 
-// Conversion mCE → bar
+// ====== CONVERSION mCE → bar ======
 function mceToBar(val){ 
   return (val * 0.0981).toFixed(2); 
 }
 
-// ====== CALCUL DES ACCESSOIRES ======
+// ====== INIT DES CHAMPS ACCESSOIRES ======
+function initAccessoiresForm(){
+  let html = `<div class="row font-weight-bold mb-1">
+                <div class="col-4">Accessoire</div>
+                <div class="col-4">Aspiration</div>
+                <div class="col-4">Refoulement</div>
+              </div>`;
 
-// Récupère les quantités depuis les champs input
+  for(const key in coeffs){
+    html += `<div class="row mb-1">
+      <div class="col-4">${key}</div>
+      <div class="col-4"><input type="number" min="0" step="1" class="form-control input-small" id="asp_${key}" value="0"></div>
+      <div class="col-4"><input type="number" min="0" step="1" class="form-control input-small" id="ref_${key}" value="0"></div>
+    </div>`;
+  }
+
+  $('#accessoires-asp').html(html);
+}
+
+// ====== RÉCUPÉRATION DES QUANTITÉS ======
 function calculAccessoires(prefix){
   const res = {};
   for(const key in coeffs){
-    res[key] = +$(`#${key}_${prefix}`).val()||0;
+    res[key] = +$(`#${prefix}_${key}`).val() || 0;
   }
   return res;
 }
 
-// Calcule la longueur équivalente totale en mètres
+// ====== CALCUL LONGUEUR ÉQUIVALENTE ======
 function calculLongueurEquivalent(accessoires, D_m){
   let L_eq = 0;
   for(const key in accessoires){
-    L_eq += accessoires[key] * coeffs[key] * D_m; // quantité × coefficient × D (m)
+    L_eq += accessoires[key] * coeffs[key] * D_m;
   }
   return L_eq;
 }
 
-// Affiche le tableau interactif des accessoires
-function afficherTableauAccessoires(){
-  const accessoires_asp = calculAccessoires('asp');
-  const accessoires_ref = calculAccessoires('ref');
-
-  let html = `<table class="table table-sm table-bordered text-center">
-    <thead>
-      <tr>
-        <th>Accessoire</th>
-        <th>Aspiration</th>
-        <th>Refoulement</th>
-      </tr>
-    </thead>
-    <tbody>`;
-
-  for(const key in coeffs){
-    html += `<tr>
-      <td>${key}</td>
-      <td><input type="number" min="0" step="1" class="form-control input-small" id="${key}_asp" value="${accessoires_asp[key]}"></td>
-      <td><input type="number" min="0" step="1" class="form-control input-small" id="${key}_ref" value="${accessoires_ref[key]}"></td>
-    </tr>`;
-  }
-
-  html += `</tbody></table>`;
-
-  $('#accessoires-asp').html(html);
-
-  // Relance le calcul quand une valeur change
-  $('input').off('input').on('input', calculerResultats);
-
-  return { accessoires_asp, accessoires_ref };
-}
-
-// ====== CALCUL HYDRAULIQUE COMPLET ======
+// ====== CALCUL HYDRAULIQUE ======
 function calculerResultats(){
   const t = translations[currentLang];
 
@@ -205,27 +189,23 @@ function calculerResultats(){
   const V_asp = +$('#v_asp').val()||0;
   const V_ref = +$('#v_ref').val()||0;
 
-  // Tableau accessoires
-  const { accessoires_asp, accessoires_ref } = afficherTableauAccessoires();
+  // Quantités accessoires
+  const accessoires_asp = calculAccessoires('asp');
+  const accessoires_ref = calculAccessoires('ref');
 
-  // Longueurs équivalentes
   const L_sing_asp = calculLongueurEquivalent(accessoires_asp, D_m);
   const L_sing_ref = calculLongueurEquivalent(accessoires_ref, D_m);
 
-  // Friction totale
   const H_fric_asp = lambda*(L_asp_val + L_sing_asp)/D_m*(V_asp*V_asp/(2*9.81));
   const H_fric_ref = lambda*(L_ref_val + L_sing_ref)/D_m*(V_ref*V_ref/(2*9.81));
 
-  // Hauteur géométrique et filtre
   const H_geo_val = +$('#H_geo').val()||0;
   const dp_filtre_val = +$('#dp_filtre').val()||0;
 
-  // Totaux
   const H_total_asp = H_fric_asp;
   const H_total_ref = H_fric_ref;
   const H_total_install = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-  // Affichage résultats
   const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
@@ -270,11 +250,10 @@ function setLanguage(lang){
   $('#lbl-recyclage').text(t.recyclage);
 }
 
-$('#lang-select').on('change', function(){ setLanguage($(this).val()); });
-
 // ====== INITIALISATION ======
 $(document).ready(function(){
   setLanguage(currentLang);
+  initAccessoiresForm();        // <- Génère les colonnes accessoires
   calculerResultats();
   $('input, select').on('input change', calculerResultats);
 });

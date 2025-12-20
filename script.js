@@ -106,10 +106,8 @@ function suivant(id){
   $(`a[href="${id}"]`).addClass('active');
 }
 
-// ====== CONVERSION MCE → BAR ======
+// ====== CONVERSION ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
-
-// ====== COEFFICIENT LAMBDA ======
 function getLambda(mat){
   if(mat=="PVC_rigide") return 0.02;
   if(mat=="PVC_souple") return 0.035;
@@ -129,11 +127,38 @@ const coeffsAccessoires = {
   "Vanne":8
 };
 
+const accessoiresNames = {
+  "Coude_90_long_rayon":"Coude 90° long rayon",
+  "Coude_90_court_rayon":"Coude 90° court rayon",
+  "Coude_45":"Coude 45°",
+  "Te_passage_droit":"Té – passage droit",
+  "Te_derivation":"Té – dérivation",
+  "Manchon":"Manchon",
+  "Clapet_anti_retour":"Clapet anti‑retour",
+  "Vanne":"Vanne"
+};
+
+// ====== GENERER CHAMPS ACCESSOIRES ======
+function genererAccessoires(){
+  const container = $('#accessoires-list');
+  container.empty();
+  container.append('<div class="row font-weight-bold mb-2"><div class="col-6">Accessoire</div><div class="col-3">Aspiration</div><div class="col-3">Refoulement</div></div>');
+  for(let key in coeffsAccessoires){
+    container.append(`
+      <div class="row mb-1">
+        <div class="col-6">${accessoiresNames[key]}</div>
+        <div class="col-3"><input type="number" min="0" step="1" value="0" id="asp_${key}" class="form-control"></div>
+        <div class="col-3"><input type="number" min="0" step="1" value="0" id="ref_${key}" class="form-control"></div>
+      </div>
+    `);
+  }
+}
+
 // ====== CALCUL ACCESSOIRES ======
 function calculAccessoires(prefix, D_m){
-  let total=0;
+  let total = 0;
   for(let key in coeffsAccessoires){
-    const qty = +$(`#${prefix}_${key}`).val() || 0;
+    const qty = +$(`#${prefix}_${key}`).val()||0;
     total += qty * coeffsAccessoires[key] * D_m;
   }
   return total;
@@ -184,50 +209,75 @@ function calculerResultats(){
   const H_total_ref = H_fric_ref + H_sing_ref;
   const H_total_install = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-  // Affichage HTML
-  const html = `
-<b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
-<b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
-<b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
-<b>${t.pertes_sing} aspiration :</b> ${H_sing_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_asp)}${t.en_bar}</small><br>
-<b>${t.pertes_sing} refoulement :</b> ${H_sing_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_ref)}${t.en_bar}</small><br>
-<b>${t.friction} aspiration :</b> ${H_fric_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_asp)}${t.en_bar}</small><br>
-<b>${t.friction} refoulement :</b> ${H_fric_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_ref)}${t.en_bar}</small><br>
-<b>${t.hauteur} :</b> ${H_geo_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_geo_val)}${t.en_bar}</small><br>
-<b>${t.filtre} :</b> ${dp_filtre_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(dp_filtre_val)}${t.en_bar}</small><br><hr>
-<b>${t.total_asp} :</b> ${H_total_asp.toFixed(2)} mCE<br>
-<b>${t.total_ref} :</b> ${H_total_ref.toFixed(2)} mCE<br>
-<b>Perte totale installation :</b> ${H_total_install.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_install)}${t.en_bar}</small>
-`;
+  // Remplir tableau à droite
+  const tbody = $('#res_droite tbody');
+  tbody.empty();
 
-  $('#res_droite').html(html);
-  $('#res').html(html);
+  function ajouterLigne(nom, valeur){
+    tbody.append(`
+      <tr>
+        <td>${nom}</td>
+        <td>${valeur.toFixed(2)}</td>
+        <td>${mceToBar(valeur)}</td>
+      </tr>
+    `);
+  }
+
+  ajouterLigne(t.surface, surface);
+  ajouterLigne(t.volume, volume);
+  ajouterLigne(t.debit, debit);
+  ajouterLigne(t.pertes_sing+" aspiration", H_sing_asp);
+  ajouterLigne(t.pertes_sing+" refoulement", H_sing_ref);
+  ajouterLigne(t.friction+" aspiration", H_fric_asp);
+  ajouterLigne(t.friction+" refoulement", H_fric_ref);
+  ajouterLigne(t.hauteur, H_geo_val);
+  ajouterLigne(t.filtre, dp_filtre_val);
+  ajouterLigne(t.total_asp, H_total_asp);
+  ajouterLigne(t.total_ref, H_total_ref);
+  ajouterLigne("Perte totale installation", H_total_install);
 }
 
 // ====== LANGUE ======
 function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
-  $('h2.text-center').text(t.title);
-  $('#res_droite h5').text(t.resultats);
+  $('#title').text(t.title);
+  $('#tab-piscine').text(t.piscine_tab);
+  $('#tab-canalisations').text(t.canalisations_tab);
+  $('#tab-pertes').text(t.pertes_tab);
+  $('#tab-pression').text(t.pression_tab);
+  $('#tab-resultats').text(t.resultats_tab);
+
   $('#lbl-forme').text(t.piscine_tab);
+  $('#lbl-longueur').text(t.longueur);
+  $('#lbl-largeur').text(t.largeur);
+  $('#lbl-profondeur').text(t.profondeur);
+  $('#lbl-recyclage').text(t.recyclage);
+  $('#lbl-dn').text("DN (mm)");
+  $('#lbl-materiau').text("Matériau");
+  $('#lbl-long-asp').text("Longueur aspiration (m)");
+  $('#lbl-v-asp').text("Vitesse aspiration (m/s)");
+  $('#lbl-long-ref').text("Longueur refoulement (m)");
+  $('#lbl-v-ref').text("Vitesse refoulement (m/s)");
+  $('#lbl-pertes').text(t.pertes_sing);
+  $('#lbl-hauteur').text(t.hauteur);
+  $('#lbl-filtre').text(t.filtre);
+  $('#btn-suivant-piscine').text(t.suivant);
+  $('#btn-suivant-canalisations').text(t.suivant);
+  $('#btn-suivant-pertes').text(t.suivant);
+  $('#btn-suivant-pression').text(t.suivant);
+  $('#btn-pdf').text(t.exporter);
 }
 
 // ====== EXPORT PDF ======
 $('#btn-pdf').on('click', function(){
-  const element = document.getElementById('res');
+  const element = document.getElementById('res_droite');
   html2pdf().from(element).save('resultats.pdf');
 });
 
 // ====== INITIALISATION ======
 $(document).ready(function(){
+  genererAccessoires();
   setLanguage(currentLang);
   calculerResultats();
   $('input, select').on('input change', calculerResultats);

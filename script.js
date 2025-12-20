@@ -99,11 +99,16 @@ let currentLang = "en";
 
 // ====== COEFFICIENTS ======
 
-// Coefficients accessoires (ζ)
+// Coefficients accessoires (en diamètres)
 const coeffs = {
-  coude90l: 20, coude90c: 30, coude45: 12.5, 
-  te_droit: 40, te_deriv: 80, manchon: 2.5, 
-  clapet: 125, vanne: 8
+  coude90l: 20,
+  coude90c: 30,
+  coude45: 12.5,
+  te_droit: 40,
+  te_deriv: 80,
+  manchon: 2.5,
+  clapet: 125,
+  vanne: 8
 };
 
 // Coefficient lambda selon matériau
@@ -120,29 +125,53 @@ function mceToBar(val){
 }
 
 // ====== CALCUL DES ACCESSOIRES ======
+
+// Récupère la quantité d’accessoires
 function calculAccessoires(prefix){
   const res = {};
   for(const key in coeffs){
-    res[key] = (+$(`#${key}_${prefix}`).val()||0) * coeffs[key];
+    res[key] = +$(`#${key}_${prefix}`).val()||0;
   }
-  return res; // retourne objet {coude90l:val, ...}
+  return res;
 }
 
-// Somme totale ζ
-function sommeZeta(obj){
-  return Object.values(obj).reduce((acc,val)=>acc+val,0);
-}
-
-// Affichage détaillé accessoires
-function afficherAccessoires(prefix, divID){
-  const accessoires = calculAccessoires(prefix);
-  let html = "<ul>";
+// Calcule la longueur équivalente totale en mètres pour Darcy
+function calculLongueurEquivalent(accessoires, D_m){
+  let L_eq = 0;
   for(const key in accessoires){
-    html += `<li>${key} : ${accessoires[key]}</li>`;
+    L_eq += accessoires[key] * coeffs[key] * D_m; // quantité × coeff × D en m
   }
-  html += "</ul>";
-  $(`#${divID}`).html(html);
-  return accessoires;
+  return L_eq;
+}
+
+// Affiche le tableau des accessoires
+function afficherTableauAccessoires(){
+  const accessoires_asp = calculAccessoires('asp');
+  const accessoires_ref = calculAccessoires('ref');
+
+  let html = `<table class="table table-sm table-bordered text-center">
+    <thead>
+      <tr>
+        <th>Accessoire</th>
+        <th>Aspiration</th>
+        <th>Refoulement</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  for(const key in coeffs){
+    html += `<tr>
+      <td>${key}</td>
+      <td>${accessoires_asp[key]}</td>
+      <td>${accessoires_ref[key]}</td>
+    </tr>`;
+  }
+
+  html += `</tbody></table>`;
+
+  $('#accessoires-asp').html(html);
+
+  return { accessoires_asp, accessoires_ref };
 }
 
 // ====== CALCUL HYDRAULIQUE COMPLET ======
@@ -157,13 +186,13 @@ function calculerResultats(){
   const t_recycl = +$('#t').val()||5;
 
   let surface = 0, volume = 0;
-  if(forme == "rectangle" || forme == "carre") surface = L_val * l_val;
-  else if(forme == "ronde") surface = Math.PI * Math.pow(L_val/2,2);
-  else if(forme == "ovale") surface = Math.PI * L_val * l_val / 4;
-  else surface = L_val * l_val; // forme libre approximative
-  volume = surface * p_val;
+  if(forme=="rectangle" || forme=="carre") surface = L_val*l_val;
+  else if(forme=="ronde") surface = Math.PI*Math.pow(L_val/2,2);
+  else if(forme=="ovale") surface = Math.PI*L_val*l_val/4;
+  else surface = L_val*l_val;
+  volume = surface*p_val;
 
-  const debit = volume / t_recycl;
+  const debit = volume/t_recycl;
 
   // --- Canalisations ---
   const D_mm = +$('#D').val()||50;
@@ -175,27 +204,24 @@ function calculerResultats(){
   const V_asp = +$('#v_asp').val()||0;
   const V_ref = +$('#v_ref').val()||0;
 
-  // --- Pertes singulières et affichage ---
-  const accessoires_asp = afficherAccessoires('asp','accessoires-asp');
-  const accessoires_ref = afficherAccessoires('ref','accessoires-ref');
+  // --- Affichage tableau accessoires ---
+  const { accessoires_asp, accessoires_ref } = afficherTableauAccessoires();
 
-  const ζ_sing_asp = sommeZeta(accessoires_asp);
-  const ζ_sing_ref = sommeZeta(accessoires_ref);
+  // --- Longueurs équivalentes pour Darcy ---
+  const L_sing_asp = calculLongueurEquivalent(accessoires_asp, D_m);
+  const L_sing_ref = calculLongueurEquivalent(accessoires_ref, D_m);
 
-  const H_sing_asp = ζ_sing_asp * (V_asp*V_asp)/(2*9.81);
-  const H_sing_ref = ζ_sing_ref * (V_ref*V_ref)/(2*9.81);
-
-  // --- Friction linéaire Darcy ---
-  const H_fric_asp = lambda * L_asp_val / D_m * (V_asp*V_asp)/(2*9.81);
-  const H_fric_ref = lambda * L_ref_val / D_m * (V_ref*V_ref)/(2*9.81);
+  // --- Friction totale Darcy ---
+  const H_fric_asp = lambda*(L_asp_val + L_sing_asp)/D_m*(V_asp*V_asp/(2*9.81));
+  const H_fric_ref = lambda*(L_ref_val + L_sing_ref)/D_m*(V_ref*V_ref/(2*9.81));
 
   // --- Hauteur géométrique & filtre ---
   const H_geo_val = +$('#H_geo').val()||0;
   const dp_filtre_val = +$('#dp_filtre').val()||0;
 
   // --- Totaux ---
-  const H_total_asp = H_fric_asp + H_sing_asp;
-  const H_total_ref = H_fric_ref + H_sing_ref;
+  const H_total_asp = H_fric_asp;
+  const H_total_ref = H_fric_ref;
   const H_total_install = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
   // --- Affichage résultats ---
@@ -203,10 +229,6 @@ function calculerResultats(){
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
-<b>${t.pertes_sing} aspiration :</b> ${H_sing_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_asp)}${t.en_bar}</small><br>
-<b>${t.pertes_sing} refoulement :</b> ${H_sing_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_ref)}${t.en_bar}</small><br>
 <b>${t.friction} aspiration :</b> ${H_fric_asp.toFixed(2)} mCE<br>
 <small>≈ ${mceToBar(H_fric_asp)}${t.en_bar}</small><br>
 <b>${t.friction} refoulement :</b> ${H_fric_ref.toFixed(2)} mCE<br>
@@ -227,7 +249,7 @@ function calculerResultats(){
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
-  calculerResultats(); // Valide avant de passer
+  calculerResultats();
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');

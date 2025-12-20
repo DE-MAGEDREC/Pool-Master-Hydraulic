@@ -13,6 +13,7 @@ const translations = {
     longueur: "Length (m)",
     largeur: "Width (m)",
     profondeur: "Depth (m)",
+    diametre: "Diameter (m)",
     forme_rect: "Rectangular",
     forme_rond: "Round",
     suivant: "Next →",
@@ -25,7 +26,9 @@ const translations = {
     total_ref: "Total discharge",
     exporter: "Export PDF",
     logout: "Logout",
-    en_bar: " (bar)"
+    attente: "Waiting for data…",
+    en_bar: " (bar)",
+    language: "Language:"
   },
   fr: {
     title: "Pool Master Hydraulic",
@@ -40,6 +43,7 @@ const translations = {
     longueur: "Longueur (m)",
     largeur: "Largeur (m)",
     profondeur: "Profondeur (m)",
+    diametre: "Diamètre (m)",
     forme_rect: "Rectangulaire",
     forme_rond: "Ronde",
     suivant: "Suivant →",
@@ -52,7 +56,9 @@ const translations = {
     total_ref: "Total refoulement",
     exporter: "Exporter PDF",
     logout: "Déconnexion",
-    en_bar: " (bar)"
+    attente: "En attente de données…",
+    en_bar: " (bar)",
+    language: "Langue :"
   },
   es: {
     title: "Pool Master Hydraulic",
@@ -67,6 +73,7 @@ const translations = {
     longueur: "Longitud (m)",
     largeur: "Ancho (m)",
     profondeur: "Profundidad (m)",
+    diametre: "Diámetro (m)",
     forme_rect: "Rectangular",
     forme_rond: "Redonda",
     suivant: "Siguiente →",
@@ -79,7 +86,9 @@ const translations = {
     total_ref: "Total impulsión",
     exporter: "Exportar PDF",
     logout: "Cerrar sesión",
-    en_bar: " (bar)"
+    attente: "Esperando datos…",
+    en_bar: " (bar)",
+    language: "Idioma:"
   }
 };
 
@@ -87,7 +96,6 @@ let currentLang = "en";
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
-  calculerResultats();
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');
@@ -103,16 +111,8 @@ function choixForme(){
   $('#forme-img').attr('src','img/'+f+'.png');
 }
 
-// ====== CONVERSION MCE -> BAR ======
+// ====== CONVERSION mCE -> BAR ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
-
-// ====== COEFFICIENT LAMBDA ======
-function getLambda(){
-  const mat = $('#materiau').val();
-  if(mat==="PVC") return 0.02;
-  if(mat==="PVC_souple") return 0.025;
-  return 0.03; // turbulent
-}
 
 // ====== CALCUL HYDRAULIQUE COMPLET ======
 function calculerResultats(){
@@ -130,21 +130,20 @@ function calculerResultats(){
   }
 
   // 💧 Débit filtration (m3/h)
-  const t_renouv = +t.value || 5;
-  const debit = volume / t_renouv;
+  let t_renouv = 5; // default 5h
+  let debit = volume / t_renouv;
 
   // 🚰 Pertes singulières
-  const H_sing_asp = (+coudes_asp.value||0) + (+tes_asp.value||0) + (+vannes_asp.value||0);
-  const H_sing_ref = (+coudes_ref.value||0) + (+tes_ref.value||0) + (+vannes_ref.value||0);
+  const H_sing_asp = ((+coudes_asp.value||0) + (+tes_asp.value||0) + (+vannes_asp.value||0));
+  const H_sing_ref = ((+coudes_ref.value||0) + (+tes_ref.value||0) + (+vannes_ref.value||0));
 
   // 🌡️ Hauteur géométrique et filtre
   const H_geo_val = +H_geo.value||0;
   const dp_filtre_val = +dp_filtre.value||0;
 
-  // 🛠️ Friction canalisations
-  const lambda = getLambda();
-  const H_fric_asp = lambda * (+L_asp.value||0) / (+D.value||1) * Math.pow(+v_asp.value||0,2)/(2*9.81);
-  const H_fric_ref = lambda * (+L_ref.value||0) / (+D.value||1) * Math.pow(+v_ref.value||0,2)/(2*9.81);
+  // 🛠️ Canalisations (ex: Friction = 0.02*mètre)
+  const H_fric_asp = (+L_asp.value||0)*0.02;
+  const H_fric_ref = (+L_ref.value||0)*0.02;
 
   // 🔹 Totaux
   const H_total_asp = H_geo_val + dp_filtre_val + H_sing_asp + H_fric_asp;
@@ -189,14 +188,13 @@ function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
 
-  $('h2.text-center').text(t.title);
-  $('#res_droite h5').text(t.resultats);
-  $('input[name="forme"][value="rectangle"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rect;
-  $('input[name="forme"][value="ronde"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rond;
-  $('.btn-primary').text(t.suivant);
-  $('#btn-pdf').text(t.exporter);
+  // Onglets et labels
+  $('[data-i18n]').each(function(){
+    const key = $(this).data('i18n');
+    if(t[key]) $(this).text(t[key]);
+  });
 
-  // recalculer pour traduire tout
+  // recalculer résultats
   calculerResultats();
 }
 

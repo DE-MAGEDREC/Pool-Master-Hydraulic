@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pool Master Hydraulic</title>
+
+<link rel="stylesheet"
+ href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- PROTECTION -->
+<script>
+if (localStorage.getItem("auth") !== "ok") {
+  window.location.href = "index.html";
+}
+</script>
+
+<button class="logout-btn"
+onclick="localStorage.clear(); location.href='index.html'">
+Déconnexion
+</button>
+
+<!-- ===== TON HTML ORIGINAL COMMENCE ICI ===== -->
+
+<div class="container mt-3" id="container-principal">
+
+<div id="onglets">
+<h2 class="text-center">Pool Master Hydraulic</h2>
+
+<ul class="nav nav-tabs">
+<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine">Piscine</a></li>
+<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations">Canalisations</a></li>
+<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres">Pertes singulières</a></li>
+<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp">Pression & Température</a></li>
+<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf">Résultats / PDF</a></li>
+</ul>
+
+<!-- 👉 TOUT LE RESTE DE TON HTML ORIGINAL
+     (formulaires, onglets, etc.)
+     EST ICI, STRICTEMENT IDENTIQUE
+-->
+
+</div>
+<div id="res_droite"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

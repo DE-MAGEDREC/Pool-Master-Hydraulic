@@ -1,133 +1,101 @@
-/* Corps général */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Onglets */
-.nav-tabs .nav-link {
-    font-weight: 600;
-    color: #007BFF;
-    transition: 0.3s;
-}
-.nav-tabs .nav-link.active {
-    background-color: #007BFF;
-    color: white;
-    border-radius: 5px 5px 0 0;
-}
-.nav-tabs .nav-link:hover {
-    background-color: #0056b3;
-    color: white;
+/* ===== LOGIN ===== */
+.login-body {
+  height: 100vh;
+  background:
+    linear-gradient(rgba(0,40,80,0.75), rgba(0,40,80,0.75)),
+    url("https://images.unsplash.com/photo-1581093458791-9f3c3900df8b");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Contenu onglets */
-.tab-content {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-radius: 0 0 5px 5px;
+/* Loader */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #0b1c2d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-/* Formulaires */
-.form-group label {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-.form-control {
-    border-radius: 4px;
-    border: 1px solid #ced4da;
+.loader-box {
+  text-align: center;
+  color: white;
 }
 
-/* Boutons */
-.btn-primary {
-    background-color: #007BFF;
-    border-color: #007BFF;
-    font-weight: 600;
-}
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004080;
-}
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-}
-.btn-success:hover {
-    background-color: #1e7e34;
-    border-color: #155d27;
-}
-.btn-suivant {
-    margin-top: 15px;
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top: 5px solid #00aaff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
 }
 
-/* Cadre de résultats à droite */
-#res_droite {
-    background-color: #e9f2ff;
-    border-left: 3px solid #007BFF;
-    padding: 15px;
-    border-radius: 5px;
-    max-height: 90vh;
-    overflow-y: auto;
-    font-size: 0.95rem;
-}
-#res_droite h5 {
-    color: #007BFF;
-    border-bottom: 1px solid #007BFF;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-/* Tableau résultats PDF */
-#res table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-#res table th, #res table td {
-    border: 1px solid #007BFF;
-    padding: 8px;
-    text-align: center;
-}
-#res table th {
-    background-color: #007BFF;
-    color: white;
-}
-#res table tbody tr:nth-child(even) {
-    background-color: #f1f5fb;
+/* Login box */
+.login-box {
+  background: rgba(255,255,255,0.96);
+  padding: 30px;
+  width: 320px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* Popup température */
-body > div.popup-temp {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #dc3545;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: 600;
-    z-index: 9999;
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #003366;
 }
 
-/* Responsive: cadre à droite sur mobile */
-@media (max-width: 992px) {
-    #container-principal {
-        flex-direction: column;
-    }
-    #res_droite {
-        border-left: none;
-        border-top: 3px solid #007BFF;
-        max-height: 300px;
-        margin-top: 10px;
-    }
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
 }
 
-/* Mode paysage obligatoire mobile */
-body.landscape-warning::before {
-    content:"Veuillez mettre votre appareil en mode paysage !";
-    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-    background:red; color:white; padding:15px; font-size:1.2rem; z-index:9999;
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  background: #007BFF;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #0056b3;
+}
+
+#error {
+  color: red;
+  text-align: center;
+}
+
+/* ===== APP ===== */
+.logout-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  z-index: 999;
 }

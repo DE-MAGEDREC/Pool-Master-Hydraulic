@@ -97,70 +97,75 @@ const translations = {
 
 let currentLang = "en";
 
-// ====== NAVIGATION ONGLET ======
-function suivant(id){
-  calculerResultats(); // Valide avant de passer
-  $('.tab-pane').removeClass('show active');
-  $(id).addClass('show active');
-  $('.nav-link').removeClass('active');
-  $(`a[href="${id}"]`).addClass('active');
-}
+// ====== COEFFICIENTS ======
 
-// ====== CALCUL HYDRAULIQUE ======
-
-// Coefficients accessoires
+// Coefficients accessoires (ζ)
 const coeffs = {
-  coude90l:20, coude90c:30, coude45:12.5, te_droit:40, te_deriv:80,
-  manchon:2.5, clapet:125, vanne:8
+  coude90l: 20, coude90c: 30, coude45: 12.5, 
+  te_droit: 40, te_deriv: 80, manchon: 2.5, 
+  clapet: 125, vanne: 8
 };
 
 // Coefficient lambda selon matériau
 function getLambda(mat){
-  if(mat=="PVC_rigide") return 0.02;
-  if(mat=="PVC_souple") return 0.035;
-  if(mat=="Turbulence") return 0.316;
+  if(mat == "PVC_rigide") return 0.02;
+  if(mat == "PVC_souple") return 0.035;
+  if(mat == "Turbulence") return 0.316;
   return 0.02;
 }
 
 // Conversion mCE → bar
-function mceToBar(val){ return (val*0.0981).toFixed(2); }
-
-// Calcul accessoires
-function calculAccessoires(prefix,D_m){
-  return (
-    (+$(`#coude90l_${prefix}`).val()||0)*coeffs.coude90l*D_m +
-    (+$(`#coude90c_${prefix}`).val()||0)*coeffs.coude90c*D_m +
-    (+$(`#coude45_${prefix}`).val()||0)*coeffs.coude45*D_m +
-    (+$(`#te_droit_${prefix}`).val()||0)*coeffs.te_droit*D_m +
-    (+$(`#te_deriv_${prefix}`).val()||0)*coeffs.te_deriv*D_m +
-    (+$(`#manchon_${prefix}`).val()||0)*coeffs.manchon*D_m +
-    (+$(`#clapet_${prefix}`).val()||0)*coeffs.clapet*D_m +
-    (+$(`#vanne_${prefix}`).val()||0)*coeffs.vanne*D_m
-  );
+function mceToBar(val){ 
+  return (val * 0.0981).toFixed(2); 
 }
 
-// Calcul complet
+// ====== CALCUL DES ACCESSOIRES ======
+function calculAccessoires(prefix){
+  const res = {};
+  for(const key in coeffs){
+    res[key] = (+$(`#${key}_${prefix}`).val()||0) * coeffs[key];
+  }
+  return res; // retourne objet {coude90l:val, ...}
+}
+
+// Somme totale ζ
+function sommeZeta(obj){
+  return Object.values(obj).reduce((acc,val)=>acc+val,0);
+}
+
+// Affichage détaillé accessoires
+function afficherAccessoires(prefix, divID){
+  const accessoires = calculAccessoires(prefix);
+  let html = "<ul>";
+  for(const key in accessoires){
+    html += `<li>${key} : ${accessoires[key]}</li>`;
+  }
+  html += "</ul>";
+  $(`#${divID}`).html(html);
+  return accessoires;
+}
+
+// ====== CALCUL HYDRAULIQUE COMPLET ======
 function calculerResultats(){
   const t = translations[currentLang];
 
-  // Piscine
+  // --- Piscine ---
   const forme = $('input[name="forme"]:checked').val();
   const L_val = +$('#L').val()||0;
   const l_val = +$('#l').val()||0;
   const p_val = +$('#p').val()||0;
   const t_recycl = +$('#t').val()||5;
 
-  let surface=0, volume=0;
-  if(forme=="rectangle" || forme=="carre") surface = L_val*l_val;
-  else if(forme=="ronde") surface = Math.PI*Math.pow(L_val/2,2);
-  else if(forme=="ovale") surface = Math.PI*L_val*l_val/4;
-  else surface = L_val*l_val; // forme libre approximative
-  volume = surface*p_val;
+  let surface = 0, volume = 0;
+  if(forme == "rectangle" || forme == "carre") surface = L_val * l_val;
+  else if(forme == "ronde") surface = Math.PI * Math.pow(L_val/2,2);
+  else if(forme == "ovale") surface = Math.PI * L_val * l_val / 4;
+  else surface = L_val * l_val; // forme libre approximative
+  volume = surface * p_val;
 
-  // Débit filtration
   const debit = volume / t_recycl;
 
-  // Canalisations
+  // --- Canalisations ---
   const D_mm = +$('#D').val()||50;
   const D_m = D_mm/1000;
   const lambda = getLambda($('#materiau').val());
@@ -170,22 +175,30 @@ function calculerResultats(){
   const V_asp = +$('#v_asp').val()||0;
   const V_ref = +$('#v_ref').val()||0;
 
-  // Accessoires
-  const H_sing_asp = calculAccessoires('asp',D_m);
-  const H_sing_ref = calculAccessoires('ref',D_m);
+  // --- Pertes singulières et affichage ---
+  const accessoires_asp = afficherAccessoires('asp','accessoires-asp');
+  const accessoires_ref = afficherAccessoires('ref','accessoires-ref');
 
-  // Pertes Darcy
-  const H_fric_asp = lambda*(L_asp_val + H_sing_asp)/D_m*(V_asp*V_asp/(2*9.81));
-  const H_fric_ref = lambda*(L_ref_val + H_sing_ref)/D_m*(V_ref*V_ref/(2*9.81));
+  const ζ_sing_asp = sommeZeta(accessoires_asp);
+  const ζ_sing_ref = sommeZeta(accessoires_ref);
 
+  const H_sing_asp = ζ_sing_asp * (V_asp*V_asp)/(2*9.81);
+  const H_sing_ref = ζ_sing_ref * (V_ref*V_ref)/(2*9.81);
+
+  // --- Friction linéaire Darcy ---
+  const H_fric_asp = lambda * L_asp_val / D_m * (V_asp*V_asp)/(2*9.81);
+  const H_fric_ref = lambda * L_ref_val / D_m * (V_ref*V_ref)/(2*9.81);
+
+  // --- Hauteur géométrique & filtre ---
   const H_geo_val = +$('#H_geo').val()||0;
   const dp_filtre_val = +$('#dp_filtre').val()||0;
 
+  // --- Totaux ---
   const H_total_asp = H_fric_asp + H_sing_asp;
   const H_total_ref = H_fric_ref + H_sing_ref;
   const H_total_install = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-  // HTML résultats
+  // --- Affichage résultats ---
   const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
@@ -210,6 +223,15 @@ function calculerResultats(){
 
   $('#res').html(html);
   $('#res_droite').html(html);
+}
+
+// ====== NAVIGATION ONGLET ======
+function suivant(id){
+  calculerResultats(); // Valide avant de passer
+  $('.tab-pane').removeClass('show active');
+  $(id).addClass('show active');
+  $('.nav-link').removeClass('active');
+  $(`a[href="${id}"]`).addClass('active');
 }
 
 // ====== LANGUE ======

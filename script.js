@@ -177,12 +177,27 @@ function calculerResultats(){
 
   // ----- Pertes singulières -----
   function calcSing(c90C, c90G, te, vanne, V){
-    const L_eq = ((+c90C||0)*20*DN) + ((+c90G||0)*30*DN) + ((+te||0)*40*DN) + ((+vanne||0)*8*DN);
-    return lambda * L_eq / DN * Math.pow(V,2)/(2*9.81); // mCE
-  }
+  const L_eq = ((+c90C||0)*30*DN)   // coude court = 30D
+              + ((+c90G||0)*20*DN) // coude grand = 20D
+              + ((+te||0)*40*DN)   // té = 40D (OK)
+              + ((+vanne||0)*8*DN); // vanne = 8D (OK)
+
+  return lambda * L_eq / DN * Math.pow(V,2)/(2*9.81);
+}
+
 
   const H_sing_asp = calcSing($('#coudes90C_asp').val(), $('#coudes90G_asp').val(), $('#tes_asp').val(), $('#vannes_asp').val(), v_asp);
   const H_sing_ref = calcSing($('#coudes90C_ref').val(), $('#coudes90G_ref').val(), $('#tes_ref').val(), $('#vannes_ref').val(), v_ref);
+  
+  
+  
+  
+  
+
+
+
+
+
 
   // ----- Hauteur géométrique & Filtre -----
   const H_geo_val = +$('#H_geo').val()||0;
@@ -257,3 +272,5 @@ $(document).ready(function(){
   calculerResultats();
   $('input, select').on('input change', calculerResultats);
 });
+
+

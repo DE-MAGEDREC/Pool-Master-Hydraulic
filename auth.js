@@ -13,12 +13,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Rediriger si utilisateur non connecté ou email non vérifié
 onAuthStateChanged(auth, user => {
   if (!user || !user.emailVerified) {
     window.location.href = "index.html";
+  } else {
+    document.body.style.display = "block";
   }
 });
 
-// Déconnexion
-window.logout = () => signOut(auth).then(() => location.href="index.html");
+window.logout = () => {
+  signOut(auth).then(() => location.href = "index.html");
+};

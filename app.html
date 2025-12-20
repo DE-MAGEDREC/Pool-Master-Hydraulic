@@ -85,7 +85,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <input id="p_r" type="number" step="0.01" class="form-control input-small">
 </div>
 
-<button class="btn btn-primary mt-3" onclick="suivant('#canalisations')">Suivant →</button>
+<button class="btn btn-primary mt-3" onclick="calculerResultats(); suivant('#canalisations')">Suivant →</button>
 </div>
 
 <!-- 🚰 CANALISATIONS -->
@@ -114,7 +114,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label>Vitesse refoulement (m/s)</label>
   <input id="v_ref" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')">Suivant →</button>
+  <button class="btn btn-primary mt-3" onclick="calculerResultats(); suivant('#pertes_singulieres')">Suivant →</button>
 </div>
 
 <!-- 🔧 PERTES SINGULIÈRES -->
@@ -139,7 +139,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label>Vannes</label>
   <input id="vannes_ref" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" onclick="suivant('#pression_temp')">Suivant →</button>
+  <button class="btn btn-primary mt-3" onclick="calculerResultats(); suivant('#pression_temp')">Suivant →</button>
 </div>
 
 <!-- 🌡️ PRESSION & TEMP -->
@@ -150,7 +150,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <label>Perte de charge filtre (mCE)</label>
   <input id="dp_filtre" type="number" step="0.01" class="form-control input-small">
 
-  <button class="btn btn-primary mt-3" onclick="suivant('#resultats_pdf')">Suivant →</button>
+  <button class="btn btn-primary mt-3" onclick="calculerResultats(); suivant('#resultats_pdf')">Suivant →</button>
 </div>
 
 <!-- 📄 RÉSULTATS -->

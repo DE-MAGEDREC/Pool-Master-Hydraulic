@@ -5,17 +5,19 @@ const translations = {
     surface: "Surface",
     volume: "Volume",
     debit: "Filtration flow rate",
-    resultats: "Results",
+    pertes_sing: "Singular losses",
+    pertes_total_asp: "Total suction losses",
+    pertes_total_ref: "Total discharge losses",
+    pertes_total: "Total losses",
+    friction: "Pipe friction",
+    hauteur: "Geometric height",
+    filtre: "Filter loss",
+    total_install: "Total installation",
     forme_rect: "Rectangular",
     forme_rond: "Round",
     suivant: "Next →",
-    pertes_sing: "Singular losses",
-    filtre: "Filter loss",
-    hauteur: "Geometric height",
-    friction: "Pipe friction",
-    total_asp: "Total suction",
-    total_ref: "Total discharge",
     exporter: "Export PDF",
+    resultats: "Results",
     en_bar: " (bar)"
   },
   fr: {
@@ -23,17 +25,19 @@ const translations = {
     surface: "Surface",
     volume: "Volume",
     debit: "Débit filtration",
-    resultats: "Résultats",
+    pertes_sing: "Pertes singulières",
+    pertes_total_asp: "Pertes totales aspiration",
+    pertes_total_ref: "Pertes totales refoulement",
+    pertes_total: "Pertes totales",
+    friction: "Friction canalisations",
+    hauteur: "Hauteur géométrique",
+    filtre: "Perte filtre",
+    total_install: "Pertes totales installation",
     forme_rect: "Rectangulaire",
     forme_rond: "Ronde",
     suivant: "Suivant →",
-    pertes_sing: "Pertes singulières",
-    filtre: "Perte filtre",
-    hauteur: "Hauteur géométrique",
-    friction: "Friction canalisations",
-    total_asp: "Total aspiration",
-    total_ref: "Total refoulement",
     exporter: "Exporter PDF",
+    resultats: "Résultats",
     en_bar: " (bar)"
   },
   es: {
@@ -41,22 +45,24 @@ const translations = {
     surface: "Superficie",
     volume: "Volumen",
     debit: "Caudal filtración",
-    resultats: "Resultados",
+    pertes_sing: "Pérdidas singulares",
+    pertes_total_asp: "Pérdidas totales aspiración",
+    pertes_total_ref: "Pérdidas totales impulsión",
+    pertes_total: "Pérdidas totales",
+    friction: "Fricción tuberías",
+    hauteur: "Altura geométrica",
+    filtre: "Pérdida de filtro",
+    total_install: "Pérdidas totales instalación",
     forme_rect: "Rectangular",
     forme_rond: "Redonda",
     suivant: "Siguiente →",
-    pertes_sing: "Pérdidas singulares",
-    filtre: "Pérdida de filtro",
-    hauteur: "Altura geométrica",
-    friction: "Fricción tuberías",
-    total_asp: "Total aspiración",
-    total_ref: "Total impulsión",
     exporter: "Exportar PDF",
+    resultats: "Resultados",
     en_bar: " (bar)"
   }
 };
 
-let currentLang = "en";
+let currentLang = "fr";
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
@@ -83,72 +89,79 @@ function calculerResultats(){
   const t = translations[currentLang];
 
   // 🏊 Piscine
-  const forme = $('input[name="forme"]:checked').val();
   let surface=0, volume=0;
-  if(forme==="rectangle"){
-    surface = (+$('#L').val()||0) * (+$('#l').val()||0);
-    volume = surface * (+$('#p').val()||0);
-  } else if(forme==="ronde"){
-    const diam = +$('#D_piscine').val()||0;
-    surface = Math.PI * Math.pow(diam/2,2);
-    volume = surface * (+$('#p_r').val()||0);
+  const forme = $('input[name="forme"]:checked').val();
+  if (forme==="rectangle"){
+    surface = (+L.value||0)*(+l.value||0);
+    volume = surface*(+p.value||0);
+  } else {
+    surface = Math.PI*Math.pow((+D_piscine.value||0)/2,2);
+    volume = surface*(+p_r.value||0);
   }
-  const t_renouv = +$('#t_renouv').val() || 5;
-  const debit = volume / t_renouv;
 
-  // 🚰 Canalisations
-  const D = +$('#D').val()/1000 || 0.05; // Diamètre en m
-  const V_asp = +$('#v_asp').val()||0;
-  const V_ref = +$('#v_ref').val()||0;
+  let t_renouv = +t_renouv.value || 6; // heure(s) de renouvellement
+  let debit = volume / t_renouv;
+
+  // 💧 Diamètre tuyau
+  const DN = (+D.value||0)/1000; // convertir mm -> m
+
+  // 🚰 Pertes singulières (conversion en longueur équivalente)
   const lambda = 0.02;
-  const g = 9.81;
 
-  // 🔧 Pertes singulières ASPIRATION
-  const L_asp_sing = 
-    (+$('#coude90_short').val()||0)*20*D +
-    (+$('#coude90_long').val()||0)*30*D +
-    (+$('#tes_asp').val()||0)*40*D +
-    (+$('#vannes_asp').val()||0)*8*D;
-  const H_sing_asp = lambda * L_asp_sing / D * V_asp*V_asp / (2*g);
+  // Aspiration
+  const L_sing_asp = 
+        (+coude90_short.value||0)*20*DN +
+        (+coude90_long.value||0)*30*DN +
+        (+coude45.value||0)*12.5*DN +
+        (+te_droit.value||0)*40*DN +
+        (+te_derivation.value||0)*80*DN +
+        (+manchon.value||0)*2.5*DN +
+        (+clapet.value||0)*125*DN +
+        (+vanne.value||0)*8*DN;
 
-  // 🔧 Pertes singulières REFOULEMENT
-  const L_ref_sing = 
-    (+$('#coude90_short_ref').val()||0)*20*D +
-    (+$('#coude90_long_ref').val()||0)*30*D +
-    (+$('#tes_ref').val()||0)*40*D +
-    (+$('#vannes_ref').val()||0)*8*D;
-  const H_sing_ref = lambda * L_ref_sing / D * V_ref*V_ref / (2*g);
+  // Refoulement
+  const L_sing_ref = 
+        (+coude90_short_ref.value||0)*20*DN +
+        (+coude90_long_ref.value||0)*30*DN +
+        (+coude45_ref.value||0)*12.5*DN +
+        (+te_droit_ref.value||0)*40*DN +
+        (+te_derivation_ref.value||0)*80*DN +
+        (+manchon_ref.value||0)*2.5*DN +
+        (+clapet_ref.value||0)*125*DN +
+        (+vanne_ref.value||0)*8*DN;
 
-  // 🌡️ Hauteur géométrique et filtre
-  const H_geo_val = +$('#H_geo').val()||0;
-  const dp_filtre_val = +$('#dp_filtre').val()||0;
+  // Friction aspiration et refoulement
+  const H_fric_asp = lambda * (+L_asp.value||0 + L_sing_asp) * Math.pow(+v_asp.value||0,2) / (2*9.81);
+  const H_fric_ref = lambda * (+L_ref.value||0 + L_sing_ref) * Math.pow(+v_ref.value||0,2) / (2*9.81);
 
-  // 🛠️ Friction
-  const H_fric_asp = lambda * (+$('#L_asp').val()||0) / D * V_asp*V_asp / (2*g);
-  const H_fric_ref = lambda * (+$('#L_ref').val()||0) / D * V_ref*V_ref / (2*g);
+  // Totaux
+  const H_total_asp = H_fric_asp; // Inclut L_sing_asp déjà converti
+  const H_total_ref = H_fric_ref; // Inclut L_sing_ref déjà converti
 
-  // 🔹 Totaux
-  const H_total_asp = H_sing_asp + H_fric_asp;
-  const H_total_ref = H_sing_ref + H_fric_ref;
-  const H_total_global = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
+  const H_geo_val = +H_geo.value||0;
+  const dp_filtre_val = +dp_filtre.value||0;
 
-  // 🔹 Affichage format mètre + bar
+  const H_install_total = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
+
+  // 🔹 Affichage
   const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
 
-<b>Pertes totales aspiration :</b> ${H_total_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_asp)}${t.en_bar}</small><br>
-<b>Pertes totales refoulement :</b> ${H_total_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_ref)}${t.en_bar}</small><br>
-<b>Hauteur géométrique :</b> ${H_geo_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_geo_val)}${t.en_bar}</small><br>
-<b>Perte filtre :</b> ${dp_filtre_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(dp_filtre_val)}${t.en_bar}</small><br><hr>
+<b>${t.pertes_sing} aspiration :</b> ${L_sing_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(L_sing_asp)}${t.en_bar}</small><br>
+<b>${t.pertes_sing} refoulement :</b> ${L_sing_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(L_sing_ref)}${t.en_bar}</small><br>
+<b>${t.friction} aspiration :</b> ${H_fric_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_fric_asp)}${t.en_bar}</small><br>
+<b>${t.friction} refoulement :</b> ${H_fric_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_fric_ref)}${t.en_bar}</small><br><hr>
 
-<b>Pertes totales :</b> ${H_total_global.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_global)}${t.en_bar}</small>
+<b>${t.pertes_total_asp} :</b> ${(L_sing_asp + H_fric_asp).toFixed(2)} mCE<br>
+<b>${t.pertes_total_ref} :</b> ${(L_sing_ref + H_fric_ref).toFixed(2)} mCE<br>
+<b>${t.pertes_total} :</b> ${H_install_total.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_install_total)}${t.en_bar}</small>
 `;
 
   $('#res').html(html);
@@ -167,10 +180,8 @@ function setLanguage(lang){
 
   $('h2.text-center').text(t.title);
   $('#res_droite h5').text(t.resultats);
-
   $('input[name="forme"][value="rectangle"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rect;
   $('input[name="forme"][value="ronde"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rond;
-
   $('.btn-primary').text(t.suivant);
   $('#btn-pdf').text(t.exporter);
 
@@ -185,4 +196,5 @@ $(document).ready(function(){
   calculerResultats();
   $('input, select').on('input change', calculerResultats);
 });
+
 

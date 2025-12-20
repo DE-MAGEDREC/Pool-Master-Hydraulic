@@ -2,24 +2,13 @@
 const translations = {
   en: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Pool",
-    canalisations_tab: "Pipes",
-    pertes_tab: "Singular losses",
-    pression_tab: "Pressure & Temperature",
-    resultats_tab: "Results / PDF",
     surface: "Surface",
     volume: "Volume",
     debit: "Filtration flow rate",
-    longueur: "Length (m)",
-    largeur: "Width (m)",
-    profondeur: "Depth (m)",
-    forme_rect: "Rectangular",
-    forme_carree: "Square",
-    forme_rond: "Round",
-    forme_ovale: "Oval",
-    forme_libre: "Free form",
-    suivant: "Next →",
     resultats: "Results",
+    forme_rect: "Rectangular",
+    forme_rond: "Round",
+    suivant: "Next →",
     pertes_sing: "Singular losses",
     filtre: "Filter loss",
     hauteur: "Geometric height",
@@ -27,29 +16,17 @@ const translations = {
     total_asp: "Total suction",
     total_ref: "Total discharge",
     exporter: "Export PDF",
-    logout: "Logout",
     en_bar: " (bar)"
   },
   fr: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Piscine",
-    canalisations_tab: "Canalisations",
-    pertes_tab: "Pertes singulières",
-    pression_tab: "Pression & Température",
-    resultats_tab: "Résultats / PDF",
     surface: "Surface",
     volume: "Volume",
     debit: "Débit filtration",
-    longueur: "Longueur (m)",
-    largeur: "Largeur (m)",
-    profondeur: "Profondeur (m)",
-    forme_rect: "Rectangulaire",
-    forme_carree: "Carrée",
-    forme_rond: "Ronde",
-    forme_ovale: "Ovale",
-    forme_libre: "Libre",
-    suivant: "Suivant →",
     resultats: "Résultats",
+    forme_rect: "Rectangulaire",
+    forme_rond: "Ronde",
+    suivant: "Suivant →",
     pertes_sing: "Pertes singulières",
     filtre: "Perte filtre",
     hauteur: "Hauteur géométrique",
@@ -57,29 +34,17 @@ const translations = {
     total_asp: "Total aspiration",
     total_ref: "Total refoulement",
     exporter: "Exporter PDF",
-    logout: "Déconnexion",
     en_bar: " (bar)"
   },
   es: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Piscina",
-    canalisations_tab: "Tuberías",
-    pertes_tab: "Pérdidas singulares",
-    pression_tab: "Presión & Temperatura",
-    resultats_tab: "Resultados / PDF",
     surface: "Superficie",
     volume: "Volumen",
     debit: "Caudal filtración",
-    longueur: "Longitud (m)",
-    largeur: "Ancho (m)",
-    profondeur: "Profundidad (m)",
-    forme_rect: "Rectangular",
-    forme_carree: "Cuadrada",
-    forme_rond: "Redonda",
-    forme_ovale: "Oval",
-    forme_libre: "Libre",
-    suivant: "Siguiente →",
     resultats: "Resultados",
+    forme_rect: "Rectangular",
+    forme_rond: "Redonda",
+    suivant: "Siguiente →",
     pertes_sing: "Pérdidas singulares",
     filtre: "Pérdida de filtro",
     hauteur: "Altura geométrica",
@@ -87,12 +52,11 @@ const translations = {
     total_asp: "Total aspiración",
     total_ref: "Total impulsión",
     exporter: "Exportar PDF",
-    logout: "Cerrar sesión",
     en_bar: " (bar)"
   }
 };
 
-let currentLang = "fr";
+let currentLang = "en";
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
@@ -107,7 +71,7 @@ function choixForme(){
   const f = $('input[name="forme"]:checked').val();
   $('.forme-fields').hide();
   if(f==="rectangle") $('#rectangle-fields').show();
-  else if(f==="ronde") $('#ronde-fields').show();
+  else $('#ronde-fields').show();
   $('#forme-img').attr('src','img/'+f+'.png');
 }
 
@@ -133,7 +97,7 @@ function calculerResultats(){
   const debit = volume / t_renouv;
 
   // 🚰 Canalisations
-  const D = +$('#D').val()/1000 || 0.05; // diamètre en m
+  const D = +$('#D').val()/1000 || 0.05; // Diamètre en m
   const V_asp = +$('#v_asp').val()||0;
   const V_ref = +$('#v_ref').val()||0;
   const lambda = 0.02;
@@ -164,8 +128,9 @@ function calculerResultats(){
   const H_fric_ref = lambda * (+$('#L_ref').val()||0) / D * V_ref*V_ref / (2*g);
 
   // 🔹 Totaux
-  const H_total_asp = H_geo_val + dp_filtre_val + H_sing_asp + H_fric_asp;
-  const H_total_ref = H_geo_val + dp_filtre_val + H_sing_ref + H_fric_ref;
+  const H_total_asp = H_sing_asp + H_fric_asp;
+  const H_total_ref = H_sing_ref + H_fric_ref;
+  const H_total_global = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
   // 🔹 Affichage format mètre + bar
   const html = `
@@ -173,23 +138,17 @@ function calculerResultats(){
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
 
-<b>${t.pertes_sing} aspiration :</b> ${H_sing_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_asp)}${t.en_bar}</small><br>
-<b>${t.pertes_sing} refoulement :</b> ${H_sing_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_ref)}${t.en_bar}</small><br>
-<b>${t.hauteur} :</b> ${H_geo_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_geo_val)}${t.en_bar}</small><br>
-<b>${t.filtre} :</b> ${dp_filtre_val.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(dp_filtre_val)}${t.en_bar}</small><br>
-<b>${t.friction} aspiration :</b> ${H_fric_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_asp)}${t.en_bar}</small><br>
-<b>${t.friction} refoulement :</b> ${H_fric_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_ref)}${t.en_bar}</small><br><hr>
-
-<b>${t.total_asp} :</b> ${H_total_asp.toFixed(2)} mCE<br>
+<b>Pertes totales aspiration :</b> ${H_total_asp.toFixed(2)} mCE<br>
 <small>≈ ${mceToBar(H_total_asp)}${t.en_bar}</small><br>
-<b>${t.total_ref} :</b> ${H_total_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_ref)}${t.en_bar}</small>
+<b>Pertes totales refoulement :</b> ${H_total_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_ref)}${t.en_bar}</small><br>
+<b>Hauteur géométrique :</b> ${H_geo_val.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_geo_val)}${t.en_bar}</small><br>
+<b>Perte filtre :</b> ${dp_filtre_val.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(dp_filtre_val)}${t.en_bar}</small><br><hr>
+
+<b>Pertes totales :</b> ${H_total_global.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_global)}${t.en_bar}</small>
 `;
 
   $('#res').html(html);
@@ -205,12 +164,16 @@ $('#btn-pdf').on('click', function(){
 function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
+
   $('h2.text-center').text(t.title);
   $('#res_droite h5').text(t.resultats);
+
   $('input[name="forme"][value="rectangle"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rect;
   $('input[name="forme"][value="ronde"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rond;
+
   $('.btn-primary').text(t.suivant);
   $('#btn-pdf').text(t.exporter);
+
   calculerResultats();
 }
 
@@ -222,3 +185,4 @@ $(document).ready(function(){
   calculerResultats();
   $('input, select').on('input change', calculerResultats);
 });
+

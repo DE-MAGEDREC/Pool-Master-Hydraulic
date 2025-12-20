@@ -7,27 +7,21 @@ const translations = {
     pertes_tab: "Singular losses",
     pression_tab: "Pressure & Temperature",
     resultats_tab: "Results / PDF",
-    surface: "Surface",
-    volume: "Volume",
+    forme_label: "Pool shape",
+    forme_options: ["Rectangular","Square","Round","Oval","Free"],
+    t_recyclage: "Recycling time (h)",
+    dn_label: "DN (mm)",
+    materiau_label: "Pipe material",
+    aspiration_label: "Suction",
+    refoulement_label: "Discharge",
+    longueur_label: "Length (m)",
+    vitesse_label: "Velocity (m/s)",
+    hauteur_label: "Geometric height (m)",
+    dp_filtre_label: "Filter head loss (mCE)",
     debit: "Filtration flow rate",
-    longueur: "Length (m)",
-    largeur: "Width (m)",
-    profondeur: "Depth (m)",
-    forme_rect: "Rectangular",
-    forme_carree: "Square",
-    forme_rond: "Round",
-    forme_ovale: "Oval",
-    forme_libre: "Free form",
     suivant: "Next →",
-    resultats: "Results",
-    pertes_sing: "Singular losses",
-    filtre: "Filter loss",
-    hauteur: "Geometric height",
-    friction: "Pipe friction",
-    total_asp: "Total suction",
-    total_ref: "Total discharge",
     exporter: "Export PDF",
-    logout: "Logout",
+    resultats: "Results",
     en_bar: " (bar)"
   },
   fr: {
@@ -37,27 +31,21 @@ const translations = {
     pertes_tab: "Pertes singulières",
     pression_tab: "Pression & Température",
     resultats_tab: "Résultats / PDF",
-    surface: "Surface",
-    volume: "Volume",
+    forme_label: "Forme de la piscine",
+    forme_options: ["Rectangulaire","Carrée","Ronde","Ovale","Libre"],
+    t_recyclage: "Temps de recyclage (h)",
+    dn_label: "DN (mm)",
+    materiau_label: "Matériau tuyau",
+    aspiration_label: "Aspiration",
+    refoulement_label: "Refoulement",
+    longueur_label: "Longueur (m)",
+    vitesse_label: "Vitesse (m/s)",
+    hauteur_label: "Hauteur géométrique (m)",
+    dp_filtre_label: "Perte de charge filtre (mCE)",
     debit: "Débit filtration",
-    longueur: "Longueur (m)",
-    largeur: "Largeur (m)",
-    profondeur: "Profondeur (m)",
-    forme_rect: "Rectangulaire",
-    forme_carree: "Carrée",
-    forme_rond: "Ronde",
-    forme_ovale: "Ovale",
-    forme_libre: "Libre",
     suivant: "Suivant →",
-    resultats: "Résultats",
-    pertes_sing: "Pertes singulières",
-    filtre: "Perte filtre",
-    hauteur: "Hauteur géométrique",
-    friction: "Friction canalisations",
-    total_asp: "Total aspiration",
-    total_ref: "Total refoulement",
     exporter: "Exporter PDF",
-    logout: "Déconnexion",
+    resultats: "Résultats",
     en_bar: " (bar)"
   },
   es: {
@@ -67,140 +55,160 @@ const translations = {
     pertes_tab: "Pérdidas singulares",
     pression_tab: "Presión & Temperatura",
     resultats_tab: "Resultados / PDF",
-    surface: "Superficie",
-    volume: "Volumen",
+    forme_label: "Forma de la piscina",
+    forme_options: ["Rectangular","Cuadrada","Redonda","Oval","Libre"],
+    t_recyclage: "Tiempo de recirculación (h)",
+    dn_label: "DN (mm)",
+    materiau_label: "Material tubería",
+    aspiration_label: "Aspiración",
+    refoulement_label: "Impulsión",
+    longueur_label: "Longitud (m)",
+    vitesse_label: "Velocidad (m/s)",
+    hauteur_label: "Altura geométrica (m)",
+    dp_filtre_label: "Pérdida de carga filtro (mCE)",
     debit: "Caudal filtración",
-    longueur: "Longitud (m)",
-    largeur: "Ancho (m)",
-    profondeur: "Profundidad (m)",
-    forme_rect: "Rectangular",
-    forme_carree: "Cuadrada",
-    forme_rond: "Redonda",
-    forme_ovale: "Oval",
-    forme_libre: "Libre",
     suivant: "Siguiente →",
-    resultats: "Resultados",
-    pertes_sing: "Pérdidas singulares",
-    filtre: "Pérdida de filtro",
-    hauteur: "Altura geométrica",
-    friction: "Fricción tuberías",
-    total_asp: "Total aspiración",
-    total_ref: "Total impulsión",
     exporter: "Exportar PDF",
-    logout: "Cerrar sesión",
+    resultats: "Resultados",
     en_bar: " (bar)"
   }
 };
+
 let currentLang = "en";
 
+// ====== ACCESSOIRES ======
+const accessoires = [
+  {nom:"Coude 90° long rayon", val:20},
+  {nom:"Coude 90° court rayon", val:30},
+  {nom:"Coude 45°", val:12.5},
+  {nom:"Té – passage droit", val:40},
+  {nom:"Té – dérivation", val:80},
+  {nom:"Manchon", val:2.5},
+  {nom:"Clapet anti‑retour", val:125},
+  {nom:"Vanne", val:8}
+];
+
 // ====== NAVIGATION ONGLET ======
-function suivant(id){
-  calculerResultats();
+function suivant(id){ 
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');
   $(`a[href="${id}"]`).addClass('active');
 }
 
-// ====== CONVERSION MCE -> BAR ======
-function mceToBar(val){ return (val*0.0981).toFixed(2); }
+// ====== GENERER LES ACCESSOIRES DANS L'ONGLET ======
+function genererAccessoires(){
+  const html_asp = accessoires.map(a=>`<label>${a.nom} (×Diamètre)</label><input type="number" step="0.01" id="asp_${a.nom.replace(/\s/g,"_")}" class="form-control input-small" value="0">`).join('');
+  const html_ref = accessoires.map(a=>`<label>${a.nom} (×Diamètre)</label><input type="number" step="0.01" id="ref_${a.nom.replace(/\s/g,"_")}" class="form-control input-small" value="0">`).join('');
+  $('#accessoires_asp').html(html_asp);
+  $('#accessoires_ref').html(html_ref);
+}
 
 // ====== CALCUL HYDRAULIQUE COMPLET ======
 function calculerResultats(){
   const t = translations[currentLang];
 
-  // 🏊 Piscine
-  const forme = $('input[name="forme"]:checked').val();
+  // Piscine
+  const forme = $('#forme_piscine').val();
+  const t_recyclage = +$('#t_recyclage').val() || 5;
+  const L_val = +$('#L').val() || 0;
+  const l_val = +$('#l').val() || 0;
+  const p_val = +$('#p').val() || 0;
+  const D_piscine = +$('#D_piscine').val() || 0;
+
   let surface=0, volume=0;
-  const L_val = +L.value||0;
-  const l_val = +l.value||0;
-  const p_val = +p.value||0;
-  const t_recyclage = +t_renouv.value || 5;
+  if (forme==="rectangle" || forme==="carree") surface = L_val*l_val;
+  else if (forme==="ronde") surface = Math.PI*Math.pow(D_piscine/2,2);
+  else if (forme==="ovale") surface = Math.PI*(L_val/2)*(l_val/2);
+  else surface = L_val*l_val; // libre
 
-  if(forme==="rectangle" || forme==="carree") surface = L_val*l_val;
-  else if(forme==="ronde") surface = Math.PI*Math.pow(L_val/2,2);
-  else if(forme==="ovale") surface = Math.PI*(L_val/2)*(l_val/2);
-  else surface = L_val*l_val; // libre approximation
   volume = surface * p_val;
-
   const debit = volume / t_recyclage;
 
-  // 🚰 Canalisations
-  const DN = +D.value/1000; // m
-  const materiau = materiau.value;
+  // Canalisations
+  const D_mm = +$('#D').val() || 50;
+  const materiau = $('#materiau').val();
   let lambda = 0.02;
   if(materiau==="PVC_souple") lambda=0.035;
   else if(materiau==="Turbulence") lambda=0.316;
 
-  const H_fric_asp = lambda * (+L_asp.value||0) / DN * Math.pow(+v_asp.value||0,2)/(2*9.81);
-  const H_fric_ref = lambda * (+L_ref.value||0) / DN * Math.pow(+v_ref.value||0,2)/(2*9.81);
+  const L_asp_val = +$('#L_asp').val()||0;
+  const v_asp_val = +$('#v_asp').val()||0;
+  const L_ref_val = +$('#L_ref').val()||0;
+  const v_ref_val = +$('#v_ref').val()||0;
 
-  // 🔧 Pertes singulières
-  const H_sing_asp = 
-    (+coudes90L.value||0)*20*DN +
-    (+coudes90C.value||0)*30*DN +
-    (+coudes45.value||0)*12.5*DN +
-    (+teDroit.value||0)*40*DN +
-    (+teDeriv.value||0)*80*DN +
-    (+manchon.value||0)*2.5*DN +
-    (+clapet.value||0)*125*DN +
-    (+vanne.value||0)*8*DN;
+  const H_fric_asp = lambda*L_asp_val/(D_mm/1000) * Math.pow(v_asp_val,2)/(2*9.81);
+  const H_fric_ref = lambda*L_ref_val/(D_mm/1000) * Math.pow(v_ref_val,2)/(2*9.81);
 
-  const H_total_asp = H_sing_asp + H_fric_asp + (+H_geo.value||0) + (+dp_filtre.value||0);
-  const H_total_ref = H_fric_ref + (+H_geo.value||0) + (+dp_filtre.value||0); // pas de singulières refoulement ici
+  // Pertes singulières
+  let H_sing_asp=0, H_sing_ref=0;
+  accessoires.forEach(a=>{
+    const val_asp = +$(`#asp_${a.nom.replace(/\s/g,"_")}`).val()||0;
+    const val_ref = +$(`#ref_${a.nom.replace(/\s/g,"_")}`).val()||0;
+    H_sing_asp += val_asp*(D_mm/1000);
+    H_sing_ref += val_ref*(D_mm/1000);
+  });
+
+  const H_geo_val = +$('#H_geo').val()||0;
+  const dp_filtre_val = +$('#dp_filtre').val()||0;
+
+  const H_total_asp = H_geo_val + dp_filtre_val + H_sing_asp + H_fric_asp;
+  const H_total_ref = H_geo_val + dp_filtre_val + H_sing_ref + H_fric_ref;
 
   const html = `
-<b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
-<b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
-<b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
-<b>${t.pertes_sing} aspiration :</b> ${H_sing_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_sing_asp)}${t.en_bar}</small><br>
-<b>${t.hauteur} :</b> ${(+H_geo.value||0).toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(+H_geo.value||0)}${t.en_bar}</small><br>
-<b>${t.filtre} :</b> ${(+dp_filtre.value||0).toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(+dp_filtre.value||0)}${t.en_bar}</small><br>
-<b>${t.friction} aspiration :</b> ${H_fric_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_asp)}${t.en_bar}</small><br>
-<b>${t.friction} refoulement :</b> ${H_fric_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_ref)}${t.en_bar}</small><br><hr>
-<b>${t.total_asp} :</b> ${H_total_asp.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_asp)}${t.en_bar}</small><br>
-<b>${t.total_ref} :</b> ${H_total_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_total_ref)}${t.en_bar}</small>
+<b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br>
+<b>${t.resultats} aspiration :</b> ${H_total_asp.toFixed(2)} mCE <small>≈ ${(H_total_asp*0.0981).toFixed(2)}${t.en_bar}</small><br>
+<b>${t.resultats} refoulement :</b> ${H_total_ref.toFixed(2)} mCE <small>≈ ${(H_total_ref*0.0981).toFixed(2)}${t.en_bar}</small>
 `;
-
   $('#res').html(html);
   $('#res_droite').html(html);
 }
 
-// ====== EXPORT PDF ======
-$('#btn-pdf').on('click', function(){ html2pdf().from(document.getElementById('res')).save(); });
+// ====== BOUTON SUIVANT + CALCUL ======
+function calculerEtSuivant(id){
+  calculerResultats();
+  suivant(id);
+}
 
-// ====== LANGUE ======
+// ====== LANGUE DYNAMIQUE ======
 function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
 
-  $('h2.text-center').text(t.title);
-  $('#res_droite h5').text(t.resultats);
+  // Onglets
+  $('a[href="#piscine"]').text(t.piscine_tab);
+  $('a[href="#canalisations"]').text(t.canalisations_tab);
+  $('a[href="#pertes_singulieres"]').text(t.pertes_tab);
+  $('a[href="#pression_temp"]').text(t.pression_tab);
+  $('a[href="#resultats_pdf"]').text(t.resultats_tab);
 
-  $('input[name="forme"][value="rectangle"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rect;
-  $('input[name="forme"][value="carree"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_carree;
-  $('input[name="forme"][value="ronde"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_rond;
-  $('input[name="forme"][value="ovale"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_ovale;
-  $('input[name="forme"][value="libre"]').parent().contents().filter(function(){return this.nodeType==3}).first()[0].textContent = " " + t.forme_libre;
+  // Labels
+  $('label[for="forme_piscine"]').text(t.forme_label);
+  $('#t_recyclage').prev('label').text(t.t_recyclage);
+  $('#lbl-dn').text(t.dn_label);
+  $('label[for="materiau"]').text(t.materiau_label);
+  $('label[for="L_asp"]').text(t.longueur_label);
+  $('label[for="v_asp"]').text(t.vitesse_label);
+  $('label[for="L_ref"]').text(t.longueur_label);
+  $('label[for="v_ref"]').text(t.vitesse_label);
+  $('label[for="H_geo"]').text(t.hauteur_label);
+  $('label[for="dp_filtre"]').text(t.dp_filtre_label);
 
+  // Options piscine
+  const options = t.forme_options.map(o=>`<option value="${o.toLowerCase()}">${o}</option>`).join('');
+  $('#forme_piscine').html(options);
+
+  // Boutons
   $('.btn-primary').text(t.suivant);
   $('#btn-pdf').text(t.exporter);
 
   calculerResultats();
 }
 
-$('#lang-select').on('change', function(){ setLanguage($(this).val()); });
-
 // ====== INITIALISATION ======
 $(document).ready(function(){
-  setLanguage(currentLang);
+  genererAccessoires();
   calculerResultats();
+  $('#lang-select').on('change', function(){ setLanguage($(this).val()); });
   $('input, select').on('input change', calculerResultats);
 });

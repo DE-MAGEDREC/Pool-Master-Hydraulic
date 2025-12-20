@@ -13,15 +13,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      window.location.href = "app.html";
-    })
-    .catch(err => {
-      document.getElementById("error").innerText = "Connexion invalide";
-    });
-});
+loginBtn.onclick = () => {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then(()=>location.href="app.html")
+    .catch(()=>error.innerText="Connexion impossible");
+};

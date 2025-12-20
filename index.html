@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Pool Master Hydraulic</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Pool Master Hydraulic - Connexion</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="login-body">
 
-<!-- LOADING -->
+<!-- LOADER -->
 <div id="loader">
   <div class="loader-box">
     <div class="spinner"></div>
@@ -17,24 +17,50 @@
   </div>
 </div>
 
-<!-- LOGIN -->
+<!-- LOGIN BOX -->
 <div class="login-box">
   <h2>Accès sécurisé</h2>
 
-  <input id="user" placeholder="Identifiant">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Mot de passe">
 
   <button onclick="login()">Connexion</button>
+  <button onclick="register()">Créer un compte</button>
+
   <p id="error"></p>
 </div>
 
-<script src="auth.js"></script>
+<!-- ✅ Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
 <script>
-window.onload = () => {
-  setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-  }, 1800);
+  // ✅ REMPLACE ICI PAR TA CONFIG FIREBASE
+  const firebaseConfig = {
+  apiKey: "AIzaSyA7ynpgm9BCNuQhmNtfunCvK8rebZ3lZcM",
+  authDomain: "pool-master-hydraulic.firebaseapp.com",
+  projectId: "pool-master-hydraulic",
+  storageBucket: "pool-master-hydraulic.firebasestorage.app",
+  messagingSenderId: "674715767328",
+  appId: "1:674715767328:web:cb3b67e0c949216cb0a245",
+  measurementId: "G-G0GJFMMVK4"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
+
+<!-- ✅ Authentification -->
+<script src="auth.js"></script>
+
+<script>
+  // Loader
+  window.onload = () => {
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+    }, 1800);
+  };
 </script>
 
 </body>

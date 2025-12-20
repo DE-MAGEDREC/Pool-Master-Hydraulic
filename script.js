@@ -106,7 +106,7 @@ function suivant(id){
   $(`a[href="${id}"]`).addClass('active');
 }
 
-// ====== CONVERSION ======
+// ====== CONVERSION & CONSTANTES ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
 function getLambda(mat){
   if(mat=="PVC_rigide") return 0.02;
@@ -115,7 +115,6 @@ function getLambda(mat){
   return 0.02;
 }
 
-// ====== COEFFICIENTS ACCESSOIRES ======
 const coeffsAccessoires = {
   "Coude_90_long_rayon":20,
   "Coude_90_court_rayon":30,
@@ -241,6 +240,7 @@ function calculerResultats(){
 function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
+
   $('#title').text(t.title);
   $('#tab-piscine').text(t.piscine_tab);
   $('#tab-canalisations').text(t.canalisations_tab);
@@ -253,20 +253,6 @@ function setLanguage(lang){
   $('#lbl-largeur').text(t.largeur);
   $('#lbl-profondeur').text(t.profondeur);
   $('#lbl-recyclage').text(t.recyclage);
-  $('#lbl-dn').text("DN (mm)");
-  $('#lbl-materiau').text("Matériau");
-  $('#lbl-long-asp').text("Longueur aspiration (m)");
-  $('#lbl-v-asp').text("Vitesse aspiration (m/s)");
-  $('#lbl-long-ref').text("Longueur refoulement (m)");
-  $('#lbl-v-ref').text("Vitesse refoulement (m/s)");
-  $('#lbl-pertes').text(t.pertes_sing);
-  $('#lbl-hauteur').text(t.hauteur);
-  $('#lbl-filtre').text(t.filtre);
-  $('#btn-suivant-piscine').text(t.suivant);
-  $('#btn-suivant-canalisations').text(t.suivant);
-  $('#btn-suivant-pertes').text(t.suivant);
-  $('#btn-suivant-pression').text(t.suivant);
-  $('#btn-pdf').text(t.exporter);
 }
 
 // ====== EXPORT PDF ======

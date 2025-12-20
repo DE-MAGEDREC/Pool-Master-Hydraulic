@@ -2,9 +2,14 @@
 const translations = {
   en: {
     title: "Pool Master Hydraulic",
+    piscine_tab: "Pool",
+    canalisations_tab: "Pipes",
+    pertes_tab: "Singular losses",
+    pression_tab: "Pressure & Temperature",
+    resultats_tab: "Results / PDF",
     surface: "Surface",
     volume: "Volume",
-    piscine: "Pool",
+    debit: "Filtration flow rate",
     longueur: "Length (m)",
     largeur: "Width (m)",
     profondeur: "Depth (m)",
@@ -18,15 +23,20 @@ const translations = {
     friction: "Pipe friction",
     total_asp: "Total suction",
     total_ref: "Total discharge",
-    debit: "Filtration flow rate",
     exporter: "Export PDF",
+    logout: "Logout",
     en_bar: " (bar)"
   },
   fr: {
     title: "Pool Master Hydraulic",
+    piscine_tab: "Piscine",
+    canalisations_tab: "Canalisations",
+    pertes_tab: "Pertes singulières",
+    pression_tab: "Pression & Température",
+    resultats_tab: "Résultats / PDF",
     surface: "Surface",
     volume: "Volume",
-    piscine: "Piscine",
+    debit: "Débit filtration",
     longueur: "Longueur (m)",
     largeur: "Largeur (m)",
     profondeur: "Profondeur (m)",
@@ -40,15 +50,20 @@ const translations = {
     friction: "Friction canalisations",
     total_asp: "Total aspiration",
     total_ref: "Total refoulement",
-    debit: "Débit filtration",
     exporter: "Exporter PDF",
+    logout: "Déconnexion",
     en_bar: " (bar)"
   },
   es: {
     title: "Pool Master Hydraulic",
+    piscine_tab: "Piscina",
+    canalisations_tab: "Tuberías",
+    pertes_tab: "Pérdidas singulares",
+    pression_tab: "Presión & Temperatura",
+    resultats_tab: "Resultados / PDF",
     surface: "Superficie",
     volume: "Volumen",
-    piscine: "Piscina",
+    debit: "Caudal filtración",
     longueur: "Longitud (m)",
     largeur: "Ancho (m)",
     profondeur: "Profundidad (m)",
@@ -62,15 +77,17 @@ const translations = {
     friction: "Fricción tuberías",
     total_asp: "Total aspiración",
     total_ref: "Total impulsión",
-    debit: "Caudal filtración",
     exporter: "Exportar PDF",
+    logout: "Cerrar sesión",
     en_bar: " (bar)"
   }
 };
+
 let currentLang = "en";
 
 // ====== NAVIGATION ONGLET ======
 function suivant(id){
+  calculerResultats();
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');
@@ -89,6 +106,14 @@ function choixForme(){
 // ====== CONVERSION MCE -> BAR ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
 
+// ====== COEFFICIENT LAMBDA ======
+function getLambda(){
+  const mat = $('#materiau').val();
+  if(mat==="PVC") return 0.02;
+  if(mat==="PVC_souple") return 0.025;
+  return 0.03; // turbulent
+}
+
 // ====== CALCUL HYDRAULIQUE COMPLET ======
 function calculerResultats(){
   const t = translations[currentLang];
@@ -105,20 +130,21 @@ function calculerResultats(){
   }
 
   // 💧 Débit filtration (m3/h)
-  let t_renouv = +t.value || 6; // par défaut 6h si vide
-  let debit = volume / t_renouv;
+  const t_renouv = +t.value || 5;
+  const debit = volume / t_renouv;
 
   // 🚰 Pertes singulières
-  const H_sing_asp = (+coudes_asp.value||0)+(+tes_asp.value||0)+(+vannes_asp.value||0);
-  const H_sing_ref = (+coudes_ref.value||0)+(+tes_ref.value||0)+(+vannes_ref.value||0);
+  const H_sing_asp = (+coudes_asp.value||0) + (+tes_asp.value||0) + (+vannes_asp.value||0);
+  const H_sing_ref = (+coudes_ref.value||0) + (+tes_ref.value||0) + (+vannes_ref.value||0);
 
   // 🌡️ Hauteur géométrique et filtre
   const H_geo_val = +H_geo.value||0;
   const dp_filtre_val = +dp_filtre.value||0;
 
-  // 🛠️ Canalisations
-  const H_fric_asp = (+L_asp.value||0)*0.02;
-  const H_fric_ref = (+L_ref.value||0)*0.02;
+  // 🛠️ Friction canalisations
+  const lambda = getLambda();
+  const H_fric_asp = lambda * (+L_asp.value||0) / (+D.value||1) * Math.pow(+v_asp.value||0,2)/(2*9.81);
+  const H_fric_ref = lambda * (+L_ref.value||0) / (+D.value||1) * Math.pow(+v_ref.value||0,2)/(2*9.81);
 
   // 🔹 Totaux
   const H_total_asp = H_geo_val + dp_filtre_val + H_sing_asp + H_fric_asp;
@@ -182,5 +208,5 @@ $(document).ready(function(){
   calculerResultats();
 });
 
-// ====== Événement temps réel ======
+// ====== ÉVÉNEMENT TEMPS RÉEL ======
 $('input, select').on('input change', calculerResultats);

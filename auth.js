@@ -1,12 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA7ynpgm9BCNuQhmNtfunCvK8rebZ3lZcM",
@@ -20,24 +13,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(c => {
-      if (!c.user.emailVerified) {
-        error.innerText = "Veuillez vérifier votre email";
-        signOut(auth);
-        return;
-      }
-      location.href = "app.html";
-    })
-    .catch(e => error.innerText = e.message);
-};
+// Rediriger si utilisateur non connecté ou email non vérifié
+onAuthStateChanged(auth, user => {
+  if (!user || !user.emailVerified) {
+    window.location.href = "index.html";
+  }
+});
 
-window.register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(c => {
-      sendEmailVerification(c.user);
-      alert("Compte créé. Vérifiez votre email.");
-    })
-    .catch(e => error.innerText = e.message);
-};
+// Déconnexion
+window.logout = () => signOut(auth).then(() => location.href="index.html");

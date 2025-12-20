@@ -2,45 +2,26 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pool Master Hydraulic</title>
 
-<link rel="stylesheet"
- href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 
-<script>
-  const loader = document.getElementById("loader");
-  if (loader) loader.style.display = "none";
-</script>
-
 <body>
 
-<!-- 🔐 PROTECTION FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyA7ynpgm9BCNuQhmNtfunCvK8rebZ3lZcM",
-  authDomain: "pool-master-hydraulic.firebaseapp.com",
-  projectId: "pool-master-hydraulic",
-  storageBucket: "pool-master-hydraulic.firebasestorage.app",
-  messagingSenderId: "674715767328",
-  appId: "1:674715767328:web:cb3b67e0c949216cb0a245"
-};
-
-const app = initializeApp(firebaseConfig);
+  authDomain: "pool-master-hydraulic.firebaseapp.com"
+});
 const auth = getAuth(app);
 
-onAuthStateChanged(auth, user => {
-  if (!user || !user.emailVerified) {
-    window.location.href = "index.html";
-  }
-});
-
-window.logout = () => signOut(auth).then(() => location.href="index.html");
+onAuthStateChanged(auth, u => { if (!u) location.href="index.html"; });
+window.logout = () => signOut(auth).then(()=>location.href="index.html");
 </script>
 
 <button class="logout-btn" onclick="logout()">Déconnexion</button>
@@ -51,69 +32,52 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <ul class="nav nav-tabs">
   <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine">Piscine</a></li>
   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations">Canalisations</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes">Pertes singulières</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression">Pression & Température</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats">Résultats / PDF</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats">Résultats</a></li>
 </ul>
 
 <div class="tab-content mt-3">
 
 <!-- 🏊 PISCINE -->
 <div class="tab-pane fade show active" id="piscine">
-  <input id="L" class="form-control mb-2" placeholder="Longueur (m)">
-  <input id="l" class="form-control mb-2" placeholder="Largeur (m)">
-  <input id="p" class="form-control mb-2" placeholder="Profondeur (m)">
-  <input id="t" class="form-control mb-2" placeholder="Temps de renouvellement (h)">
+
+<h5>Forme de la piscine</h5>
+<label><input type="radio" name="forme" value="rectangle" checked onchange="choixForme()"> Rectangulaire</label>
+<label><input type="radio" name="forme" value="ronde" onchange="choixForme()"> Ronde</label>
+
+<img id="forme-img" src="img/rectangle.png" class="my-3" style="max-width:200px">
+
+<div id="rectangle-fields" class="forme-fields">
+  <label>Longueur (m)</label><input id="L" class="form-control">
+  <label>Largeur (m)</label><input id="l" class="form-control">
+  <label>Profondeur (m)</label><input id="p" class="form-control">
+</div>
+
+<div id="ronde-fields" class="forme-fields" style="display:none">
+  <label>Diamètre (m)</label><input id="D_piscine" class="form-control">
+  <label>Profondeur (m)</label><input id="p" class="form-control">
+</div>
+
+<button class="btn btn-primary mt-3" onclick="suivant('#canalisations')">Suivant →</button>
 </div>
 
 <!-- 🚰 CANALISATIONS -->
 <div class="tab-pane fade" id="canalisations">
-  <input id="D" class="form-control mb-2" placeholder="Diamètre (mm)">
-  <select id="materiau" class="form-control mb-2">
-    <option value="PVC">PVC rigide</option>
-    <option value="PVC_souple">PVC souple</option>
-    <option value="Turbulence">Turbulent</option>
-  </select>
+  <label>Diamètre canalisation (mm)</label>
+  <input id="D" class="form-control">
 
-  <h6>Aspiration</h6>
-  <input id="L_asp" class="form-control mb-2" placeholder="Longueur aspiration (m)">
-  <input id="v_asp" class="form-control mb-2" placeholder="Vitesse aspiration (m/s)">
-
-  <h6>Refoulement</h6>
-  <input id="L_ref" class="form-control mb-2" placeholder="Longueur refoulement (m)">
-  <input id="v_ref" class="form-control mb-2" placeholder="Vitesse refoulement (m/s)">
-</div>
-
-<!-- 🔧 PERTES -->
-<div class="tab-pane fade" id="pertes">
-  <input id="coudes_asp" class="form-control mb-2" placeholder="Coudes aspiration">
-  <input id="tes_asp" class="form-control mb-2" placeholder="Tés aspiration">
-  <input id="vannes_asp" class="form-control mb-2" placeholder="Vannes aspiration">
-
-  <input id="coudes_ref" class="form-control mb-2" placeholder="Coudes refoulement">
-  <input id="tes_ref" class="form-control mb-2" placeholder="Tés refoulement">
-  <input id="vannes_ref" class="form-control mb-2" placeholder="Vannes refoulement">
-</div>
-
-<!-- 🌡️ PRESSION -->
-<div class="tab-pane fade" id="pression">
-  <input id="H_geo" class="form-control mb-2" placeholder="Hauteur géométrique (m)">
-  <input id="dp_filtre" class="form-control mb-2" placeholder="Perte filtre (mCE)">
+  <button class="btn btn-primary mt-3" onclick="suivant('#resultats')">Suivant →</button>
 </div>
 
 <!-- 📄 RESULTATS -->
 <div class="tab-pane fade" id="resultats">
   <div id="res"></div>
-  <button id="btn-pdf" class="btn btn-primary mt-2">Exporter PDF</button>
 </div>
 
 </div>
-<div id="res_droite"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="script.js"></script>
 
 </body>

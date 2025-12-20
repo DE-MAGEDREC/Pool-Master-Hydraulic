@@ -98,8 +98,6 @@ const translations = {
 let currentLang = "en";
 
 // ====== COEFFICIENTS ======
-
-// Coefficients accessoires (en diamètres)
 const coeffs = {
   coude90l: 20,
   coude90c: 30,
@@ -126,7 +124,7 @@ function mceToBar(val){
 
 // ====== CALCUL DES ACCESSOIRES ======
 
-// Récupère la quantité d’accessoires
+// Récupère les quantités depuis les champs input
 function calculAccessoires(prefix){
   const res = {};
   for(const key in coeffs){
@@ -135,16 +133,16 @@ function calculAccessoires(prefix){
   return res;
 }
 
-// Calcule la longueur équivalente totale en mètres pour Darcy
+// Calcule la longueur équivalente totale en mètres
 function calculLongueurEquivalent(accessoires, D_m){
   let L_eq = 0;
   for(const key in accessoires){
-    L_eq += accessoires[key] * coeffs[key] * D_m; // quantité × coeff × D en m
+    L_eq += accessoires[key] * coeffs[key] * D_m; // quantité × coefficient × D (m)
   }
   return L_eq;
 }
 
-// Affiche le tableau des accessoires
+// Affiche le tableau interactif des accessoires
 function afficherTableauAccessoires(){
   const accessoires_asp = calculAccessoires('asp');
   const accessoires_ref = calculAccessoires('ref');
@@ -162,14 +160,17 @@ function afficherTableauAccessoires(){
   for(const key in coeffs){
     html += `<tr>
       <td>${key}</td>
-      <td>${accessoires_asp[key]}</td>
-      <td>${accessoires_ref[key]}</td>
+      <td><input type="number" min="0" step="1" class="form-control input-small" id="${key}_asp" value="${accessoires_asp[key]}"></td>
+      <td><input type="number" min="0" step="1" class="form-control input-small" id="${key}_ref" value="${accessoires_ref[key]}"></td>
     </tr>`;
   }
 
   html += `</tbody></table>`;
 
   $('#accessoires-asp').html(html);
+
+  // Relance le calcul quand une valeur change
+  $('input').off('input').on('input', calculerResultats);
 
   return { accessoires_asp, accessoires_ref };
 }
@@ -178,7 +179,7 @@ function afficherTableauAccessoires(){
 function calculerResultats(){
   const t = translations[currentLang];
 
-  // --- Piscine ---
+  // Piscine
   const forme = $('input[name="forme"]:checked').val();
   const L_val = +$('#L').val()||0;
   const l_val = +$('#l').val()||0;
@@ -194,7 +195,7 @@ function calculerResultats(){
 
   const debit = volume/t_recycl;
 
-  // --- Canalisations ---
+  // Canalisations
   const D_mm = +$('#D').val()||50;
   const D_m = D_mm/1000;
   const lambda = getLambda($('#materiau').val());
@@ -204,27 +205,27 @@ function calculerResultats(){
   const V_asp = +$('#v_asp').val()||0;
   const V_ref = +$('#v_ref').val()||0;
 
-  // --- Affichage tableau accessoires ---
+  // Tableau accessoires
   const { accessoires_asp, accessoires_ref } = afficherTableauAccessoires();
 
-  // --- Longueurs équivalentes pour Darcy ---
+  // Longueurs équivalentes
   const L_sing_asp = calculLongueurEquivalent(accessoires_asp, D_m);
   const L_sing_ref = calculLongueurEquivalent(accessoires_ref, D_m);
 
-  // --- Friction totale Darcy ---
+  // Friction totale
   const H_fric_asp = lambda*(L_asp_val + L_sing_asp)/D_m*(V_asp*V_asp/(2*9.81));
   const H_fric_ref = lambda*(L_ref_val + L_sing_ref)/D_m*(V_ref*V_ref/(2*9.81));
 
-  // --- Hauteur géométrique & filtre ---
+  // Hauteur géométrique et filtre
   const H_geo_val = +$('#H_geo').val()||0;
   const dp_filtre_val = +$('#dp_filtre').val()||0;
 
-  // --- Totaux ---
+  // Totaux
   const H_total_asp = H_fric_asp;
   const H_total_ref = H_fric_ref;
   const H_total_install = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-  // --- Affichage résultats ---
+  // Affichage résultats
   const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>

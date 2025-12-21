@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pool Master Hydraulic</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool Master Hydraulic</title>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="style.css">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -28,20 +29,25 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, user => {
-  if (!user || !user.emailVerified) location.href = "index.html";
+  if (!user || !user.emailVerified) {
+    window.location.href = "index.html";
+  }
 });
 
-window.logout = () => signOut(auth).then(() => location.href="index.html");
+window.logout = () => {
+  signOut(auth).then(() => location.href = "index.html");
+};
 </script>
 
+<!-- LOGOUT -->
 <button class="logout-btn btn btn-danger" onclick="logout()" data-i18n="logout"></button>
 
 <div class="container mt-3">
-  <h2 class="text-center" data-i18n="title"></h2>
+  <h2 class="text-center mb-3" data-i18n="title"></h2>
 
   <!-- LANGUE -->
-  <div class="text-right mb-2">
-    <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
+  <div class="text-right mb-3">
+    <select id="lang-select" class="form-control d-inline-block" style="width:160px;">
       <option value="fr">Français</option>
       <option value="en">English</option>
       <option value="es">Español</option>
@@ -50,29 +56,44 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
   <div class="layout">
 
-    <!-- FORM -->
+    <!-- ================= FORMULAIRE ================= -->
     <div>
+
+      <!-- ONGLET -->
       <ul class="nav nav-tabs">
-        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" data-i18n="piscine_tab"></a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" data-i18n="canalisations_tab"></a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes" data-i18n="pertes_tab"></a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression" data-i18n="pression_tab"></a></li>
-        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats" data-i18n="resultats_tab"></a></li>
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#piscine" data-i18n="piscine_tab"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#canalisations" data-i18n="canalisations_tab"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#pertes" data-i18n="pertes_tab"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#pression" data-i18n="pression_tab"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#resultats" data-i18n="resultats_tab"></a>
+        </li>
       </ul>
 
       <div class="tab-content mt-3">
 
-        <!-- PISCINE -->
+        <!-- ================= PISCINE ================= -->
         <div class="tab-pane fade show active" id="piscine">
           <h6 data-i18n="forme"></h6>
 
-          <label><input type="radio" name="forme" value="rectangle" checked> <span data-i18n="forme_rect"></span></label>
-          <label class="ml-2"><input type="radio" name="forme" value="carree"> <span data-i18n="forme_carree"></span></label>
-          <label class="ml-2"><input type="radio" name="forme" value="ronde"> <span data-i18n="forme_rond"></span></label>
-          <label class="ml-2"><input type="radio" name="forme" value="ovale"> <span data-i18n="forme_ovale"></span></label>
-          <label class="ml-2"><input type="radio" name="forme" value="libre"> <span data-i18n="forme_libre"></span></label>
+          <div class="mb-2">
+            <label><input type="radio" name="forme" value="rectangle" checked> <span data-i18n="forme_rect"></span></label>
+            <label class="ml-3"><input type="radio" name="forme" value="carree"> <span data-i18n="forme_carree"></span></label>
+            <label class="ml-3"><input type="radio" name="forme" value="ronde"> <span data-i18n="forme_rond"></span></label>
+            <label class="ml-3"><input type="radio" name="forme" value="ovale"> <span data-i18n="forme_ovale"></span></label>
+            <label class="ml-3"><input type="radio" name="forme" value="libre"> <span data-i18n="forme_libre"></span></label>
+          </div>
 
-          <div id="rectangle-fields" class="forme-fields mt-2">
+          <!-- RECTANGLE -->
+          <div id="rectangle-fields" class="forme-fields">
             <label data-i18n="longueur"></label>
             <input id="L" type="number" class="form-control">
             <label data-i18n="largeur"></label>
@@ -81,13 +102,91 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
             <input id="p" type="number" class="form-control">
           </div>
 
+          <!-- AUTRES FORMES (cachées mais prêtes) -->
+          <div id="carree-fields" class="forme-fields" style="display:none">
+            <label data-i18n="longueur"></label>
+            <input id="c" type="number" class="form-control">
+            <label data-i18n="profondeur"></label>
+            <input id="p_c" type="number" class="form-control">
+          </div>
+
+          <div id="ronde-fields" class="forme-fields" style="display:none">
+            <label>Diamètre (m)</label>
+            <input id="D_piscine" type="number" class="form-control">
+            <label data-i18n="profondeur"></label>
+            <input id="p_r" type="number" class="form-control">
+          </div>
+
           <label class="mt-2" data-i18n="temps_renouv"></label>
           <input id="t_renouv" type="number" class="form-control" value="5">
 
           <button class="btn btn-primary mt-3" onclick="suivant('#canalisations')" data-i18n="suivant"></button>
         </div>
 
-        <!-- RESULTATS -->
+        <!-- ================= CANALISATIONS ================= -->
+        <div class="tab-pane fade" id="canalisations">
+          <label>Diamètre DN (mm)</label>
+          <input id="D" type="number" class="form-control">
+
+          <label>Matériau</label>
+          <select id="materiau" class="form-control">
+            <option value="PVC_rigide">PVC rigide</option>
+            <option value="PVC_souple">PVC souple</option>
+            <option value="Turbulence">Turbulent</option>
+          </select>
+
+          <h6 class="mt-3">Aspiration</h6>
+          <label>Longueur (m)</label>
+          <input id="L_asp" type="number" class="form-control">
+          <label>Vitesse (m/s)</label>
+          <input id="v_asp" type="number" class="form-control">
+
+          <h6 class="mt-3">Refoulement</h6>
+          <label>Longueur (m)</label>
+          <input id="L_ref" type="number" class="form-control">
+          <label>Vitesse (m/s)</label>
+          <input id="v_ref" type="number" class="form-control">
+
+          <button class="btn btn-primary mt-3" onclick="suivant('#pertes')" data-i18n="suivant"></button>
+        </div>
+
+        <!-- ================= PERTES ================= -->
+        <div class="tab-pane fade" id="pertes">
+          <h6>Aspiration</h6>
+          <label>Coude 90° court</label>
+          <input id="coudes90C_asp" type="number" class="form-control">
+          <label>Coude 90° long</label>
+          <input id="coudes90G_asp" type="number" class="form-control">
+          <label>Tés</label>
+          <input id="tes_asp" type="number" class="form-control">
+          <label>Vannes</label>
+          <input id="vannes_asp" type="number" class="form-control">
+
+          <h6 class="mt-3">Refoulement</h6>
+          <label>Coude 90° court</label>
+          <input id="coudes90C_ref" type="number" class="form-control">
+          <label>Coude 90° long</label>
+          <input id="coudes90G_ref" type="number" class="form-control">
+          <label>Tés</label>
+          <input id="tes_ref" type="number" class="form-control">
+          <label>Vannes</label>
+          <input id="vannes_ref" type="number" class="form-control">
+
+          <button class="btn btn-primary mt-3" onclick="suivant('#pression')" data-i18n="suivant"></button>
+        </div>
+
+        <!-- ================= PRESSION ================= -->
+        <div class="tab-pane fade" id="pression">
+          <label data-i18n="hauteur"></label>
+          <input id="H_geo" type="number" class="form-control">
+
+          <label data-i18n="filtre"></label>
+          <input id="dp_filtre" type="number" class="form-control">
+
+          <button class="btn btn-primary mt-3" onclick="suivant('#resultats')" data-i18n="suivant"></button>
+        </div>
+
+        <!-- ================= RESULTATS ================= -->
         <div class="tab-pane fade" id="resultats">
           <div id="res"></div>
           <button id="btn-pdf" class="btn btn-success mt-3" data-i18n="exporter"></button>
@@ -96,8 +195,8 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
       </div>
     </div>
 
-    <!-- SIDEBAR -->
-    <div id="res_droite">
+    <!-- ================= SIDEBAR ================= -->
+    <div id="res_droite" class="p-3 border rounded">
       <h5 data-i18n="resultats"></h5>
       <p>—</p>
     </div>
@@ -105,9 +204,12 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   </div>
 </div>
 
+<!-- SCRIPTS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
+

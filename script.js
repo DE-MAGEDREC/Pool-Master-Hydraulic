@@ -1,107 +1,54 @@
 /* =====================================================
-   POOL MASTER HYDRAULIC – SCRIPT PRINCIPAL
-   Version propre, stable, sans crash
+   POOL MASTER HYDRAULIC – SCRIPT COMPLET
 ===================================================== */
-
-/* ===================== LANGUES ===================== */
-const translations = {
-  fr: {
-    title: "Pool Master Hydraulic",
-    piscine_tab: "Piscine",
-    canalisations_tab: "Canalisations",
-    pertes_tab: "Pertes singulières",
-    pression_tab: "Pression & Température",
-    resultats_tab: "Résultats / PDF",
-    forme: "Forme de la piscine",
-    forme_rect: "Rectangulaire",
-    forme_carree: "Carrée",
-    forme_rond: "Ronde",
-    forme_ovale: "Ovale",
-    forme_libre: "Libre",
-    longueur: "Longueur (m)",
-    largeur: "Largeur (m)",
-    profondeur: "Profondeur (m)",
-    temps_renouv: "Temps de recyclage (h)",
-    suivant: "Suivant →",
-    resultats: "Résultats",
-    hauteur: "Hauteur géométrique (m)",
-    filtre: "Perte de charge filtre (mCE)",
-    exporter: "Exporter PDF",
-    logout: "Déconnexion"
-  },
-  en: {
-    title: "Pool Master Hydraulic",
-    piscine_tab: "Pool",
-    canalisations_tab: "Pipes",
-    pertes_tab: "Singular losses",
-    pression_tab: "Pressure & Temperature",
-    resultats_tab: "Results / PDF",
-    forme: "Pool shape",
-    forme_rect: "Rectangular",
-    forme_carree: "Square",
-    forme_rond: "Round",
-    forme_ovale: "Oval",
-    forme_libre: "Free form",
-    longueur: "Length (m)",
-    largeur: "Width (m)",
-    profondeur: "Depth (m)",
-    temps_renouv: "Recycle time (h)",
-    suivant: "Next →",
-    resultats: "Results",
-    hauteur: "Geometric height (m)",
-    filtre: "Filter head loss (mCE)",
-    exporter: "Export PDF",
-    logout: "Logout"
-  },
-  es: {
-    title: "Pool Master Hydraulic",
-    piscine_tab: "Piscina",
-    canalisations_tab: "Tuberías",
-    pertes_tab: "Pérdidas singulares",
-    pression_tab: "Presión y temperatura",
-    resultats_tab: "Resultados / PDF",
-    forme: "Forma de la piscina",
-    forme_rect: "Rectangular",
-    forme_carree: "Cuadrada",
-    forme_rond: "Redonda",
-    forme_ovale: "Oval",
-    forme_libre: "Libre",
-    longueur: "Longitud (m)",
-    largeur: "Ancho (m)",
-    profondeur: "Profundidad (m)",
-    temps_renouv: "Tiempo de reciclaje (h)",
-    suivant: "Siguiente →",
-    resultats: "Resultados",
-    hauteur: "Altura geométrica (m)",
-    filtre: "Pérdida de filtro (mCE)",
-    exporter: "Exportar PDF",
-    logout: "Cerrar sesión"
-  }
-};
 
 let currentLang = "fr";
 
-/* ===================== LANGUE ===================== */
-function setLanguage(lang) {
-  currentLang = lang;
-  const t = translations[lang];
+/* ===================== TRADUCTIONS ===================== */
+const t = {
+  fr: {
+    resultats: "Résultats",
+    surface: "Surface",
+    volume: "Volume",
+    debit: "Débit filtration",
+    pertes_friction: "Pertes de friction",
+    pertes_sing: "Pertes singulières",
+    aspiration: "Aspiration",
+    refoulement: "Refoulement",
+    hauteur: "Hauteur géométrique",
+    filtre: "Perte filtre",
+    pertes_totales: "Pertes hydrauliques totales"
+  },
+  en: {
+    resultats: "Results",
+    surface: "Surface",
+    volume: "Volume",
+    debit: "Filtration flow",
+    pertes_friction: "Friction losses",
+    pertes_sing: "Singular losses",
+    aspiration: "Suction",
+    refoulement: "Discharge",
+    hauteur: "Geometric height",
+    filtre: "Filter loss",
+    pertes_totales: "Total hydraulic losses"
+  },
+  es: {
+    resultats: "Resultados",
+    surface: "Superficie",
+    volume: "Volumen",
+    debit: "Caudal",
+    pertes_friction: "Pérdidas por fricción",
+    pertes_sing: "Pérdidas singulares",
+    aspiration: "Aspiración",
+    refoulement: "Impulsión",
+    hauteur: "Altura geométrica",
+    filtre: "Pérdida de filtro",
+    pertes_totales: "Pérdidas hidráulicas totales"
+  }
+};
 
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    if (t[key]) el.innerText = t[key];
-  });
-
-  calculerResultats();
-}
-
-/* ===================== NAVIGATION ONGLET ===================== */
-function suivant(id) {
-  $(".tab-pane").removeClass("show active");
-  $(id).addClass("show active");
-
-  $(".nav-link").removeClass("active");
-  $(`a[href="${id}"]`).addClass("active");
-}
+/* ===================== UTILS ===================== */
+const mceToBar = mce => (mce * 0.0981).toFixed(2);
 
 /* ===================== FORMES ===================== */
 function choixForme() {
@@ -110,12 +57,11 @@ function choixForme() {
   $("#" + forme + "-fields").show();
 }
 
-/* ===================== CALCUL PRINCIPAL ===================== */
+/* ===================== CALCUL GLOBAL ===================== */
 function calculerResultats() {
 
-  let surface = 0;
-  let volume = 0;
-
+  /* ---------- ONGLET 1 : PISCINE ---------- */
+  let surface = 0, volume = 0;
   const forme = $('input[name="forme"]:checked').val();
   const tRecycl = +$("#t_recycl").val() || 5;
 
@@ -136,50 +82,113 @@ function calculerResultats() {
       break;
 
     case "ovale":
-      surface =
-        Math.PI *
+      surface = Math.PI *
         ((+$("#a_ovale").val() || 0) / 2) *
         ((+$("#b_ovale").val() || 0) / 2);
       volume = surface * (+$("#p_o").val() || 0);
       break;
 
     case "libre":
-      surface =
-        (+$("#L_libre").val() || 0) * (+$("#l_libre").val() || 0);
+      surface = (+$("#L_libre").val() || 0) * (+$("#l_libre").val() || 0);
       volume = surface * (+$("#p_libre").val() || 0);
       break;
   }
 
   const debit = volume / tRecycl;
 
+  /* ---------- ONGLET 2 : CANALISATIONS ---------- */
+  const DN = (+$("#D").val() || 50) / 1000;
+  const L_asp = +$("#L_asp").val() || 0;
+  const L_ref = +$("#L_ref").val() || 0;
+  const v_asp = +$("#v_asp").val() || 1;
+  const v_ref = +$("#v_ref").val() || 1;
+
+  const lambda =
+    $("#materiau").val() === "PVC_souple" ? 0.035 :
+    $("#materiau").val() === "Turbulence" ? 0.316 : 0.02;
+
+  const H_fric_asp = lambda * (L_asp / DN) * (Math.pow(v_asp, 2) / (2 * 9.81));
+  const H_fric_ref = lambda * (L_ref / DN) * (Math.pow(v_ref, 2) / (2 * 9.81));
+
+  /* ---------- ONGLET 3 : PERTES SINGULIÈRES ---------- */
+  const sing = (c90C, c90G, te, vanne, v) =>
+    lambda *
+    (
+      ((+c90C || 0) * 30 * DN) +
+      ((+c90G || 0) * 20 * DN) +
+      ((+te || 0) * 40 * DN) +
+      ((+vanne || 0) * 8 * DN)
+    ) / DN *
+    (Math.pow(v, 2) / (2 * 9.81));
+
+  const H_sing_asp = sing(
+    $("#coudes90C_asp").val(),
+    $("#coudes90G_asp").val(),
+    $("#tes_asp").val(),
+    $("#vannes_asp").val(),
+    v_asp
+  );
+
+  const H_sing_ref = sing(
+    $("#coudes90C_ref").val(),
+    $("#coudes90G_ref").val(),
+    $("#tes_ref").val(),
+    $("#vannes_ref").val(),
+    v_ref
+  );
+
+  /* ---------- ONGLET 4 : HAUTEUR & FILTRE ---------- */
+  const H_geo = +$("#H_geo").val() || 0;
+  const H_filtre = +$("#dp_filtre").val() || 0;
+
+  /* ---------- TOTAUX ---------- */
+  const H_total =
+    H_fric_asp +
+    H_fric_ref +
+    H_sing_asp +
+    H_sing_ref +
+    H_geo +
+    H_filtre;
+
+  /* ---------- AFFICHAGE ---------- */
+  const lang = t[currentLang];
+
   const html = `
-    <b>Surface :</b> ${surface.toFixed(2)} m²<br>
-    <b>Volume :</b> ${volume.toFixed(2)} m³<br>
-    <b>Débit de filtration :</b> ${debit.toFixed(2)} m³/h
+    <h5>${lang.resultats}</h5>
+
+    <b>${lang.surface} :</b> ${surface.toFixed(2)} m²<br>
+    <b>${lang.volume} :</b> ${volume.toFixed(2)} m³<br>
+    <b>${lang.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
+
+    <b>${lang.pertes_friction} (${lang.aspiration}) :</b> ${H_fric_asp.toFixed(2)} mCE (${mceToBar(H_fric_asp)} bar)<br>
+    <b>${lang.pertes_friction} (${lang.refoulement}) :</b> ${H_fric_ref.toFixed(2)} mCE (${mceToBar(H_fric_ref)} bar)<br><hr>
+
+    <b>${lang.pertes_sing} (${lang.aspiration}) :</b> ${H_sing_asp.toFixed(2)} mCE (${mceToBar(H_sing_asp)} bar)<br>
+    <b>${lang.pertes_sing} (${lang.refoulement}) :</b> ${H_sing_ref.toFixed(2)} mCE (${mceToBar(H_sing_ref)} bar)<br><hr>
+
+    <b>${lang.hauteur} :</b> ${H_geo.toFixed(2)} mCE<br>
+    <b>${lang.filtre} :</b> ${H_filtre.toFixed(2)} mCE<br><hr>
+
+    <b style="color:#c00">${lang.pertes_totales} :</b>
+    <b>${H_total.toFixed(2)} mCE (${mceToBar(H_total)} bar)</b>
   `;
 
   $("#res").html(html);
-  $("#res_droite").html(`<h5>${translations[currentLang].resultats}</h5>` + html);
+  $("#res_droite").html(html);
 }
 
-/* ===================== EXPORT PDF ===================== */
-$(document).on("click", "#btn-pdf", function () {
-  html2pdf().from(document.getElementById("res")).save();
-});
-
-/* ===================== INITIALISATION ===================== */
+/* ===================== INIT ===================== */
 $(document).ready(function () {
-  setLanguage(currentLang);
   choixForme();
-
-  $("#lang-select").on("change", function () {
-    setLanguage(this.value);
-  });
+  calculerResultats();
 
   $("input, select").on("input change", function () {
     choixForme();
     calculerResultats();
   });
+});
 
-  calculerResultats();
+/* ===================== PDF ===================== */
+$(document).on("click", "#btn-pdf", function () {
+  html2pdf().from(document.getElementById("res")).save();
 });

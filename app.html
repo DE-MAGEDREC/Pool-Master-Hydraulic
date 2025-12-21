@@ -180,8 +180,9 @@ window.logout = () => signOut(auth).then(()=>location.href="index.html");
 </div>
 
 <!-- ================= SIDEBAR ================= -->
-<div id="res_droite">
-<h5 data-i18n="resultats"></h5>
+<div id="res_droite" class="card p-3">
+  <h5 id="res_droite_title"></h5>
+  <div id="res_droite_content"></div>
 </div>
 
 </div>
@@ -193,3 +194,4 @@ window.logout = () => signOut(auth).then(()=>location.href="index.html");
 <script src="script.js"></script>
 </body>
 </html>
+

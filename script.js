@@ -141,76 +141,77 @@ const translations = {
   },
 
   es: {
-  title: "Pool Master Hydraulic",
-  langue: "Idioma:",
-  logout: "Cerrar sesión",
+    title: "Pool Master Hydraulic",
+    langue: "Idioma:",
+    logout: "Cerrar sesión",
 
-  piscine_tab: "Piscina",
-  canalisations_tab: "Tuberías",
-  pertes_tab: "Pérdidas singulares",
-  pression_tab: "Presión y Temperatura",
-  resultats_tab: "Resultados / PDF",
+    piscine_tab: "Piscina",
+    canalisations_tab: "Tuberías",
+    pertes_tab: "Pérdidas singulares",
+    pression_tab: "Presión y Temperatura",
+    resultats_tab: "Resultados / PDF",
 
-  forme_piscine: "Forma de la piscina",
-  forme_rect: "Rectangular",
-  forme_carree: "Cuadrada",
-  forme_rond: "Redonda",
-  forme_ovale: "Oval",
-  forme_libre: "Libre",
+    forme_piscine: "Forma de la piscina",
+    forme_rect: "Rectangular",
+    forme_carree: "Cuadrada",
+    forme_rond: "Redonda",
+    forme_ovale: "Oval",
+    forme_libre: "Libre",
 
-  longueur: "Longitud (m)",
-  largeur: "Ancho (m)",
-  profondeur: "Profundidad (m)",
-  cote: "Lado (m)",
-  diametre_piscine: "Diámetro (m)",
-  grand_axe: "Eje mayor (m)",
-  petit_axe: "Eje menor (m)",
-  longueur_approx: "Longitud aproximada (m)",
-  largeur_approx: "Anchura aproximada (m)",
+    longueur: "Longitud (m)",
+    largeur: "Ancho (m)",
+    profondeur: "Profundidad (m)",
+    cote: "Lado (m)",
+    diametre_piscine: "Diámetro (m)",
+    grand_axe: "Eje mayor (m)",
+    petit_axe: "Eje menor (m)",
+    longueur_approx: "Longitud aproximada (m)",
+    largeur_approx: "Anchura aproximada (m)",
 
-  temps_renouv: "Tiempo de reciclaje (h)",
+    temps_renouv: "Tiempo de reciclaje (h)",
 
-  diametre: "Diámetro de tubería (mm)",
-  materiau: "Material",
-  pvc_rigide: "PVC rígido",
-  pvc_souple: "PVC flexible",
-  turbulent: "Turbulento",
+    diametre: "Diámetro de tubería (mm)",
+    materiau: "Material",
+    pvc_rigide: "PVC rígido",
+    pvc_souple: "PVC flexible",
+    turbulent: "Turbulento",
 
-  aspiration: "Aspiración",
-  refoulement: "Impulsión",
+    aspiration: "Aspiración",
+    refoulement: "Impulsión",
 
-  longueur_asp: "Longitud aspiración (m)",
-  vitesse_asp: "Velocidad aspiración (m/s)",
-  longueur_ref: "Longitud impulsión (m)",
-  vitesse_ref: "Velocidad impulsión (m/s)",
+    longueur_asp: "Longitud aspiración (m)",
+    vitesse_asp: "Velocidad aspiración (m/s)",
+    longueur_ref: "Longitud impulsión (m)",
+    vitesse_ref: "Velocidad impulsión (m/s)",
 
-  coude_90_court: "Codo 90° radio corto",
-  coude_90_grand: "Codo 90° radio largo",
-  tes: "Tes",
-  vannes: "Válvulas",
+    coude_90_court: "Codo 90° radio corto",
+    coude_90_grand: "Codo 90° radio largo",
+    tes: "Tes",
+    vannes: "Válvulas",
 
-  hauteur: "Altura geométrica (m)",
-  filtre: "Pérdida del filtro (mCE)",
+    hauteur: "Altura geométrica (m)",
+    filtre: "Pérdida del filtro (mCE)",
 
-  suivant: "Siguiente →",
-  exporter: "Exportar PDF",
-  resultats: "Resultados",
-  attente: "Esperando datos…",
+    suivant: "Siguiente →",
+    exporter: "Exportar PDF",
+    resultats: "Resultados",
+    attente: "Esperando datos…",
 
-  surface: "Superficie",
-  volume: "Volumen",
-  debit: "Caudal de filtración",
-  pertes_sing_asp: "Pérdidas singulares aspiración",
-  pertes_sing_ref: "Pérdidas singulares impulsión",
-  friction: "Fricción de tuberías",
-  total_asp: "Total aspiración",
-  total_ref: "Total impulsión",
-  pertes_totales: "Pérdidas totales",
-  en_bar: " (bar)"
-}
+    surface: "Superficie",
+    volume: "Volumen",
+    debit: "Caudal de filtración",
+    pertes_sing_asp: "Pérdidas singulares aspiración",
+    pertes_sing_ref: "Pérdidas singulares impulsión",
+    friction: "Fricción de tuberías",
+    total_asp: "Total aspiración",
+    total_ref: "Total impulsión",
+    pertes_totales: "Pérdidas totales",
+    en_bar: " (bar)"
+  }
 };
 
 let currentLang = "fr";
+
 
 /*************************************************
  *        TRADUCTION GLOBALE (AJOUT)
@@ -354,6 +355,7 @@ $(document).ready(() => {
   setLanguage(currentLang);
   $('input, select').on('input change', calculerResultats);
 });
+
 
 
 

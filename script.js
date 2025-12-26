@@ -75,10 +75,27 @@ function calculer(){
 }
 
 /************ INIT ************/
-$(document).ready(()=>{
+$(document).ready(function () {
+
+  // langue par défaut
   setLanguage(currentLang);
+
+  // affichage initial de la forme
   updateForme();
-  $('#lang-select').on('change',e=>setLanguage(e.target.value));
-  $('input,select').on('input change',()=>{updateForme();calculer();});
-  $('#btn-pdf').on('click',()=>html2pdf().from(document.getElementById('res')).save());
+
+  // ⚠️ CALCUL IMMÉDIAT AU CHARGEMENT
+  calculer();
+
+  // changement de langue
+  $('#lang-select').on('change', function () {
+    setLanguage(this.value);
+  });
+
+  // recalcul sur toute saisie
+  $('input, select').on('input change', function () {
+    updateForme();
+    calculer();
+  });
+
 });
+

@@ -199,8 +199,10 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <!-- ===== RESULTATS DROITE ===== -->
 <div id="res_droite" class="p-3 border rounded" style="width:300px;background:#f9f9f9;">
-<h5 data-i18n="resultats"></h5>
-<p data-i18n="attente"></p>
+  <h5 data-i18n="resultats"></h5>
+  <div id="res_droite_contenu">
+    <p data-i18n="attente"></p>
+  </div>
 </div>
 
 </div>
@@ -213,6 +215,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 </body>
 </html>
+
 
 
 

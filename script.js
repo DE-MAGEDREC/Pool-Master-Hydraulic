@@ -274,7 +274,7 @@ function calculerResultats(){
 `;
 
   $('#res').html(html);
-  $('#res_droite').html(html);
+  $('#res_droite_contenu').html(html);
 }
 
 // Export PDF
@@ -289,3 +289,4 @@ $(document).ready(function(){
   $('#lang-select').on('change', function(){ setLanguage($(this).val()); });
   $('input, select').on('input change', calculerResultats);
 });
+

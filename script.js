@@ -6,21 +6,21 @@ const translations = {
   forme_rect:"Rectangulaire",forme_carree:"Carrée",forme_rond:"Ronde",
   forme_ovale:"Ovale",forme_libre:"Libre",
   surface:"Surface",volume:"Volume",debit:"Débit filtration",
-  pertes_totales:"Pertes totales",exporter:"Exporter PDF",resultats:"Résultats"},
+  pertes_totales:"Pertes totales",pression_totale:"Pression totale",exporter:"Exporter PDF",resultats:"Résultats"},
   en:{title:"Pool Master Hydraulic",langue:"Language :",logout:"Logout",
   piscine_tab:"Pool",canalisations_tab:"Pipes",pertes_tab:"Losses",pression_tab:"Pressure",
   resultats_tab:"Results / PDF",forme_piscine:"Pool shape",
   forme_rect:"Rectangular",forme_carree:"Square",forme_rond:"Round",
   forme_ovale:"Oval",forme_libre:"Free",
   surface:"Surface",volume:"Volume",debit:"Flow",
-  pertes_totales:"Total losses",exporter:"Export PDF",resultats:"Results"},
+  pertes_totales:"Total losses",pression_totale:"Total pressure",exporter:"Export PDF",resultats:"Results"},
   es:{title:"Pool Master Hydraulic",langue:"Idioma :",logout:"Cerrar sesión",
   piscine_tab:"Piscina",canalisations_tab:"Tuberías",pertes_tab:"Pérdidas",pression_tab:"Presión",
   resultats_tab:"Resultados / PDF",forme_piscine:"Forma de la piscina",
   forme_rect:"Rectangular",forme_carree:"Cuadrada",forme_rond:"Redonda",
   forme_ovale:"Oval",forme_libre:"Libre",
   surface:"Superficie",volume:"Volumen",debit:"Caudal",
-  pertes_totales:"Pérdidas totales",exporter:"Exportar PDF",resultats:"Resultados"}
+  pertes_totales:"Pérdidas totales",pression_totale:"Presión total",exporter:"Exportar PDF",resultats:"Resultados"}
 };
 
 let currentLang="fr";
@@ -50,9 +50,10 @@ function updateForme(){
 
 /************ CALCULS ************/
 function calculer(){
-  let surface=0,volume=0;
+  let surface=0, volume=0;
   const f=$('input[name=forme]:checked').val();
 
+  // === Piscine ===
   if(f==="rectangle"){surface=getNumber('#L')*getNumber('#l');volume=surface*getNumber('#p');}
   if(f==="carre"){surface=Math.pow(getNumber('#cote'),2);volume=surface*getNumber('#p_carre');}
   if(f==="ronde"){surface=Math.PI*Math.pow(getNumber('#D_piscine')/2,2);volume=surface*getNumber('#p_r');}
@@ -60,14 +61,32 @@ function calculer(){
   if(f==="libre"){surface=getNumber('#L_libre')*getNumber('#l_libre');volume=surface*getNumber('#p_libre');}
 
   const debit=volume/(getNumber('#t_recycl')||1);
-  const pertes=(getNumber('#L_asp')+getNumber('#L_ref'))*0.02;
 
+  // === Canalisations ===
+  const L_asp = getNumber('#L_asp');
+  const L_ref = getNumber('#L_ref');
+
+  // === Pertes ===
+  const coudes_asp = getNumber('#coudes90C_asp');
+  const vannes_asp = getNumber('#vannes_asp');
+  const coudes_ref = getNumber('#coudes90C_ref');
+  const vannes_ref = getNumber('#vannes_ref');
+
+  const pertes_totales = (L_asp + L_ref)*0.02 + coudes_asp*0.3 + vannes_asp*0.5 + coudes_ref*0.3 + vannes_ref*0.5;
+
+  // === Pression ===
+  const H_geo = getNumber('#H_geo');
+  const dp_filtre = getNumber('#dp_filtre');
+  const pression_totale = pertes_totales + H_geo + dp_filtre;
+
+  // === Affichage ===
   const html=`
   <b>${translations[currentLang].surface} :</b> ${surface.toFixed(2)} m²<br>
   <b>${translations[currentLang].volume} :</b> ${volume.toFixed(2)} m³<br>
   <b>${translations[currentLang].debit} :</b> ${debit.toFixed(2)} m³/h<br>
   <hr>
-  <b>${translations[currentLang].pertes_totales} :</b> ${pertes.toFixed(2)} mCE
+  <b>${translations[currentLang].pertes_totales} :</b> ${pertes_totales.toFixed(2)} mCE<br>
+  <b>${translations[currentLang].pression_totale} :</b> ${pression_totale.toFixed(2)} mCE
   `;
 
   $('#res_droite_contenu').html(html);
@@ -97,5 +116,13 @@ $(document).ready(function () {
     calculer();
   });
 
+  // Export PDF
+  $('#btn-pdf').on('click', function(){
+    const element = document.getElementById('res');
+    html2pdf().set({margin:0.5, filename:'resultats.pdf', html2canvas:{scale:2}}).from(element).save();
+  });
+
 });
+
+
 

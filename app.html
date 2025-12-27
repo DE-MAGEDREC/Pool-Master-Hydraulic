@@ -3,46 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pool Master Hydraulic - BE Piscine</title>
+<title>Pool Master Hydraulic</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- 🔐 FIREBASE AUTH -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA7ynpgm9BCNuQhmNtfunCvK8rebZ3lZcM",
-  authDomain: "pool-master-hydraulic.firebaseapp.com",
-  projectId: "pool-master-hydraulic",
-  storageBucket: "pool-master-hydraulic.firebasestorage.app",
-  messagingSenderId: "674715767328",
-  appId: "1:674715767328:web:cb3b67e0c949216cb0a245"
-};
-
+const firebaseConfig = { apiKey: "...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..."};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, user => {
-  if (!user || !user.emailVerified) {
-    window.location.href = "index.html";
-  }
+  if (!user || !user.emailVerified) window.location.href = "index.html";
 });
-
-window.logout = () => signOut(auth).then(() => location.href="index.html");
+window.logout = () => signOut(auth).then(()=>location.href="index.html");
 </script>
 
 <button class="logout-btn btn btn-danger" onclick="logout()">Déconnexion</button>
 
 <div class="container mt-3">
-<h2 class="text-center" id="app-title">Pool Master Hydraulic</h2>
+<h2 id="app-title" class="text-center">Pool Master Hydraulic</h2>
 
 <!-- Choix langue -->
 <div class="text-right mb-2">
-  <label for="lang-select"><b id="lang-label">Langue :</b></label>
+  <label for="lang-select"><b>Langue:</b></label>
   <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
     <option value="fr" selected>Français</option>
     <option value="en">English</option>
@@ -50,128 +38,81 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   </select>
 </div>
 
-<div class="d-flex">
-
-<!-- ================= FORMULAIRES ================= -->
+<div class="layout d-flex">
 <div class="flex-grow-1 mr-3">
 
 <ul class="nav nav-tabs">
-  <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine-tab" id="tab-piscine">Piscine</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations-tab" id="tab-canalisations">Canalisations</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes-tab" id="tab-pertes">Pertes singulières</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression-tab" id="tab-pression">Pression & Température</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats-tab" id="tab-resultats">Résultats / PDF</a></li>
+  <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" id="tab-piscine">Piscine</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres" id="tab-pertes">Pertes singulières</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp" id="tab-pression">Pression & Température</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#inverse" id="tab-inverse">Calcul inversé</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf" id="tab-resultats">Résultats / PDF</a></li>
 </ul>
 
 <div class="tab-content mt-3">
+<!-- Piscine -->
+<div class="tab-pane fade show active" id="piscine">
+  <h5 id="titre-piscine">Forme de la piscine</h5>
+  <label id="label-rectangle"><input type="radio" name="forme" value="rectangle" checked onchange="updateForme()"> Rectangulaire</label>
+  <label id="label-carre" class="ml-2"><input type="radio" name="forme" value="carre" onchange="updateForme()"> Carré</label>
+  <label id="label-ronde" class="ml-2"><input type="radio" name="forme" value="ronde" onchange="updateForme()"> Ronde</label>
+  <label id="label-ovale" class="ml-2"><input type="radio" name="forme" value="ovale" onchange="updateForme()"> Ovale</label>
+  <label id="label-libre" class="ml-2"><input type="radio" name="forme" value="libre" onchange="updateForme()"> Libre</label>
 
-<!-- ===== PISCINE ===== -->
-<div class="tab-pane fade show active" id="piscine-tab">
-<h5 id="title-forme">Forme de la piscine</h5>
+  <div id="rectangle-fields" class="forme-fields mt-2">
+    <label>Longueur (m)</label><input id="L" type="number" step="0.01" class="form-control">
+    <label>Largeur (m)</label><input id="l" type="number" step="0.01" class="form-control">
+    <label>Profondeur (m)</label><input id="p" type="number" step="0.01" class="form-control">
+  </div>
+  <div id="carre-fields" class="forme-fields mt-2" style="display:none">
+    <label>Côté (m)</label><input id="cote" type="number" step="0.01" class="form-control">
+    <label>Profondeur (m)</label><input id="p_carre" type="number" step="0.01" class="form-control">
+  </div>
+  <div id="ronde-fields" class="forme-fields mt-2" style="display:none">
+    <label>Diamètre (m)</label><input id="D_piscine" type="number" step="0.01" class="form-control">
+    <label>Profondeur (m)</label><input id="p_r" type="number" step="0.01" class="form-control">
+  </div>
+  <div id="ovale-fields" class="forme-fields mt-2" style="display:none">
+    <label>Grand axe (m)</label><input id="a_ovale" type="number" step="0.01" class="form-control">
+    <label>Petit axe (m)</label><input id="b_ovale" type="number" step="0.01" class="form-control">
+    <label>Profondeur (m)</label><input id="p_o" type="number" step="0.01" class="form-control">
+  </div>
+  <div id="libre-fields" class="forme-fields mt-2" style="display:none">
+    <label>Longueur approximative (m)</label><input id="L_libre" type="number" step="0.01" class="form-control">
+    <label>Largeur approximative (m)</label><input id="l_libre" type="number" step="0.01" class="form-control">
+    <label>Profondeur (m)</label><input id="p_libre" type="number" step="0.01" class="form-control">
+  </div>
 
-<div id="forme-options">
-<label><input type="radio" name="forme" value="rectangle" checked onchange="updateForme()"> <span id="label-rectangle">Rectangulaire</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="carre" onchange="updateForme()"> <span id="label-carre">Carré</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ronde" onchange="updateForme()"> <span id="label-ronde">Ronde</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ovale" onchange="updateForme()"> <span id="label-ovale">Ovale</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="libre" onchange="updateForme()"> <span id="label-libre">Libre</span></label>
+  <label class="mt-2">Temps de recyclage (h)</label><input id="t_recycl" type="number" step="0.01" class="form-control" value="5">
+  <button class="btn btn-primary mt-3" onclick="calculerResultats(); suivant('#canalisations')">Suivant →</button>
 </div>
 
-<!-- Champs dimensions piscine -->
-<div class="forme-fields mt-2" id="rectangle-fields">
-  <input id="L" class="form-control mb-1" placeholder="Longueur (m)">
-  <input id="l" class="form-control mb-1" placeholder="Largeur (m)">
-  <input id="p" class="form-control mb-1" placeholder="Profondeur (m)">
-</div>
-<div class="forme-fields mt-2" id="carre-fields" style="display:none">
-  <input id="cote" class="form-control mb-1" placeholder="Côté (m)">
-  <input id="p_carre" class="form-control mb-1" placeholder="Profondeur (m)">
-</div>
-<div class="forme-fields mt-2" id="ronde-fields" style="display:none">
-  <input id="D_piscine" class="form-control mb-1" placeholder="Diamètre (m)">
-  <input id="p_r" class="form-control mb-1" placeholder="Profondeur (m)">
-</div>
-<div class="forme-fields mt-2" id="ovale-fields" style="display:none">
-  <input id="a_ovale" class="form-control mb-1" placeholder="Grand axe (m)">
-  <input id="b_ovale" class="form-control mb-1" placeholder="Petit axe (m)">
-  <input id="p_o" class="form-control mb-1" placeholder="Profondeur (m)">
-</div>
-<div class="forme-fields mt-2" id="libre-fields" style="display:none">
-  <input id="L_libre" class="form-control mb-1" placeholder="Longueur approx. (m)">
-  <input id="l_libre" class="form-control mb-1" placeholder="Largeur approx. (m)">
-  <input id="p_libre" class="form-control mb-1" placeholder="Profondeur (m)">
+<!-- Canalisations, Pertes, Pression... (à compléter similaire) -->
+
+<!-- Calcul inversé -->
+<div class="tab-pane fade" id="inverse">
+  <h5 id="titre-inverse">Calcul inversé : Débit connu → vitesse</h5>
+  <label id="label-debit">Débit filtration (m³/h)</label>
+  <input id="debit_known" type="number" step="0.01" class="form-control">
+  <label id="label-pertes">Pertes totales (mCE)</label>
+  <input id="H_total_known" type="number" step="0.01" class="form-control">
+  <button class="btn btn-primary mt-2" onclick="calculVitesse();">Calculer vitesse & cavitation</button>
+  <div id="res_inverse" class="mt-3"></div>
 </div>
 
-<input id="t_recycl" class="form-control mt-2" placeholder="Temps recyclage (h)" value="5">
-
-<button class="btn btn-primary mt-3" onclick="suivant('#canalisations-tab')">Suivant →</button>
-</div>
-
-<!-- ===== CANALISATIONS ===== -->
-<div class="tab-pane fade" id="canalisations-tab">
-<h5>Paramètres des canalisations</h5>
-<input id="D" class="form-control mb-1" placeholder="Diamètre (mm)">
-<select id="materiau" class="form-control mb-2">
-  <option value="PVC_rigide">PVC Rigide</option>
-  <option value="PVC_souple">PVC Souple</option>
-  <option value="Turbulence">Turbulent</option>
-</select>
-
-<h6>Aspiration</h6>
-<input id="L_asp" class="form-control mb-1" placeholder="Longueur (m)">
-<input id="v_asp" class="form-control mb-1" placeholder="Vitesse (m/s)">
-
-<h6>Refoulement</h6>
-<input id="L_ref" class="form-control mb-1" placeholder="Longueur (m)">
-<input id="v_ref" class="form-control mb-1" placeholder="Vitesse (m/s)">
-
-<button class="btn btn-primary mt-3" onclick="suivant('#pertes-tab')">Suivant →</button>
-<button class="btn btn-secondary mt-3" onclick="precedent('#piscine-tab')">← Précédent</button>
-</div>
-
-<!-- ===== PERTES SINGULIERES ===== -->
-<div class="tab-pane fade" id="pertes-tab">
-<h5>Pertes singulières</h5>
-<h6>Aspiration</h6>
-<input id="coudes90C_asp" class="form-control mb-1" placeholder="Coude 90º court">
-<input id="coudes90G_asp" class="form-control mb-1" placeholder="Coude 90º grand">
-<input id="tes_asp" class="form-control mb-1" placeholder="Tés">
-<input id="vannes_asp" class="form-control mb-1" placeholder="Vannes">
-
-<h6>Refoulement</h6>
-<input id="coudes90C_ref" class="form-control mb-1" placeholder="Coude 90º court">
-<input id="coudes90G_ref" class="form-control mb-1" placeholder="Coude 90º grand">
-<input id="tes_ref" class="form-control mb-1" placeholder="Tés">
-<input id="vannes_ref" class="form-control mb-1" placeholder="Vannes">
-
-<button class="btn btn-primary mt-3" onclick="suivant('#pression-tab')">Suivant →</button>
-<button class="btn btn-secondary mt-3" onclick="precedent('#canalisations-tab')">← Précédent</button>
-</div>
-
-<!-- ===== PRESSION ===== -->
-<div class="tab-pane fade" id="pression-tab">
-<h5>Hauteur géométrique & filtre</h5>
-<input id="H_geo" class="form-control mb-1" placeholder="Hauteur géométrique (m)">
-<input id="dp_filtre" class="form-control mb-1" placeholder="Perte filtre (mCE)">
-
-<button class="btn btn-primary mt-3" onclick="suivant('#resultats-tab')">Suivant →</button>
-<button class="btn btn-secondary mt-3" onclick="precedent('#pertes-tab')">← Précédent</button>
-</div>
-
-<!-- ===== RESULTATS ===== -->
-<div class="tab-pane fade" id="resultats-tab">
-<h5>Résultats</h5>
-<div id="res"></div>
-<button id="btn-pdf" class="btn btn-success mt-3">Exporter PDF</button>
+<!-- Résultats PDF -->
+<div class="tab-pane fade" id="resultats_pdf">
+  <div id="res"></div>
+  <button id="btn-pdf" class="btn btn-success mt-3">Exporter PDF</button>
 </div>
 
 </div>
 </div>
 
-<!-- Cadre résultats à droite -->
-<div id="res_droite" class="p-3 border rounded" style="width:350px;background:#f9f9f9;">
-<h5>Résultats en direct</h5>
-<p>En attente de données…</p>
+<div id="res_droite" class="p-3 border rounded" style="width:300px;background:#f9f9f9;">
+  <h5>Résultats</h5>
+  <p>En attente de données…</p>
 </div>
 
 </div>

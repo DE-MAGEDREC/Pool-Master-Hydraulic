@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pool Master Hydraulic BE</title>
+<title>Pool Master Hydraulic - BE Piscine</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -35,16 +35,16 @@ onAuthStateChanged(auth, user => {
 window.logout = () => signOut(auth).then(() => location.href="index.html");
 </script>
 
-<button class="logout-btn btn btn-danger mb-2" onclick="logout()">Déconnexion</button>
+<button class="logout-btn btn btn-danger" onclick="logout()">Déconnexion</button>
 
 <div class="container mt-3">
-<h2 class="text-center" id="page-title">Pool Master Hydraulic BE</h2>
+<h2 class="text-center" id="app-title">Pool Master Hydraulic</h2>
 
 <!-- Choix langue -->
-<div class="text-right mb-3">
-  <label for="lang-select"><b id="label-langue">Langue :</b></label>
+<div class="text-right mb-2">
+  <label for="lang-select"><b id="lang-label">Langue :</b></label>
   <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
-    <option value="fr">Français</option>
+    <option value="fr" selected>Français</option>
     <option value="en">English</option>
     <option value="es">Español</option>
   </select>
@@ -52,172 +52,125 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <div class="d-flex">
 
-<!-- Formulaires -->
+<!-- ================= FORMULAIRES ================= -->
 <div class="flex-grow-1 mr-3">
 
 <ul class="nav nav-tabs">
-  <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" id="tab-piscine">Piscine</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes_singulieres" id="tab-pertes">Pertes singulières</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression_temp" id="tab-pression">Pression & Température</a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf" id="tab-resultats">Résultats / PDF</a></li>
+  <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine-tab" id="tab-piscine">Piscine</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations-tab" id="tab-canalisations">Canalisations</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes-tab" id="tab-pertes">Pertes singulières</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression-tab" id="tab-pression">Pression & Température</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats-tab" id="tab-resultats">Résultats / PDF</a></li>
 </ul>
 
 <div class="tab-content mt-3">
 
 <!-- ===== PISCINE ===== -->
-<div class="tab-pane fade show active" id="piscine">
-<h6 id="titre-piscine">Forme de la piscine</h6>
+<div class="tab-pane fade show active" id="piscine-tab">
+<h5 id="title-forme">Forme de la piscine</h5>
 
-<div class="forme-options mb-2">
-  <label><input type="radio" name="forme" value="rectangle" checked onchange="choixForme()"> <span id="label-rect">Rectangulaire</span></label>
-  <label class="ml-2"><input type="radio" name="forme" value="carre" onchange="choixForme()"> <span id="label-carre">Carré</span></label>
-  <label class="ml-2"><input type="radio" name="forme" value="ronde" onchange="choixForme()"> <span id="label-ronde">Ronde</span></label>
-  <label class="ml-2"><input type="radio" name="forme" value="ovale" onchange="choixForme()"> <span id="label-ovale">Ovale</span></label>
-  <label class="ml-2"><input type="radio" name="forme" value="libre" onchange="choixForme()"> <span id="label-libre">Libre</span></label>
+<div id="forme-options">
+<label><input type="radio" name="forme" value="rectangle" checked onchange="updateForme()"> <span id="label-rectangle">Rectangulaire</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="carre" onchange="updateForme()"> <span id="label-carre">Carré</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ronde" onchange="updateForme()"> <span id="label-ronde">Ronde</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ovale" onchange="updateForme()"> <span id="label-ovale">Ovale</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="libre" onchange="updateForme()"> <span id="label-libre">Libre</span></label>
 </div>
 
-<div class="forme-fields" id="rectangle-fields">
-  <label id="label-L">Longueur (m)</label>
-  <input id="L" type="number" step="0.01" class="form-control">
-  <label id="label-l">Largeur (m)</label>
-  <input id="l" type="number" step="0.01" class="form-control">
-  <label id="label-p">Profondeur (m)</label>
-  <input id="p" type="number" step="0.01" class="form-control">
+<!-- Champs dimensions piscine -->
+<div class="forme-fields mt-2" id="rectangle-fields">
+  <input id="L" class="form-control mb-1" placeholder="Longueur (m)">
+  <input id="l" class="form-control mb-1" placeholder="Largeur (m)">
+  <input id="p" class="form-control mb-1" placeholder="Profondeur (m)">
+</div>
+<div class="forme-fields mt-2" id="carre-fields" style="display:none">
+  <input id="cote" class="form-control mb-1" placeholder="Côté (m)">
+  <input id="p_carre" class="form-control mb-1" placeholder="Profondeur (m)">
+</div>
+<div class="forme-fields mt-2" id="ronde-fields" style="display:none">
+  <input id="D_piscine" class="form-control mb-1" placeholder="Diamètre (m)">
+  <input id="p_r" class="form-control mb-1" placeholder="Profondeur (m)">
+</div>
+<div class="forme-fields mt-2" id="ovale-fields" style="display:none">
+  <input id="a_ovale" class="form-control mb-1" placeholder="Grand axe (m)">
+  <input id="b_ovale" class="form-control mb-1" placeholder="Petit axe (m)">
+  <input id="p_o" class="form-control mb-1" placeholder="Profondeur (m)">
+</div>
+<div class="forme-fields mt-2" id="libre-fields" style="display:none">
+  <input id="L_libre" class="form-control mb-1" placeholder="Longueur approx. (m)">
+  <input id="l_libre" class="form-control mb-1" placeholder="Largeur approx. (m)">
+  <input id="p_libre" class="form-control mb-1" placeholder="Profondeur (m)">
 </div>
 
-<div class="forme-fields" id="carre-fields" style="display:none">
-  <label id="label-cote">Côté (m)</label>
-  <input id="cote" type="number" step="0.01" class="form-control">
-  <label id="label-p_carre">Profondeur (m)</label>
-  <input id="p_carre" type="number" step="0.01" class="form-control">
-</div>
+<input id="t_recycl" class="form-control mt-2" placeholder="Temps recyclage (h)" value="5">
 
-<div class="forme-fields" id="ronde-fields" style="display:none">
-  <label id="label-D_piscine">Diamètre (m)</label>
-  <input id="D_piscine" type="number" step="0.01" class="form-control">
-  <label id="label-p_r">Profondeur (m)</label>
-  <input id="p_r" type="number" step="0.01" class="form-control">
-</div>
-
-<div class="forme-fields" id="ovale-fields" style="display:none">
-  <label id="label-a_ovale">Grand axe (m)</label>
-  <input id="a_ovale" type="number" step="0.01" class="form-control">
-  <label id="label-b_ovale">Petit axe (m)</label>
-  <input id="b_ovale" type="number" step="0.01" class="form-control">
-  <label id="label-p_o">Profondeur (m)</label>
-  <input id="p_o" type="number" step="0.01" class="form-control">
-</div>
-
-<div class="forme-fields" id="libre-fields" style="display:none">
-  <label id="label-L_libre">Longueur approx. (m)</label>
-  <input id="L_libre" type="number" step="0.01" class="form-control">
-  <label id="label-l_libre">Largeur approx. (m)</label>
-  <input id="l_libre" type="number" step="0.01" class="form-control">
-  <label id="label-p_libre">Profondeur (m)</label>
-  <input id="p_libre" type="number" step="0.01" class="form-control">
-</div>
-
-<label id="label-t_recycl">Temps recyclage (h)</label>
-<input id="t_recycl" type="number" step="0.01" class="form-control" value="5">
-
-<div class="mt-3">
-  <button class="btn btn-primary" onclick="suivant('#canalisations')">Suivant →</button>
-</div>
+<button class="btn btn-primary mt-3" onclick="suivant('#canalisations-tab')">Suivant →</button>
 </div>
 
 <!-- ===== CANALISATIONS ===== -->
-<div class="tab-pane fade" id="canalisations">
-<h6 id="titre-canalisations">Paramètres des canalisations</h6>
-
-<label id="label-D">Diamètre (mm)</label>
-<input id="D" type="number" step="0.01" class="form-control">
-
-<label id="label-materiau">Matériau</label>
-<select id="materiau" class="form-control">
+<div class="tab-pane fade" id="canalisations-tab">
+<h5>Paramètres des canalisations</h5>
+<input id="D" class="form-control mb-1" placeholder="Diamètre (mm)">
+<select id="materiau" class="form-control mb-2">
   <option value="PVC_rigide">PVC Rigide</option>
   <option value="PVC_souple">PVC Souple</option>
   <option value="Turbulence">Turbulent</option>
 </select>
 
 <h6>Aspiration</h6>
-<label id="label-L_asp">Longueur (m)</label>
-<input id="L_asp" type="number" step="0.01" class="form-control">
-<label id="label-v_asp">Vitesse (m/s)</label>
-<input id="v_asp" type="number" step="0.01" class="form-control">
+<input id="L_asp" class="form-control mb-1" placeholder="Longueur (m)">
+<input id="v_asp" class="form-control mb-1" placeholder="Vitesse (m/s)">
 
-<h6 class="mt-3">Refoulement</h6>
-<label id="label-L_ref">Longueur (m)</label>
-<input id="L_ref" type="number" step="0.01" class="form-control">
-<label id="label-v_ref">Vitesse (m/s)</label>
-<input id="v_ref" type="number" step="0.01" class="form-control">
+<h6>Refoulement</h6>
+<input id="L_ref" class="form-control mb-1" placeholder="Longueur (m)">
+<input id="v_ref" class="form-control mb-1" placeholder="Vitesse (m/s)">
 
-<div class="mt-3">
-  <button class="btn btn-primary" onclick="precedent('#piscine')">← Précédent</button>
-  <button class="btn btn-primary" onclick="suivant('#pertes_singulieres')">Suivant →</button>
-</div>
+<button class="btn btn-primary mt-3" onclick="suivant('#pertes-tab')">Suivant →</button>
+<button class="btn btn-secondary mt-3" onclick="precedent('#piscine-tab')">← Précédent</button>
 </div>
 
 <!-- ===== PERTES SINGULIERES ===== -->
-<div class="tab-pane fade" id="pertes_singulieres">
-<h6 id="titre-pertes">Pertes singulières</h6>
-
+<div class="tab-pane fade" id="pertes-tab">
+<h5>Pertes singulières</h5>
 <h6>Aspiration</h6>
-<label id="label-coudes90C_asp">Coude 90º court</label>
-<input id="coudes90C_asp" type="number" step="1" class="form-control">
-<label id="label-coudes90G_asp">Coude 90º grand</label>
-<input id="coudes90G_asp" type="number" step="1" class="form-control">
-<label id="label-tes_asp">Tés</label>
-<input id="tes_asp" type="number" step="1" class="form-control">
-<label id="label-vannes_asp">Vannes</label>
-<input id="vannes_asp" type="number" step="1" class="form-control">
+<input id="coudes90C_asp" class="form-control mb-1" placeholder="Coude 90º court">
+<input id="coudes90G_asp" class="form-control mb-1" placeholder="Coude 90º grand">
+<input id="tes_asp" class="form-control mb-1" placeholder="Tés">
+<input id="vannes_asp" class="form-control mb-1" placeholder="Vannes">
 
 <h6>Refoulement</h6>
-<label id="label-coudes90C_ref">Coude 90º court</label>
-<input id="coudes90C_ref" type="number" step="1" class="form-control">
-<label id="label-coudes90G_ref">Coude 90º grand</label>
-<input id="coudes90G_ref" type="number" step="1" class="form-control">
-<label id="label-tes_ref">Tés</label>
-<input id="tes_ref" type="number" step="1" class="form-control">
-<label id="label-vannes_ref">Vannes</label>
-<input id="vannes_ref" type="number" step="1" class="form-control">
+<input id="coudes90C_ref" class="form-control mb-1" placeholder="Coude 90º court">
+<input id="coudes90G_ref" class="form-control mb-1" placeholder="Coude 90º grand">
+<input id="tes_ref" class="form-control mb-1" placeholder="Tés">
+<input id="vannes_ref" class="form-control mb-1" placeholder="Vannes">
 
-<div class="mt-3">
-  <button class="btn btn-primary" onclick="precedent('#canalisations')">← Précédent</button>
-  <button class="btn btn-primary" onclick="suivant('#pression_temp')">Suivant →</button>
-</div>
+<button class="btn btn-primary mt-3" onclick="suivant('#pression-tab')">Suivant →</button>
+<button class="btn btn-secondary mt-3" onclick="precedent('#canalisations-tab')">← Précédent</button>
 </div>
 
-<!-- ===== PRESSION & TEMP ===== -->
-<div class="tab-pane fade" id="pression_temp">
-<h6 id="titre-pression">Pression & Température</h6>
-<label id="label-H_geo">Hauteur géométrique (m)</label>
-<input id="H_geo" type="number" step="0.01" class="form-control">
-<label id="label-dp_filtre">Perte filtre (mCE)</label>
-<input id="dp_filtre" type="number" step="0.01" class="form-control">
+<!-- ===== PRESSION ===== -->
+<div class="tab-pane fade" id="pression-tab">
+<h5>Hauteur géométrique & filtre</h5>
+<input id="H_geo" class="form-control mb-1" placeholder="Hauteur géométrique (m)">
+<input id="dp_filtre" class="form-control mb-1" placeholder="Perte filtre (mCE)">
 
-<div class="mt-3">
-  <button class="btn btn-primary" onclick="precedent('#pertes_singulieres')">← Précédent</button>
-  <button class="btn btn-primary" onclick="suivant('#resultats_pdf')">Suivant →</button>
-</div>
+<button class="btn btn-primary mt-3" onclick="suivant('#resultats-tab')">Suivant →</button>
+<button class="btn btn-secondary mt-3" onclick="precedent('#pertes-tab')">← Précédent</button>
 </div>
 
-<!-- ===== RESULTATS / PDF ===== -->
-<div class="tab-pane fade" id="resultats_pdf">
-<h6 id="titre-resultats">Résultats</h6>
+<!-- ===== RESULTATS ===== -->
+<div class="tab-pane fade" id="resultats-tab">
+<h5>Résultats</h5>
 <div id="res"></div>
 <button id="btn-pdf" class="btn btn-success mt-3">Exporter PDF</button>
-<div class="mt-3">
-  <button class="btn btn-primary" onclick="precedent('#pression_temp')">← Précédent</button>
-</div>
 </div>
 
 </div>
 </div>
 
-<!-- Résultats à droite -->
-<div id="res_droite" class="p-3 border rounded" style="width:300px;background:#f9f9f9;">
-<h5>Résultats</h5>
+<!-- Cadre résultats à droite -->
+<div id="res_droite" class="p-3 border rounded" style="width:350px;background:#f9f9f9;">
+<h5>Résultats en direct</h5>
 <p>En attente de données…</p>
 </div>
 

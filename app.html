@@ -6,20 +6,17 @@
 <title>Pool Master Hydraulic</title>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-<button class="logout-btn btn btn-danger" data-i18n="logout"></button>
 
 <div class="container mt-3">
 
 <h2 class="text-center" data-i18n="title"></h2>
 
 <!-- LANGUE -->
-<div class="text-right mb-2">
-  <label><b data-i18n="langue"></b></label>
+<div class="text-right mb-3">
+  <label data-i18n="langue"></label>
   <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
     <option value="fr">Français</option>
     <option value="en">English</option>
@@ -29,7 +26,7 @@
 
 <div class="d-flex">
 
-<!-- ================= FORMULAIRES ================= -->
+<!-- FORMULAIRES -->
 <div class="flex-grow-1 mr-3">
 
 <ul class="nav nav-tabs">
@@ -37,74 +34,61 @@
   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" data-i18n="canalisations_tab"></a></li>
   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pertes" data-i18n="pertes_tab"></a></li>
   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#pression" data-i18n="pression_tab"></a></li>
-  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#resultats_pdf" data-i18n="resultats_tab"></a></li>
 </ul>
 
 <div class="tab-content mt-3">
 
-<!-- ===== PISCINE ===== -->
+<!-- PISCINE -->
 <div class="tab-pane fade show active" id="piscine">
-
 <h6 data-i18n="forme_piscine"></h6>
 
-<label><input type="radio" name="forme" value="rectangle" checked> <span data-i18n="forme_rect"></span></label>
-<label class="ml-2"><input type="radio" name="forme" value="carre"> <span data-i18n="forme_carree"></span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ronde"> <span data-i18n="forme_rond"></span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ovale"> <span data-i18n="forme_ovale"></span></label>
-<label class="ml-2"><input type="radio" name="forme" value="libre"> <span data-i18n="forme_libre"></span></label>
+<label><input type="radio" name="forme" value="rectangle" checked> <span data-i18n="rectangle"></span></label>
 
-<div class="forme-fields mt-2" id="rectangle-fields">
-  <input id="L" class="form-control mb-1" data-i18n-placeholder="longueur">
-  <input id="l" class="form-control mb-1" data-i18n-placeholder="largeur">
-  <input id="p" class="form-control mb-1" data-i18n-placeholder="profondeur">
-</div>
-
+<input id="L" class="form-control mb-1" data-i18n-placeholder="longueur">
+<input id="l" class="form-control mb-1" data-i18n-placeholder="largeur">
+<input id="p" class="form-control mb-1" data-i18n-placeholder="profondeur">
 <input id="t_recycl" class="form-control mt-2" data-i18n-placeholder="temps_recyclage">
 </div>
 
-<!-- ===== CANALISATIONS ===== -->
+<!-- CANALISATIONS -->
 <div class="tab-pane fade" id="canalisations">
-<input id="D" class="form-control mb-1" data-i18n-placeholder="diametre">
-<select id="materiau" class="form-control mb-2">
-  <option value="PVC_rigide" data-i18n="pvc_rigide"></option>
-  <option value="PVC_souple" data-i18n="pvc_souple"></option>
-</select>
-
 <h6 data-i18n="aspiration"></h6>
 <input id="L_asp" class="form-control mb-1" data-i18n-placeholder="longueur">
-<input id="v_asp" class="form-control mb-1" data-i18n-placeholder="vitesse">
 
-<h6 class="mt-2" data-i18n="refoulement"></h6>
+<h6 data-i18n="refoulement"></h6>
 <input id="L_ref" class="form-control mb-1" data-i18n-placeholder="longueur">
-<input id="v_ref" class="form-control mb-1" data-i18n-placeholder="vitesse">
 </div>
 
-<!-- ===== PERTES ===== -->
+<!-- PERTES -->
 <div class="tab-pane fade" id="pertes">
-<label data-i18n="coudes90"></label>
-<input id="coudes90" class="form-control mb-1">
-<label data-i18n="vannes"></label>
-<input id="vannes" class="form-control mb-1">
+
+<h6 data-i18n="aspiration"></h6>
+<input id="c90c_asp" class="form-control mb-1" data-i18n-placeholder="coude90_court">
+<input id="c90l_asp" class="form-control mb-1" data-i18n-placeholder="coude90_long">
+<input id="te_asp" class="form-control mb-1" data-i18n-placeholder="te">
+<input id="vanne_asp" class="form-control mb-1" data-i18n-placeholder="vanne">
+
+<h6 data-i18n="refoulement"></h6>
+<input id="c90c_ref" class="form-control mb-1" data-i18n-placeholder="coude90_court">
+<input id="c90l_ref" class="form-control mb-1" data-i18n-placeholder="coude90_long">
+<input id="te_ref" class="form-control mb-1" data-i18n-placeholder="te">
+<input id="vanne_ref" class="form-control mb-1" data-i18n-placeholder="vanne">
+
 </div>
 
-<!-- ===== PRESSION ===== -->
+<!-- PRESSION -->
 <div class="tab-pane fade" id="pression">
 <input id="H_geo" class="form-control mb-1" data-i18n-placeholder="hauteur_geo">
 <input id="dp_filtre" class="form-control mb-1" data-i18n-placeholder="perte_filtre">
 </div>
 
-<!-- ===== PDF ===== -->
-<div class="tab-pane fade" id="resultats_pdf">
-<div id="res"></div>
-</div>
-
 </div>
 </div>
 
-<!-- ================= RESULTATS DROITE ================= -->
-<div id="res_droite" class="p-3 border rounded" style="width:340px;background:#f9f9f9;">
+<!-- RESULTATS -->
+<div class="border p-3" style="width:340px;background:#f9f9f9;">
 <h5 data-i18n="resultats"></h5>
-<div id="res_droite_contenu"></div>
+<div id="res"></div>
 </div>
 
 </div>

@@ -225,9 +225,22 @@ function setLanguage(lang){
 
   $('h2.text-center').text(t.title);
   $('#res_droite h5').text(t.resultats_tab);
-
   $('.btn-primary').text(t.suivant);
   $('#btn-pdf').text(t.exporter);
+
+  // Traduire les labels
+  $('label[for="forme"]').text(t.label_forme);
+  $('#rectangle-fields input#L').attr('placeholder', t.label_longueur);
+  $('#rectangle-fields input#l').attr('placeholder', t.label_largeur);
+  $('#rectangle-fields input#p').attr('placeholder', t.label_profondeur);
+  $('#canalisations label[for="D"]').text(t.label_diametre);
+  $('#canalisations label[for="materiau"]').text(t.label_materiau);
+
+  // Traduire les options du select
+  $('#materiau option[value="PVC_rigide"]').text(t.option_PVC_rigide);
+  $('#materiau option[value="PVC_souple"]').text(t.option_PVC_souple);
+  $('#materiau option[value="PE"]').text(t.option_PE);
+  $('#materiau option[value="Turbulent"]').text(t.option_Turbulent);
 
   calculerResultats();
 }
@@ -243,3 +256,4 @@ $(document).ready(function(){
     $('#inversee_content').toggle(this.checked);
   });
 });
+

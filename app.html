@@ -1,1 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pool Master Hydraulic</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<!-- 🔐 FIREBASE AUTH -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA7ynpgm9BCNuQhmNtfunCvK8rebZ3lZcM",
+  authDomain: "pool-master-hydraulic.firebaseapp.com",
+  projectId: "pool-master-hydraulic",
+  storageBucket: "pool-master-hydraulic.firebasestorage.app",
+  messagingSenderId: "674715767328",
+  appId: "1:674715767328:web:cb3b67e0c949216cb0a245"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "index.html";
+  }
+});
+
+window.logout = () => signOut(auth).then(() => location.href="index.html");
+</script>
+
+<button class="logout-btn btn btn-danger" id="logout-btn" onclick="logout()">Déconnexion</button>
+
+<div class="container mt-3">
+<h2 class="text-center" id="main-title">Pool Master Hydraulic</h2>
+
+<!-- LANGUE -->
+<div class="text-right mb-2">
+  <label for="lang-select"><b id="lang-label">Langue :</b></label>
+  <select id="lang-select" class="form-control d-inline-block" style="width:150px;">
+    <option value="fr" selected>Français</option>
+    <option value="en">English</option>
+    <option value="es">Español</option>
+  </select>
+</div>
+
+<div class="d-flex">
+
+<!-- FORMULAIRES -->
+<div class="flex-grow-1 mr-3">
+<ul class="nav nav-tabs">
+  <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#piscine" id="tab-piscine">Piscine</a></li>
+  <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
+  <li class="nav-item"><a class="nav-link" href="#pertes_singulieres" data-toggle="tab" id="tab-pertes">Pertes singulières</a></li>
+  <li class="nav-item"><a class="nav-link" href="#pression" data-toggle="tab" id="tab-pression">Pression & Filtre</a></li>
+  <li class="nav-item"><a class="nav-link" href="#resultats_pdf" data-toggle="tab" id="tab-resultats">Résultats / Rapport</a></li>
+</ul>
+
+<div class="tab-content mt-3">
+
+<!-- PISCINE -->
+<div class="tab-pane fade show active" id="piscine">
+<h6 id="label-forme">Forme de la piscine</h6>
+<label><input type="radio" name="forme" value="rectangle" checked onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-rectangle">Rectangulaire</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="carre" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-carre">Carrée</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ronde" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-ronde">Ronde</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ovale" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-ovale">Ovale</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="libre" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-libre">Libre</span></label>
+
+<small style="color: #666; font-size: 12px; display: block; margin: 5px 0 10px 0;">
+  ⚠️ Utilisez le <b>point</b> pour les décimales (ex: 1.5 pour 1,5 mètre)
+</small>
+
+<div class="forme-fields mt-2" id="rectangle-fields">
+  <label id="label-L">Longueur (m)</label>
+  <input id="L" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-l">Largeur (m)</label>
+  <input id="l" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-p">Profondeur (m)</label>
+  <input id="p" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+</div>
+
+<div class="forme-fields mt-2" id="carre-fields" style="display:none">
+  <label id="label-cote">Côté (m)</label>
+  <input id="cote" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-pcarre">Profondeur (m)</label>
+  <input id="p_carre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+</div>
+
+<div class="forme-fields mt-2" id="ronde-fields" style="display:none">
+  <label id="label-diametre-piscine">Diamètre (m)</label>
+  <input id="D_piscine" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-pr">Profondeur (m)</label>
+  <input id="p_r" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+</div>
+
+<div class="forme-fields mt-2" id="ovale-fields" style="display:none">
+  <label id="label-grandaxe">Grand axe (m)</label>
+  <input id="a_ovale" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-petitaxe">Petit axe (m)</label>
+  <input id="b_ovale" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-po">Profondeur (m)</label>
+  <input id="p_o" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+</div>
+
+<div class="forme-fields mt-2" id="libre-fields" style="display:none">
+  <label id="label-Llibre">Longueur approx. (m)</label>
+  <input id="L_libre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-llibre">Largeur approx. (m)</label>
+  <input id="l_libre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+  <label id="label-plibre">Profondeur (m)</label>
+  <input id="p_libre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+</div>
+
+<label id="label-temps-recycl">Temps recyclage (h)</label>
+<input id="t_recycl" class="form-control mt-2 input-calc" oninput="calculerResultats()" value="">
+
+<button class="btn btn-primary mt-3" id="btn-suivant1" onclick="suivant('#canalisations')">Suivant →</button>
+</div>
+
+<!-- CANALISATIONS -->
+<div class="tab-pane fade" id="canalisations">
+<label id="label-diametre-canalisation">Diamètre intérieur canalisation (mm)</label>
+<input id="D" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<small id="aide-diametre" style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;">
+  ⚠️ Exemple : PVC 50 mm PN16 → diamètre intérieur = 46 mm
+</small>
+
+<label id="label-materiau">Matériau</label>
+<select id="materiau" class="form-control mb-2 input-calc" onchange="calculerResultats()">
+  <option value="PVC_rigide" id="opt-PVC_rigide">PVC rigide</option>
+  <option value="PVC_souple" id="opt-PVC_souple">PVC souple</option>
+  <option value="PE" id="opt-PE">Polyéthylène</option>
+  <option value="Turbulent" id="opt-Turbulent">Turbulent</option>
+</select>
+
+<h6 id="label-aspiration">Aspiration</h6>
+<label id="label-Lasp">Longueur aspiration (m)</label>
+<input id="L_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vasp">Vitesse aspiration (m/s)</label>
+<input id="v_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+
+<h6 id="label-refoulement">Refoulement</h6>
+<label id="label-Lref">Longueur refoulement (m)</label>
+<input id="L_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vref">Vitesse refoulement (m/s)</label>
+<input id="v_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+
+<button class="btn btn-primary mt-3" id="btn-suivant2" onclick="suivant('#pertes_singulieres')">Suivant →</button>
+</div>
+
+<!-- PERTES SINGULIERES -->
+<div class="tab-pane fade" id="pertes_singulieres">
+<h6 id="label-aspiration-sing">Aspiration</h6>
+<label id="label-c90Casp">Coude 90° court rayon</label>
+<input id="coudes90C_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c90Gasp">Coude 90° grand rayon</label>
+<input id="coudes90G_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c45asp">Coude 45°</label>
+<input id="coudes45_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesasp">Té 90° dérivation</label>
+<input id="tes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vannesasp">Vanne à boisseau sphérique</label>
+<input id="vannes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+
+<h6 id="label-refoulement-sing">Refoulement</h6>
+<label id="label-c90Cref">Coude 90° court rayon</label>
+<input id="coudes90C_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c90Gref">Coude 90° grand rayon</label>
+<input id="coudes90G_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c45ref">Coude 45°</label>
+<input id="coudes45_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesref">Té 90° dérivation</label>
+<input id="tes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vannesref">Vanne à boisseau sphérique</label>
+<input id="vannes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+
+<button class="btn btn-primary mt-3" id="btn-suivant3" onclick="suivant('#pression')">Suivant →</button>
+</div>
+
+<!-- PRESSION & FILTRE -->
+<div class="tab-pane fade" id="pression">
+<label id="label-Hgeo">Hauteur géométrique (m)</label>
+<input id="H_geo" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-dpfiltre">Perte filtre (mCE)</label>
+<input id="dp_filtre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<button class="btn btn-primary mt-3" id="btn-suivant4" onclick="suivant('#resultats_pdf')">Suivant →</button>
+</div>
+
+<!-- RESULTATS RAPPORT -->
+<div class="tab-pane fade" id="resultats_pdf">
+<h6 id="label-resultats-title">Résultats</h6>
+<div id="res"></div>
+<div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+  <button id="btn-rapport" class="btn btn-success" onclick="ouvrirRapport()">📄 Afficher le rapport complet</button>
+  <button id="btn-reset" class="btn btn-warning" onclick="resetAll()">🔄 Réinitialiser</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- RESULTATS DROITE -->
+<div id="res_droite" class="p-3 border rounded" style="width:350px;background:#f9f9f9;">
+<h5 id="res-droite-title">Résultats</h5>
+<div id="resultats-content">En attente de données…</div>
+</div>
+
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

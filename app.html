@@ -67,19 +67,23 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- PISCINE -->
 <div class="tab-pane fade show active" id="piscine">
 <h6 id="label-forme">Forme de la piscine</h6>
-<label><input type="radio" name="forme" value="rectangle" checked onclick="choixForme(); calculerResultats();"> <span id="label-rectangle">Rectangulaire</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="carre" onclick="choixForme(); calculerResultats();"> <span id="label-carre">Carrée</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ronde" onclick="choixForme(); calculerResultats();"> <span id="label-ronde">Ronde</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="ovale" onclick="choixForme(); calculerResultats();"> <span id="label-ovale">Ovale</span></label>
-<label class="ml-2"><input type="radio" name="forme" value="libre" onclick="choixForme(); calculerResultats();"> <span id="label-libre">Libre</span></label>
+<label><input type="radio" name="forme" value="rectangle" checked onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-rectangle">Rectangulaire</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="carre" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-carre">Carrée</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ronde" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-ronde">Ronde</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="ovale" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-ovale">Ovale</span></label>
+<label class="ml-2"><input type="radio" name="forme" value="libre" onclick="choixForme(); calculerResultats();" class="forme-radio"> <span id="label-libre">Libre</span></label>
+
+<small style="color: #666; font-size: 12px; display: block; margin: 5px 0 10px 0;">
+  ⚠️ Utilisez le <b>point</b> pour les décimales (ex: 1.5 pour 1,5 mètre)
+</small>
 
 <div class="forme-fields mt-2" id="rectangle-fields">
   <label id="label-L">Longueur (m)</label>
-  <input id="L" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="10">
+  <input id="L" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
   <label id="label-l">Largeur (m)</label>
-  <input id="l" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="5">
+  <input id="l" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
   <label id="label-p">Profondeur (m)</label>
-  <input id="p" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1.5">
+  <input id="p" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 </div>
 
 <div class="forme-fields mt-2" id="carre-fields" style="display:none">
@@ -115,7 +119,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 </div>
 
 <label id="label-temps-recycl">Temps recyclage (h)</label>
-<input id="t_recycl" class="form-control mt-2 input-calc" oninput="calculerResultats()" value="5">
+<input id="t_recycl" class="form-control mt-2 input-calc" oninput="calculerResultats()" value="">
 
 <button class="btn btn-primary mt-3" id="btn-suivant1" onclick="suivant('#canalisations')">Suivant →</button>
 </div>
@@ -123,7 +127,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- CANALISATIONS -->
 <div class="tab-pane fade" id="canalisations">
 <label id="label-diametre-canalisation">Diamètre intérieur canalisation (mm)</label>
-<input id="D" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="46">
+<input id="D" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <small id="aide-diametre" style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;">
   ⚠️ Exemple : PVC 50 mm PN16 → diamètre intérieur = 46 mm
 </small>
@@ -138,15 +142,15 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <h6 id="label-aspiration">Aspiration</h6>
 <label id="label-Lasp">Longueur aspiration (m)</label>
-<input id="L_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="10">
+<input id="L_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-vasp">Vitesse aspiration (m/s)</label>
-<input id="v_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1.5">
+<input id="v_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <h6 id="label-refoulement">Refoulement</h6>
 <label id="label-Lref">Longueur refoulement (m)</label>
-<input id="L_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="15">
+<input id="L_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-vref">Vitesse refoulement (m/s)</label>
-<input id="v_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="2">
+<input id="v_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <button class="btn btn-primary mt-3" id="btn-suivant2" onclick="suivant('#pertes_singulieres')">Suivant →</button>
 </div>
@@ -154,24 +158,24 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- PERTES SINGULIERES -->
 <div class="tab-pane fade" id="pertes_singulieres">
 <h6 id="label-aspiration-sing">Aspiration</h6>
-<label id="label-c90Casp">Coudes 90° court rayon</label>
-<input id="coudes90C_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="2">
-<label id="label-c90Gasp">Coudes 90° grand rayon</label>
-<input id="coudes90G_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1">
-<label id="label-tesasp">Tés</label>
-<input id="tes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1">
-<label id="label-vannesasp">Vannes</label>
-<input id="vannes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1">
+<label id="label-c90Casp">Coude 90° court rayon (K=1.50)</label>
+<input id="coudes90C_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c90Gasp">Coude 90° grand rayon (K=0.35)</label>
+<input id="coudes90G_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesasp">Té 90° dérivation (K=1.80)</label>
+<input id="tes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vannesasp">Vanne à boisseau sphérique (K=0.05)</label>
+<input id="vannes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <h6 id="label-refoulement-sing">Refoulement</h6>
-<label id="label-c90Cref">Coudes 90° court rayon</label>
-<input id="coudes90C_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="3">
-<label id="label-c90Gref">Coudes 90° grand rayon</label>
-<input id="coudes90G_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="2">
-<label id="label-tesref">Tés</label>
-<input id="tes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1">
-<label id="label-vannesref">Vannes</label>
-<input id="vannes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="1">
+<label id="label-c90Cref">Coude 90° court rayon (K=1.50)</label>
+<input id="coudes90C_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-c90Gref">Coude 90° grand rayon (K=0.35)</label>
+<input id="coudes90G_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesref">Té 90° dérivation (K=1.80)</label>
+<input id="tes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-vannesref">Vanne à boisseau sphérique (K=0.05)</label>
+<input id="vannes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <button class="btn btn-primary mt-3" id="btn-suivant3" onclick="suivant('#pression')">Suivant →</button>
 </div>
@@ -179,9 +183,9 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- PRESSION & FILTRE -->
 <div class="tab-pane fade" id="pression">
 <label id="label-Hgeo">Hauteur géométrique (m)</label>
-<input id="H_geo" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="0">
+<input id="H_geo" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-dpfiltre">Perte filtre (mCE)</label>
-<input id="dp_filtre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="3">
+<input id="dp_filtre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <button class="btn btn-primary mt-3" id="btn-suivant4" onclick="suivant('#resultats_pdf')">Suivant →</button>
 </div>
 
@@ -189,7 +193,10 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <div class="tab-pane fade" id="resultats_pdf">
 <h6 id="label-resultats-title">Résultats</h6>
 <div id="res"></div>
-<button id="btn-rapport" class="btn btn-success mt-3" onclick="ouvrirRapport()">📄 Afficher le rapport complet</button>
+<div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+  <button id="btn-rapport" class="btn btn-success" onclick="ouvrirRapport()">📄 Afficher le rapport complet</button>
+  <button id="btn-reset" class="btn btn-warning" onclick="resetAll()">🔄 Réinitialiser</button>
+</div>
 </div>
 
 </div>

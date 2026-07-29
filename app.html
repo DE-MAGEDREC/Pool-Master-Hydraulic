@@ -30,7 +30,6 @@ onAuthStateChanged(auth, user => {
   if (!user) {
     window.location.href = "index.html";
   }
-  // Supprimer la vérification email
 });
 
 window.logout = () => signOut(auth).then(() => location.href="index.html");
@@ -105,6 +104,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <input id="p_libre" class="form-control mb-1" placeholder="Profondeur (m)">
 </div>
 
+<label for="t_recycl">Temps recyclage (h)</label>
 <input id="t_recycl" class="form-control mt-2" placeholder="Temps recyclage (h)" value="5">
 
 <button class="btn btn-primary mt-3" onclick="suivant('#canalisations')">Suivant →</button>
@@ -123,12 +123,12 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 </select>
 
 <h6>Aspiration</h6>
-<input id="L_asp" class="form-control mb-1" placeholder="Longueur (m)">
-<input id="v_asp" class="form-control mb-1" placeholder="Vitesse (m/s)" value="1.5">
+<input id="L_asp" class="form-control mb-1" placeholder="Longueur aspiration (m)">
+<input id="v_asp" class="form-control mb-1" placeholder="Vitesse aspiration (m/s)" value="1.5">
 
 <h6>Refoulement</h6>
-<input id="L_ref" class="form-control mb-1" placeholder="Longueur (m)">
-<input id="v_ref" class="form-control mb-1" placeholder="Vitesse (m/s)" value="2">
+<input id="L_ref" class="form-control mb-1" placeholder="Longueur refoulement (m)">
+<input id="v_ref" class="form-control mb-1" placeholder="Vitesse refoulement (m/s)" value="2">
 
 <button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')">Suivant →</button>
 </div>
@@ -153,9 +153,9 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- PRESSION & FILTRE -->
 <div class="tab-pane fade" id="pression">
 <label>Hauteur géométrique (m)</label>
-<input id="H_geo" class="form-control mb-1">
+<input id="H_geo" class="form-control mb-1" placeholder="Hauteur géométrique (m)">
 <label>Perte filtre (mCE)</label>
-<input id="dp_filtre" class="form-control mb-1">
+<input id="dp_filtre" class="form-control mb-1" placeholder="Perte filtre (mCE)">
 <button class="btn btn-primary mt-3" onclick="suivant('#pieces')">Suivant →</button>
 </div>
 
@@ -181,7 +181,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 </select>
 
 <label>Section intérieure (mm)</label>
-<input id="section_int" class="form-control mb-1" value="40">
+<input id="section_int" class="form-control mb-1" placeholder="Section intérieure (mm)" value="40">
 
 <button class="btn btn-primary mt-3" onclick="suivant('#inversee')">Suivant →</button>
 </div>

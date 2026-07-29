@@ -122,8 +122,12 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <!-- CANALISATIONS -->
 <div class="tab-pane fade" id="canalisations">
-<label id="label-diametre-canalisation">Diamètre canalisation (mm)</label>
-<input id="D" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="50">
+<label id="label-diametre-canalisation">Diamètre intérieur canalisation (mm)</label>
+<input id="D" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="46">
+<small id="aide-diametre" style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;">
+  ⚠️ Exemple : PVC 50 mm PN16 → diamètre intérieur = 46 mm
+</small>
+
 <label id="label-materiau">Matériau</label>
 <select id="materiau" class="form-control mb-2 input-calc" onchange="calculerResultats()">
   <option value="PVC_rigide" id="opt-PVC_rigide">PVC rigide</option>

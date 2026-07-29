@@ -8,7 +8,7 @@ const translations = {
     exporter: "Afficher le rapport",
     reset: "🔄 Réinitialiser",
     resultats: "Résultats",
-    en_attente: "En attente de données…",
+    en_attente: "En attente de données…\nVeuillez remplir les champs",
     tab_piscine: "Piscine",
     tab_canalisations: "Canalisations",
     tab_pertes: "Pertes singulières",
@@ -80,7 +80,8 @@ const translations = {
     reset_confirm: "Toutes les données ont été réinitialisées !",
     point_decimal: "⚠️ Utilisez le point pour les décimales (ex: 1.5 pour 1,5 mètre)",
     dn_selectionne: "DN sélectionné",
-    coeff_k_adaptes: "(coefficients K adaptés au DN)"
+    coeff_k_adaptes: "(coefficients K adaptés au DN)",
+    remplir_champs: "Veuillez remplir les champs pour voir les résultats"
   },
   en: {
     title: "Pool Master Hydraulic",
@@ -90,7 +91,7 @@ const translations = {
     exporter: "View report",
     reset: "🔄 Reset",
     resultats: "Results",
-    en_attente: "Waiting for data…",
+    en_attente: "Waiting for data…\nPlease fill in the fields",
     tab_piscine: "Pool",
     tab_canalisations: "Pipes",
     tab_pertes: "Singular losses",
@@ -162,7 +163,8 @@ const translations = {
     reset_confirm: "All data has been reset!",
     point_decimal: "⚠️ Use decimal point (ex: 1.5 for 1.5 meters)",
     dn_selectionne: "DN selected",
-    coeff_k_adaptes: "(K coefficients adapted to DN)"
+    coeff_k_adaptes: "(K coefficients adapted to DN)",
+    remplir_champs: "Please fill in the fields to see the results"
   },
   es: {
     title: "Pool Master Hydraulic",
@@ -172,7 +174,7 @@ const translations = {
     exporter: "Ver informe",
     reset: "🔄 Reiniciar",
     resultats: "Resultados",
-    en_attente: "Esperando datos…",
+    en_attente: "Esperando datos…\nPor favor complete los campos",
     tab_piscine: "Piscina",
     tab_canalisations: "Tuberías",
     tab_pertes: "Pérdidas singulares",
@@ -244,7 +246,8 @@ const translations = {
     reset_confirm: "¡Todos los datos han sido reiniciados!",
     point_decimal: "⚠️ Use punto decimal (ej: 1.5 para 1,5 metros)",
     dn_selectionne: "DN seleccionado",
-    coeff_k_adaptes: "(coeficientes K adaptados al DN)"
+    coeff_k_adaptes: "(coeficientes K adaptados al DN)",
+    remplir_champs: "Complete los campos para ver los resultados"
   }
 };
 
@@ -277,6 +280,7 @@ const DN_REFERENCES = {
 
 // ====== FONCTION POUR DÉTERMINER LE DN LE PLUS PROCHE ======
 function getDNFromDiameter(diametreInt) {
+  if (!diametreInt || diametreInt <= 0) return 50;
   const dns = Object.keys(DN_REFERENCES).map(Number);
   let dnProche = dns[0];
   let ecartMin = Math.abs(diametreInt - DN_REFERENCES[dnProche]);
@@ -308,51 +312,40 @@ function getKValues(dn) {
 }
 
 // ====== VALEURS PAR DÉFAUT POUR LE RESET ======
-// Toutes les valeurs sont vides pour que l'utilisateur entre ses propres données
+// Toutes les valeurs sont vides pour l'affichage, mais des valeurs par défaut sont utilisées pour les calculs
 const DEFAULT_VALUES = {
-  // Piscine - Rectangle
   L: '',
   l: '',
   p: '',
-  // Piscine - Carré
   cote: '',
   p_carre: '',
-  // Piscine - Ronde
   D_piscine: '',
   p_r: '',
-  // Piscine - Ovale
   a_ovale: '',
   b_ovale: '',
   p_o: '',
-  // Piscine - Libre
   L_libre: '',
   l_libre: '',
   p_libre: '',
-  // Piscine - Général
   t_recycl: '',
-  // Canalisations
   D: '',
   materiau: 'PVC_rigide',
   L_asp: '',
   v_asp: '',
   L_ref: '',
   v_ref: '',
-  // Pertes singulières - Aspiration
   coudes90C_asp: '',
   coudes90G_asp: '',
   coudes45_asp: '',
   tes_asp: '',
   vannes_asp: '',
-  // Pertes singulières - Refoulement
   coudes90C_ref: '',
   coudes90G_ref: '',
   coudes45_ref: '',
   tes_ref: '',
   vannes_ref: '',
-  // Pression
   H_geo: '',
   dp_filtre: '',
-  // Forme par défaut
   forme: 'rectangle'
 };
 
@@ -382,10 +375,9 @@ window.choixForme = function(){
 window.resetAll = function(){
   const t = translations[currentLang];
   
-  // 1. Réinitialiser tous les champs avec les valeurs par défaut (vides)
+  // Réinitialiser tous les champs avec des valeurs vides
   Object.keys(DEFAULT_VALUES).forEach(function(key) {
     if (key === 'forme') {
-      // Pour les radios, sélectionner la valeur par défaut
       $('input[name="forme"][value="' + DEFAULT_VALUES.forme + '"]').prop('checked', true);
     } else {
       var element = $('#' + key);
@@ -399,55 +391,13 @@ window.resetAll = function(){
     }
   });
   
-  // 2. Vider explicitement tous les champs de piscine (sécurité)
-  $('#L').val('');
-  $('#l').val('');
-  $('#p').val('');
-  $('#cote').val('');
-  $('#p_carre').val('');
-  $('#D_piscine').val('');
-  $('#p_r').val('');
-  $('#a_ovale').val('');
-  $('#b_ovale').val('');
-  $('#p_o').val('');
-  $('#L_libre').val('');
-  $('#l_libre').val('');
-  $('#p_libre').val('');
-  $('#t_recycl').val('');
-  
-  // 3. Vider explicitement les champs de canalisations
-  $('#D').val('');
-  $('#L_asp').val('');
-  $('#v_asp').val('');
-  $('#L_ref').val('');
-  $('#v_ref').val('');
-  
-  // 4. Vider explicitement les champs de pertes singulières
-  $('#coudes90C_asp').val('');
-  $('#coudes90G_asp').val('');
-  $('#coudes45_asp').val('');
-  $('#tes_asp').val('');
-  $('#vannes_asp').val('');
-  $('#coudes90C_ref').val('');
-  $('#coudes90G_ref').val('');
-  $('#coudes45_ref').val('');
-  $('#tes_ref').val('');
-  $('#vannes_ref').val('');
-  
-  // 5. Vider explicitement les champs de pression
-  $('#H_geo').val('');
-  $('#dp_filtre').val('');
-  
-  // 6. Réinitialiser le sélecteur de matériau
-  $('#materiau').val('PVC_rigide');
-  
-  // 7. Forcer la mise à jour des champs de forme
+  // Forcer la mise à jour des champs de forme
   choixForme();
   
-  // 8. Recalculer les résultats
+  // Recalculer les résultats
   calculerResultats();
   
-  // 9. Afficher un message de confirmation
+  // Afficher un message de confirmation
   alert(t.reset_confirm);
 };
 
@@ -455,72 +405,25 @@ window.resetAll = function(){
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
 function mceToPsi(val){ return (val*1.422).toFixed(2); }
 
-// ====== CALCUL PRINCIPAL AVEC MISE À JOUR AUTOMATIQUE ======
+// ====== CALCUL PRINCIPAL AVEC VALEURS PAR DÉFAUT POUR LES CALCULS ======
 window.calculerResultats = function(){
   const t = translations[currentLang];
 
   try {
-    // Piscine
-    const forme = $('input[name="forme"]:checked').val();
-    let surface=0, volume=0;
+    // Récupérer les valeurs des champs (avec des valeurs par défaut pour les calculs)
+    const L_val = parseFloat($('#L').val()) || 0;
+    const l_val = parseFloat($('#l').val()) || 0;
+    const p_val = parseFloat($('#p').val()) || 0;
     const t_renouv = parseFloat($('#t_recycl').val()) || 5;
-
-    if(forme==="rectangle"){
-      const L_val = parseFloat($('#L').val()) || 0;
-      const l_val = parseFloat($('#l').val()) || 0;
-      const p_val = parseFloat($('#p').val()) || 0;
-      surface = L_val*l_val; 
-      volume = surface*p_val;
-    } else if(forme==="carre"){
-      const c_val = parseFloat($('#cote').val()) || 0;
-      const p_val = parseFloat($('#p_carre').val()) || 0;
-      surface = c_val*c_val; 
-      volume = surface*p_val;
-    } else if(forme==="ronde"){
-      const D_val = parseFloat($('#D_piscine').val()) || 0;
-      const p_val = parseFloat($('#p_r').val()) || 0;
-      surface = Math.PI*Math.pow(D_val/2,2); 
-      volume = surface*p_val;
-    } else if(forme==="ovale"){
-      const a_val = parseFloat($('#a_ovale').val()) || 0;
-      const b_val = parseFloat($('#b_ovale').val()) || 0;
-      const p_val = parseFloat($('#p_o').val()) || 0;
-      surface = Math.PI*(a_val/2)*(b_val/2); 
-      volume = surface*p_val;
-    } else if(forme==="libre"){
-      const L_val = parseFloat($('#L_libre').val()) || 0;
-      const l_val = parseFloat($('#l_libre').val()) || 0;
-      const p_val = parseFloat($('#p_libre').val()) || 0;
-      surface = L_val*l_val; 
-      volume = surface*p_val;
-    }
-    
-    const debit = t_renouv > 0 ? volume / t_renouv : 0;
-
-    // ====== CANALISATIONS - MISE À JOUR AUTOMATIQUE ======
     const diametreInt = parseFloat($('#D').val()) || 46;
-    const DN = diametreInt / 1000;
-    
-    const dnCommercial = getDNFromDiameter(diametreInt);
-    const kValues = getKValues(dnCommercial);
-    
     const v_asp = parseFloat($('#v_asp').val()) || 1.5;
     const v_ref = parseFloat($('#v_ref').val()) || 2.0;
-    
-    const mat = $('#materiau').val();
-    let lambda = 0.02;
-    if(mat === "PVC_souple") lambda = 0.035;
-    else if(mat === "Turbulent") lambda = 0.316;
-    else if(mat === "PE") lambda = 0.025;
-    
     const L_asp = parseFloat($('#L_asp').val()) || 0;
     const L_ref = parseFloat($('#L_ref').val()) || 0;
+    const H_geo_val = parseFloat($('#H_geo').val()) || 0;
+    const dp_filtre_val = parseFloat($('#dp_filtre').val()) || 0;
     
-    // Frictions linéaires
-    const H_fric_asp = DN > 0 ? lambda * L_asp / DN * Math.pow(v_asp,2)/(2*9.81) : 0;
-    const H_fric_ref = DN > 0 ? lambda * L_ref / DN * Math.pow(v_ref,2)/(2*9.81) : 0;
-
-    // ====== PERTES SINGULIÈRES ======
+    // Pertes singulières
     const c90C_asp = parseFloat($('#coudes90C_asp').val()) || 0;
     const c90G_asp = parseFloat($('#coudes90G_asp').val()) || 0;
     const c45_asp = parseFloat($('#coudes45_asp').val()) || 0;
@@ -532,7 +435,56 @@ window.calculerResultats = function(){
     const c45_ref = parseFloat($('#coudes45_ref').val()) || 0;
     const tes_ref = parseFloat($('#tes_ref').val()) || 0;
     const vannes_ref = parseFloat($('#vannes_ref').val()) || 0;
+
+    // Piscine
+    const forme = $('input[name="forme"]:checked').val();
+    let surface=0, volume=0;
+
+    if(forme==="rectangle"){
+      surface = L_val*l_val; 
+      volume = surface*p_val;
+    } else if(forme==="carre"){
+      const c_val = parseFloat($('#cote').val()) || 0;
+      const p_carre_val = parseFloat($('#p_carre').val()) || 0;
+      surface = c_val*c_val; 
+      volume = surface*p_carre_val;
+    } else if(forme==="ronde"){
+      const D_piscine_val = parseFloat($('#D_piscine').val()) || 0;
+      const p_r_val = parseFloat($('#p_r').val()) || 0;
+      surface = Math.PI*Math.pow(D_piscine_val/2,2); 
+      volume = surface*p_r_val;
+    } else if(forme==="ovale"){
+      const a_val = parseFloat($('#a_ovale').val()) || 0;
+      const b_val = parseFloat($('#b_ovale').val()) || 0;
+      const p_o_val = parseFloat($('#p_o').val()) || 0;
+      surface = Math.PI*(a_val/2)*(b_val/2); 
+      volume = surface*p_o_val;
+    } else if(forme==="libre"){
+      const L_libre_val = parseFloat($('#L_libre').val()) || 0;
+      const l_libre_val = parseFloat($('#l_libre').val()) || 0;
+      const p_libre_val = parseFloat($('#p_libre').val()) || 0;
+      surface = L_libre_val*l_libre_val; 
+      volume = surface*p_libre_val;
+    }
     
+    const debit = t_renouv > 0 ? volume / t_renouv : 0;
+
+    // Canalisations
+    const DN = diametreInt / 1000;
+    const dnCommercial = getDNFromDiameter(diametreInt);
+    const kValues = getKValues(dnCommercial);
+    
+    const mat = $('#materiau').val();
+    let lambda = 0.02;
+    if(mat === "PVC_souple") lambda = 0.035;
+    else if(mat === "Turbulent") lambda = 0.316;
+    else if(mat === "PE") lambda = 0.025;
+    
+    // Frictions linéaires
+    const H_fric_asp = DN > 0 ? lambda * L_asp / DN * Math.pow(v_asp,2)/(2*9.81) : 0;
+    const H_fric_ref = DN > 0 ? lambda * L_ref / DN * Math.pow(v_ref,2)/(2*9.81) : 0;
+
+    // Pertes singulières
     const K_asp = (c90C_asp * kValues.coude90C) + 
                   (c90G_asp * kValues.coude90G) + 
                   (c45_asp * kValues.coude45) + 
@@ -547,9 +499,6 @@ window.calculerResultats = function(){
     
     const H_sing_asp = K_asp * (Math.pow(v_asp, 2) / (2 * 9.81));
     const H_sing_ref = K_ref * (Math.pow(v_ref, 2) / (2 * 9.81));
-
-    const H_geo_val = parseFloat($('#H_geo').val()) || 0;
-    const dp_filtre_val = parseFloat($('#dp_filtre').val()) || 0;
 
     const H_total_asp = H_sing_asp + H_fric_asp;
     const H_total_ref = H_sing_ref + H_fric_ref;
@@ -580,8 +529,19 @@ window.calculerResultats = function(){
       kValues: kValues
     };
 
-    // Affichage
-    const html = `
+    // Affichage - Vérifier si des données ont été saisies
+    const hasData = (L_val > 0 || l_val > 0 || p_val > 0 || 
+                     parseFloat($('#D').val()) > 0 || 
+                     parseFloat($('#L_asp').val()) > 0 ||
+                     parseFloat($('#L_ref').val()) > 0);
+
+    let html;
+    if (!hasData && surface === 0 && volume === 0 && debit === 0) {
+      html = `<p style="color: #666; text-align: center; padding: 20px;">
+                ${t.remplir_champs}
+              </p>`;
+    } else {
+      html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br>
@@ -606,6 +566,7 @@ window.calculerResultats = function(){
 <b>${t.pertes_totales} :</b> ${H_total.toFixed(2)} mCE<br>
 <small>≈ ${mceToBar(H_total)} ${t.en_bar} | ${mceToPsi(H_total)} ${t.en_psi}</small>
 `;
+    }
 
     $('#res').html(html);
     $('#resultats-content').html(html);
@@ -623,6 +584,12 @@ window.calculerResultats = function(){
 window.ouvrirRapport = function(){
   const t = translations[currentLang];
   const r = resultatsGlobaux;
+  
+  // Vérifier si des données existent
+  if (!r || r.surface === 0 && r.volume === 0 && r.debit === 0) {
+    alert(t.remplir_champs);
+    return;
+  }
   
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR');

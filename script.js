@@ -361,4 +361,140 @@ function calculerResultats(){
 <b>${t.friction} ${t.aspiration.toLowerCase()} :</b> ${H_fric_asp.toFixed(2)} mCE<br>
 <small>≈ ${mceToBar(H_fric_asp)} ${t.en_bar} | ${mceToPsi(H_fric_asp)} ${t.en_psi}</small><br>
 <b>${t.friction} ${t.refoulement.toLowerCase()} :</b> ${H_fric_ref.toFixed(2)} mCE<br>
-<small>≈ ${mceToBar(H_fric_ref)} ${t.en_bar} | ${mceToPsi(H_fric_ref)} ${t.en_psi}</small
+<small>≈ ${mceToBar(H_fric_ref)} ${t.en_bar} | ${mceToPsi(H_fric_ref)} ${t.en_psi}</small><br><hr>
+<b>${t.total_asp} :</b> ${H_total_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_asp)} ${t.en_bar} | ${mceToPsi(H_total_asp)} ${t.en_psi}</small><br>
+<b>${t.total_ref} :</b> ${H_total_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_ref)} ${t.en_bar} | ${mceToPsi(H_total_ref)} ${t.en_psi}</small><br>
+<b>${t.pertes_totales} :</b> ${H_total.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total)} ${t.en_bar} | ${mceToPsi(H_total)} ${t.en_psi}</small>
+`;
+
+  $('#res').html(html);
+  $('#res_droite').html(html);
+}
+
+// ====== PDF ======
+$('#btn-pdf').on('click', function(){
+  html2pdf().from(document.getElementById('res')).save();
+});
+
+// ====== LANGUE ======
+function setLanguage(lang){
+  currentLang = lang;
+  const t = translations[lang];
+
+  // Titres
+  $('h2.text-center').text(t.title);
+  $('#res_droite h5').text(t.resultats_tab);
+  
+  // Boutons
+  $('.btn-primary').text(t.suivant);
+  $('#btn-pdf').text(t.exporter);
+  $('.logout-btn').text(t.logout);
+  
+  // Onglets
+  $('a[href="#piscine"]').text(t.piscine_tab);
+  $('a[href="#canalisations"]').text(t.canalisations_tab);
+  $('a[href="#pertes_singulieres"]').text(t.pertes_tab);
+  $('a[href="#pression"]').text(t.pression_tab);
+  $('a[href="#pieces"]').text(t.pieces_tab);
+  $('a[href="#parametres"]').text(t.parametres_tab);
+  $('a[href="#inversee"]').text(t.inversee_tab);
+  $('a[href="#resultats_pdf"]').text(t.resultats_tab);
+
+  // Piscine
+  $('label:contains("Forme")').text(t.forme);
+  $('label:contains("Rectangulaire")').text("Rectangulaire");
+  $('label:contains("Carrée")').text("Carrée");
+  $('label:contains("Ronde")').text("Ronde");
+  $('label:contains("Ovale")').text("Ovale");
+  $('label:contains("Libre")').text("Libre");
+  $('label[for="t_recycl"]').text(t.temps_recycl);
+  $('#t_recycl').attr('placeholder', t.temps_recycl);
+
+  // Canalisations
+  $('label:contains("Diamètre")').text(t.diametre_canalisation);
+  $('label:contains("Matériau")').text(t.materiau);
+  $('h6:contains("Aspiration")').text(t.aspiration);
+  $('h6:contains("Refoulement")').text(t.refoulement);
+  $('#L_asp').attr('placeholder', t.longueur_asp);
+  $('#v_asp').attr('placeholder', t.vitesse_asp);
+  $('#L_ref').attr('placeholder', t.longueur_ref);
+  $('#v_ref').attr('placeholder', t.vitesse_ref);
+  
+  // Options matériau
+  $('#materiau option[value="PVC_rigide"]').text(t.option_PVC_rigide);
+  $('#materiau option[value="PVC_souple"]').text(t.option_PVC_souple);
+  $('#materiau option[value="PE"]').text(t.option_PE);
+  $('#materiau option[value="Turbulent"]').text(t.option_Turbulent);
+
+  // Pertes singulières
+  $('h6:contains("Aspiration")').eq(1).text(t.aspiration_tab);
+  $('h6:contains("Refoulement")').eq(1).text(t.refoulement_tab);
+  $('#coudes90C_asp').attr('placeholder', t.coudes90C);
+  $('#coudes90G_asp').attr('placeholder', t.coudes90G);
+  $('#tes_asp').attr('placeholder', t.tes);
+  $('#vannes_asp').attr('placeholder', t.vannes);
+  $('#coudes90C_ref').attr('placeholder', t.coudes90C);
+  $('#coudes90G_ref').attr('placeholder', t.coudes90G);
+  $('#tes_ref').attr('placeholder', t.tes);
+  $('#vannes_ref').attr('placeholder', t.vannes);
+
+  // Pression
+  $('label:contains("Hauteur géométrique")').text(t.hauteur_geo);
+  $('label:contains("Perte filtre")').text(t.perte_filtre);
+  $('#H_geo').attr('placeholder', t.hauteur_geo);
+  $('#dp_filtre').attr('placeholder', t.perte_filtre);
+
+  // Pièces
+  $('label:contains("Skimmers")').text(t.skimmers);
+  $('label:contains("Bondes")').text(t.bondes);
+  $('label:contains("Refoulements")').text(t.refoulements);
+  $('label:contains("Cascade")').text(t.cascade);
+
+  // Paramètres
+  $('label:contains("Type de tuyau")').text(t.type_tuyau);
+  $('label:contains("Section intérieure")').text(t.section_int);
+  $('#section_int').attr('placeholder', t.section_int);
+  
+  // Options type tuyau
+  $('#type_tuyau option[value="32"]').text("32 mm");
+  $('#type_tuyau option[value="50"]').text("50 mm");
+  $('#type_tuyau option[value="63"]').text("63 mm");
+  $('#type_tuyau option[value="75"]').text("75 mm");
+
+  // Étude inversée
+  $('label:contains("Activer étude inversée")').text(t.activer_inversee);
+  $('#Q_inversee').attr('placeholder', "Débit total (m3/h)");
+  $('#H_inversee').attr('placeholder', "Pertes totales (mCE)");
+
+  // Mettre à jour les placeholders des champs de forme
+  choixForme();
+
+  // Recalculer
+  calculerResultats();
+}
+
+$('#lang-select').on('change', function(){ setLanguage($(this).val()); });
+
+// ====== INITIALISATION ======
+$(document).ready(function(){
+  // Gestion des changements de forme
+  $('input[name="forme"]').on('change', choixForme);
+  
+  // Gestion des événements pour recalculer
+  $('input, select').on('input change', function(){
+    calculerResultats();
+  });
+  
+  // Inverse study toggle
+  $('#activer_inversee').on('change', function(){
+    $('#inversee_content').toggle(this.checked);
+  });
+  
+  // Initialisation
+  setLanguage(currentLang);
+  choixForme();
+  calculerResultats();
+});

@@ -45,10 +45,11 @@ const translations = {
     option_Turbulent: "Turbulent",
     aspiration_tab: "Aspiration",
     refoulement_tab: "Refoulement",
-    coudes90C: "Coude 90° court rayon (K=1.50)",
-    coudes90G: "Coude 90° grand rayon (K=0.35)",
-    tes: "Té 90° dérivation (K=1.80)",
-    vannes: "Vanne à boisseau sphérique (K=0.05)",
+    coudes90C: "Coude 90° court rayon",
+    coudes90G: "Coude 90° grand rayon",
+    coudes45: "Coude 45°",
+    tes: "Té 90° dérivation",
+    vannes: "Vanne à boisseau sphérique",
     hauteur_geo: "Hauteur géométrique (m)",
     perte_filtre: "Perte filtre (mCE)",
     resultats_title: "Résultats",
@@ -75,7 +76,8 @@ const translations = {
     diametre_interieur: "Diamètre intérieur",
     vitesse_ecoulement: "Vitesse d'écoulement",
     reset_confirm: "Données réinitialisées avec succès !",
-    point_decimal: "⚠️ Utilisez le point pour les décimales (ex: 1.5 pour 1,5 mètre)"
+    point_decimal: "⚠️ Utilisez le point pour les décimales (ex: 1.5 pour 1,5 mètre)",
+    dn_selectionne: "DN sélectionné"
   },
   en: {
     title: "Pool Master Hydraulic",
@@ -122,10 +124,11 @@ const translations = {
     option_Turbulent: "Turbulent",
     aspiration_tab: "Suction",
     refoulement_tab: "Discharge",
-    coudes90C: "90° short radius elbow (K=1.50)",
-    coudes90G: "90° long radius elbow (K=0.35)",
-    tes: "90° tee branch (K=1.80)",
-    vannes: "Ball valve (K=0.05)",
+    coudes90C: "90° short radius elbow",
+    coudes90G: "90° long radius elbow",
+    coudes45: "45° elbow",
+    tes: "90° tee branch",
+    vannes: "Ball valve",
     hauteur_geo: "Geometric height (m)",
     perte_filtre: "Filter loss (mCE)",
     resultats_title: "Results",
@@ -152,7 +155,8 @@ const translations = {
     diametre_interieur: "Internal diameter",
     vitesse_ecoulement: "Flow velocity",
     reset_confirm: "Data reset successfully!",
-    point_decimal: "⚠️ Use decimal point (ex: 1.5 for 1.5 meters)"
+    point_decimal: "⚠️ Use decimal point (ex: 1.5 for 1.5 meters)",
+    dn_selectionne: "DN selected"
   },
   es: {
     title: "Pool Master Hydraulic",
@@ -199,10 +203,11 @@ const translations = {
     option_Turbulent: "Turbulento",
     aspiration_tab: "Aspiración",
     refoulement_tab: "Impulsión",
-    coudes90C: "Codo 90° radio corto (K=1.50)",
-    coudes90G: "Codo 90° radio largo (K=0.35)",
-    tes: "Te 90° derivación (K=1.80)",
-    vannes: "Válvula de esfera (K=0.05)",
+    coudes90C: "Codo 90° radio corto",
+    coudes90G: "Codo 90° radio largo",
+    coudes45: "Codo 45°",
+    tes: "Te 90° derivación",
+    vannes: "Válvula de esfera",
     hauteur_geo: "Altura geométrica (m)",
     perte_filtre: "Pérdida filtro (mCE)",
     resultats_title: "Resultados",
@@ -229,66 +234,104 @@ const translations = {
     diametre_interieur: "Diámetro interior",
     vitesse_ecoulement: "Velocidad de flujo",
     reset_confirm: "¡Datos reiniciados correctamente!",
-    point_decimal: "⚠️ Use punto decimal (ej: 1.5 para 1,5 metros)"
+    point_decimal: "⚠️ Use punto decimal (ej: 1.5 para 1,5 metros)",
+    dn_selectionne: "DN seleccionado"
   }
 };
 
 let currentLang = "fr";
-
-// Variables globales pour les résultats
 let resultatsGlobaux = {};
 
-// ====== COEFFICIENTS K POUR PERTES SINGULIÈRES ======
-const K_COEFFICIENTS = {
-  coude90C: 1.50,   // Coude 90° court rayon
-  coude90G: 0.35,   // Coude 90° grand rayon
-  te: 1.80,         // Té 90° dérivation
-  vanne: 0.05       // Vanne à boisseau sphérique
+// ====== TABLE DES COEFFICIENTS K PAR DN ======
+const K_TABLE = {
+  20: { coude90C: 1.70, coude90G: 0.40, coude45: 0.40, te: 2.00, vanne: 0.08 },
+  25: { coude90C: 1.60, coude90G: 0.38, coude45: 0.38, te: 1.90, vanne: 0.07 },
+  32: { coude90C: 1.50, coude90G: 0.35, coude45: 0.35, te: 1.80, vanne: 0.06 },
+  40: { coude90C: 1.50, coude90G: 0.35, coude45: 0.35, te: 1.80, vanne: 0.05 },
+  50: { coude90C: 1.50, coude90G: 0.35, coude45: 0.35, te: 1.80, vanne: 0.05 },
+  63: { coude90C: 1.40, coude90G: 0.33, coude45: 0.33, te: 1.70, vanne: 0.05 },
+  75: { coude90C: 1.40, coude90G: 0.33, coude45: 0.33, te: 1.70, vanne: 0.05 },
+  90: { coude90C: 1.40, coude90G: 0.32, coude45: 0.32, te: 1.60, vanne: 0.05 }
 };
+
+// ====== DIAMÈTRES INTÉRIEURS DE RÉFÉRENCE ======
+const DN_REFERENCES = {
+  20: 15.0,
+  25: 20.0,
+  32: 26.0,
+  40: 34.0,
+  50: 46.0,
+  63: 57.4,
+  75: 68.0,
+  90: 83.0
+};
+
+// ====== FONCTION POUR DÉTERMINER LE DN LE PLUS PROCHE ======
+function getDNFromDiameter(diametreInt) {
+  const dns = Object.keys(DN_REFERENCES).map(Number);
+  let dnProche = dns[0];
+  let ecartMin = Math.abs(diametreInt - DN_REFERENCES[dnProche]);
+  
+  for (let i = 1; i < dns.length; i++) {
+    const ecart = Math.abs(diametreInt - DN_REFERENCES[dns[i]]);
+    if (ecart < ecartMin) {
+      ecartMin = ecart;
+      dnProche = dns[i];
+    }
+  }
+  return dnProche;
+}
+
+// ====== FONCTION POUR OBTENIR LES COEFFICIENTS K ======
+function getKValues(dn) {
+  const dns = Object.keys(K_TABLE).map(Number);
+  let dnTable = dns[0];
+  let ecartMin = Math.abs(dn - dnTable);
+  
+  for (let i = 1; i < dns.length; i++) {
+    const ecart = Math.abs(dn - dns[i]);
+    if (ecart < ecartMin) {
+      ecartMin = ecart;
+      dnTable = dns[i];
+    }
+  }
+  return K_TABLE[dnTable];
+}
 
 // ====== VALEURS PAR DÉFAUT ======
 const DEFAULT_VALUES = {
-  // Piscine - Rectangle
   L: '10',
   l: '5',
   p: '1.5',
-  // Piscine - Carré
   cote: '',
   p_carre: '',
-  // Piscine - Ronde
   D_piscine: '',
   p_r: '',
-  // Piscine - Ovale
   a_ovale: '',
   b_ovale: '',
   p_o: '',
-  // Piscine - Libre
   L_libre: '',
   l_libre: '',
   p_libre: '',
-  // Piscine - Général
   t_recycl: '5',
-  // Canalisations
   D: '46',
   materiau: 'PVC_rigide',
   L_asp: '10',
   v_asp: '1.5',
   L_ref: '15',
   v_ref: '2',
-  // Pertes singulières - Aspiration
   coudes90C_asp: '2',
   coudes90G_asp: '1',
+  coudes45_asp: '0',
   tes_asp: '1',
   vannes_asp: '1',
-  // Pertes singulières - Refoulement
   coudes90C_ref: '3',
   coudes90G_ref: '2',
+  coudes45_ref: '0',
   tes_ref: '1',
   vannes_ref: '1',
-  // Pression
   H_geo: '0',
   dp_filtre: '3',
-  // Forme par défaut
   forme: 'rectangle'
 };
 
@@ -318,7 +361,6 @@ window.choixForme = function(){
 window.resetAll = function(){
   const t = translations[currentLang];
   
-  // Réinitialiser tous les champs avec les valeurs par défaut
   Object.keys(DEFAULT_VALUES).forEach(function(key) {
     if (key === 'forme') {
       $('input[name="forme"][value="' + DEFAULT_VALUES.forme + '"]').prop('checked', true);
@@ -334,30 +376,14 @@ window.resetAll = function(){
     }
   });
   
-  // Forcer la mise à jour des champs de forme
   choixForme();
-  
-  // Recalculer les résultats
   calculerResultats();
-  
-  // Afficher un message de confirmation
   alert(t.reset_confirm);
 };
 
 // ====== CONVERSIONS ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
 function mceToPsi(val){ return (val*1.422).toFixed(2); }
-
-// ====== CALCUL DES PERTES SINGULIERES AVEC COEFFICIENT K ======
-function calcSingK(c90C, c90G, te, vanne, V){
-  // Perte singulière = K * (V² / 2g)
-  const g = 9.81;
-  const K_total = (c90C * K_COEFFICIENTS.coude90C) + 
-                  (c90G * K_COEFFICIENTS.coude90G) + 
-                  (te * K_COEFFICIENTS.te) + 
-                  (vanne * K_COEFFICIENTS.vanne);
-  return K_total * (Math.pow(V, 2) / (2 * g));
-}
 
 // ====== CALCUL PRINCIPAL ======
 window.calculerResultats = function(){
@@ -401,8 +427,14 @@ window.calculerResultats = function(){
     
     const debit = t_renouv > 0 ? volume / t_renouv : 0;
 
-    // Canalisations - DIAMÈTRE INTÉRIEUR en mètres
-    const DN = parseFloat($('#D').val()) / 1000 || 0.046;
+    // Canalisations - DIAMÈTRE INTÉRIEUR en mm
+    const diametreInt = parseFloat($('#D').val()) || 46;
+    const DN = diametreInt / 1000;
+    
+    // Déterminer le DN commercial le plus proche
+    const dnCommercial = getDNFromDiameter(diametreInt);
+    const kValues = getKValues(dnCommercial);
+    
     const v_asp = parseFloat($('#v_asp').val()) || 1.5;
     const v_ref = parseFloat($('#v_ref').val()) || 2;
     
@@ -419,19 +451,35 @@ window.calculerResultats = function(){
     const H_fric_asp = DN > 0 ? lambda * L_asp / DN * Math.pow(v_asp,2)/(2*9.81) : 0;
     const H_fric_ref = DN > 0 ? lambda * L_ref / DN * Math.pow(v_ref,2)/(2*9.81) : 0;
 
-    // Pertes singulières avec coefficients K
+    // Pertes singulières - Aspiration
     const c90C_asp = parseFloat($('#coudes90C_asp').val()) || 0;
     const c90G_asp = parseFloat($('#coudes90G_asp').val()) || 0;
+    const c45_asp = parseFloat($('#coudes45_asp').val()) || 0;
     const tes_asp = parseFloat($('#tes_asp').val()) || 0;
     const vannes_asp = parseFloat($('#vannes_asp').val()) || 0;
     
+    // Pertes singulières - Refoulement
     const c90C_ref = parseFloat($('#coudes90C_ref').val()) || 0;
     const c90G_ref = parseFloat($('#coudes90G_ref').val()) || 0;
+    const c45_ref = parseFloat($('#coudes45_ref').val()) || 0;
     const tes_ref = parseFloat($('#tes_ref').val()) || 0;
     const vannes_ref = parseFloat($('#vannes_ref').val()) || 0;
     
-    const H_sing_asp = calcSingK(c90C_asp, c90G_asp, tes_asp, vannes_asp, v_asp);
-    const H_sing_ref = calcSingK(c90C_ref, c90G_ref, tes_ref, vannes_ref, v_ref);
+    // Calcul des K totaux
+    const K_asp = (c90C_asp * kValues.coude90C) + 
+                  (c90G_asp * kValues.coude90G) + 
+                  (c45_asp * kValues.coude45) + 
+                  (tes_asp * kValues.te) + 
+                  (vannes_asp * kValues.vanne);
+                  
+    const K_ref = (c90C_ref * kValues.coude90C) + 
+                  (c90G_ref * kValues.coude90G) + 
+                  (c45_ref * kValues.coude45) + 
+                  (tes_ref * kValues.te) + 
+                  (vannes_ref * kValues.vanne);
+    
+    const H_sing_asp = K_asp * (Math.pow(v_asp, 2) / (2 * 9.81));
+    const H_sing_ref = K_ref * (Math.pow(v_ref, 2) / (2 * 9.81));
 
     const H_geo_val = parseFloat($('#H_geo').val()) || 0;
     const dp_filtre_val = parseFloat($('#dp_filtre').val()) || 0;
@@ -440,7 +488,7 @@ window.calculerResultats = function(){
     const H_total_ref = H_sing_ref + H_fric_ref;
     const H_total = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-    // Stocker les résultats pour le rapport
+    // Stocker les résultats
     resultatsGlobaux = {
       surface: surface,
       volume: volume,
@@ -457,26 +505,31 @@ window.calculerResultats = function(){
       forme: forme,
       t_renouv: t_renouv,
       DN: DN * 1000,
+      dnCommercial: dnCommercial,
       v_asp: v_asp,
       v_ref: v_ref,
       lambda: lambda,
       mat: mat,
+      kValues: kValues,
       c90C_asp: c90C_asp,
       c90G_asp: c90G_asp,
+      c45_asp: c45_asp,
       tes_asp: tes_asp,
       vannes_asp: vannes_asp,
       c90C_ref: c90C_ref,
       c90G_ref: c90G_ref,
+      c45_ref: c45_ref,
       tes_ref: tes_ref,
       vannes_ref: vannes_ref
     };
 
-    // Affichage formaté
+    // Affichage
     const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br>
-<b>${t.diametre_interieur} :</b> ${(DN * 1000).toFixed(1)} mm<br><hr>
+<b>${t.diametre_interieur} :</b> ${(DN * 1000).toFixed(1)} mm<br>
+<b>${t.dn_selectionne} :</b> DN ${dnCommercial}<br><hr>
 <b>${t.pertes_sing_asp} :</b> ${H_sing_asp.toFixed(2)} mCE<br>
 <small>≈ ${mceToBar(H_sing_asp)} ${t.en_bar} | ${mceToPsi(H_sing_asp)} ${t.en_psi}</small><br>
 <b>${t.pertes_sing_ref} :</b> ${H_sing_ref.toFixed(2)} mCE<br>
@@ -509,7 +562,7 @@ window.calculerResultats = function(){
   }
 };
 
-// ====== OUVERTURE DU RAPPORT DANS UNE NOUVELLE FENÊTRE ======
+// ====== OUVERTURE DU RAPPORT ======
 window.ouvrirRapport = function(){
   const t = translations[currentLang];
   const r = resultatsGlobaux;
@@ -593,7 +646,7 @@ window.ouvrirRapport = function(){
     <hr class="separateur">
     
     <div class="section">
-      <h3 style="font-size:15px;">${t.diametre_interieur} : ${r.DN.toFixed(1)} mm</h3>
+      <h3 style="font-size:15px;">${t.diametre_interieur} : ${r.DN.toFixed(1)} mm - ${t.dn_selectionne} : DN ${r.dnCommercial}</h3>
       <div class="ligne"><strong>${t.materiau} :</strong> ${matLabel}</div>
       <div class="ligne"><strong>${t.vitesse_ecoulement} ${t.aspiration.toLowerCase()} :</strong> ${r.v_asp.toFixed(2)} m/s</div>
       <div class="ligne"><strong>${t.vitesse_ecoulement} ${t.refoulement.toLowerCase()} :</strong> ${r.v_ref.toFixed(2)} m/s</div>
@@ -727,10 +780,12 @@ function setLanguage(lang){
   $('#label-refoulement-sing').text(t.refoulement_tab);
   $('#label-c90Casp').text(t.coudes90C);
   $('#label-c90Gasp').text(t.coudes90G);
+  $('#label-c45asp').text(t.coudes45);
   $('#label-tesasp').text(t.tes);
   $('#label-vannesasp').text(t.vannes);
   $('#label-c90Cref').text(t.coudes90C);
   $('#label-c90Gref').text(t.coudes90G);
+  $('#label-c45ref').text(t.coudes45);
   $('#label-tesref').text(t.tes);
   $('#label-vannesref').text(t.vannes);
   
@@ -749,19 +804,15 @@ $(document).ready(function(){
   const resetNeeded = localStorage.getItem('reset_required');
   if (resetNeeded === 'true') {
     localStorage.removeItem('reset_required');
-    // Réinitialiser après un court délai pour que le DOM soit prêt
     setTimeout(function() {
       resetAll();
     }, 100);
   }
   
-  // Sélecteur de langue
   $('#lang-select').on('change', function(){ 
-    console.log("Langue changée:", $(this).val());
     setLanguage($(this).val()); 
   });
   
-  // Initialisation
   choixForme();
   setLanguage('fr');
   

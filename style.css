@@ -17,6 +17,7 @@
   border-radius: 6px;
   position: sticky;
   top: 10px;
+  min-height: 300px;
 }
 
 /* Login */

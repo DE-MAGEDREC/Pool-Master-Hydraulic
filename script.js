@@ -1,15 +1,8 @@
-// ====== TRADUCTIONS COMPLÈTES ======
+// ====== TRADUCTIONS ======
 const translations = {
   fr: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Piscine",
-    canalisations_tab: "Canalisations",
-    pertes_tab: "Pertes singulières",
-    pression_tab: "Pression & Filtre",
-    pieces_tab: "Pièces à sceller",
-    parametres_tab: "Paramètres",
-    inversee_tab: "Étude inversée",
-    resultats_tab: "Résultats / PDF",
+    tabs: ["Piscine", "Canalisations", "Pertes singulières", "Pression & Filtre", "Pièces à sceller", "Paramètres", "Étude inversée", "Résultats / PDF"],
     suivant: "Suivant →",
     surface: "Surface",
     volume: "Volume",
@@ -26,8 +19,8 @@ const translations = {
     logout: "Déconnexion",
     en_bar: "Bar",
     en_psi: "PSI",
-    activer_inversee: "Activer étude inversée",
-    // Labels
+    resultats: "Résultats",
+    en_attente: "En attente de données…",
     forme: "Forme de la piscine",
     rectangle: "Rectangulaire",
     carre: "Carrée",
@@ -69,23 +62,11 @@ const translations = {
     option_PE: "Polyéthylène",
     option_Turbulent: "Turbulent",
     aspiration_tab: "Aspiration",
-    refoulement_tab: "Refoulement",
-    resultats: "Résultats",
-    en_attente: "En attente de données…",
-    inversee_text: "Entrez les débits et pertes pour calcul des vitesses et NPSH",
-    debit_total: "Débit total (m3/h)",
-    pertes_totales_label: "Pertes totales (mCE)"
+    refoulement_tab: "Refoulement"
   },
   en: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Pool",
-    canalisations_tab: "Pipes",
-    pertes_tab: "Singular losses",
-    pression_tab: "Pressure & Filter",
-    pieces_tab: "Embedded parts",
-    parametres_tab: "Settings",
-    inversee_tab: "Reverse study",
-    resultats_tab: "Results / PDF",
+    tabs: ["Pool", "Pipes", "Singular losses", "Pressure & Filter", "Embedded parts", "Settings", "Reverse study", "Results / PDF"],
     suivant: "Next →",
     surface: "Surface",
     volume: "Volume",
@@ -102,7 +83,8 @@ const translations = {
     logout: "Logout",
     en_bar: "Bar",
     en_psi: "PSI",
-    activer_inversee: "Enable reverse study",
+    resultats: "Results",
+    en_attente: "Waiting for data…",
     forme: "Pool shape",
     rectangle: "Rectangular",
     carre: "Square",
@@ -144,23 +126,11 @@ const translations = {
     option_PE: "Polyethylene",
     option_Turbulent: "Turbulent",
     aspiration_tab: "Suction",
-    refoulement_tab: "Discharge",
-    resultats: "Results",
-    en_attente: "Waiting for data…",
-    inversee_text: "Enter flow rates and losses to calculate velocities and NPSH",
-    debit_total: "Total flow (m3/h)",
-    pertes_totales_label: "Total losses (mCE)"
+    refoulement_tab: "Discharge"
   },
   es: {
     title: "Pool Master Hydraulic",
-    piscine_tab: "Piscina",
-    canalisations_tab: "Tuberías",
-    pertes_tab: "Pérdidas singulares",
-    pression_tab: "Presión & Filtro",
-    pieces_tab: "Piezas a instalar",
-    parametres_tab: "Parámetros",
-    inversee_tab: "Estudio inverso",
-    resultats_tab: "Resultados / PDF",
+    tabs: ["Piscina", "Tuberías", "Pérdidas singulares", "Presión & Filtro", "Piezas a instalar", "Parámetros", "Estudio inverso", "Resultados / PDF"],
     suivant: "Siguiente →",
     surface: "Superficie",
     volume: "Volumen",
@@ -177,7 +147,8 @@ const translations = {
     logout: "Cerrar sesión",
     en_bar: "Bar",
     en_psi: "PSI",
-    activer_inversee: "Activar estudio inverso",
+    resultats: "Resultados",
+    en_attente: "Esperando datos…",
     forme: "Forma de la piscina",
     rectangle: "Rectangular",
     carre: "Cuadrada",
@@ -219,12 +190,7 @@ const translations = {
     option_PE: "Polietileno",
     option_Turbulent: "Turbulento",
     aspiration_tab: "Aspiración",
-    refoulement_tab: "Impulsión",
-    resultats: "Resultados",
-    en_attente: "Esperando datos…",
-    inversee_text: "Ingrese caudales y pérdidas para calcular velocidades y NPSH",
-    debit_total: "Caudal total (m3/h)",
-    pertes_totales_label: "Pérdidas totales (mCE)"
+    refoulement_tab: "Impulsión"
   }
 };
 
@@ -266,83 +232,84 @@ function calcSing(c90C, c90G, te, vanne, V, lambda, DN){
 function calculerResultats(){
   const t = translations[currentLang];
 
-  // Piscine
-  const forme = $('input[name="forme"]:checked').val();
-  let surface=0, volume=0;
-  const t_renouv = parseFloat($('#t_recycl').val()) || 5;
+  try {
+    // Piscine
+    const forme = $('input[name="forme"]:checked').val();
+    let surface=0, volume=0;
+    const t_renouv = parseFloat($('#t_recycl').val()) || 5;
 
-  if(forme==="rectangle"){
-    const L_val = parseFloat($('#L').val()) || 0;
-    const l_val = parseFloat($('#l').val()) || 0;
-    const p_val = parseFloat($('#p').val()) || 0;
-    surface = L_val*l_val; 
-    volume = surface*p_val;
-  } else if(forme==="carre"){
-    const c_val = parseFloat($('#cote').val()) || 0;
-    const p_val = parseFloat($('#p_carre').val()) || 0;
-    surface = c_val*c_val; 
-    volume = surface*p_val;
-  } else if(forme==="ronde"){
-    const D_val = parseFloat($('#D_piscine').val()) || 0;
-    const p_val = parseFloat($('#p_r').val()) || 0;
-    surface = Math.PI*Math.pow(D_val/2,2); 
-    volume = surface*p_val;
-  } else if(forme==="ovale"){
-    const a_val = parseFloat($('#a_ovale').val()) || 0;
-    const b_val = parseFloat($('#b_ovale').val()) || 0;
-    const p_val = parseFloat($('#p_o').val()) || 0;
-    surface = Math.PI*(a_val/2)*(b_val/2); 
-    volume = surface*p_val;
-  } else if(forme==="libre"){
-    const L_val = parseFloat($('#L_libre').val()) || 0;
-    const l_val = parseFloat($('#l_libre').val()) || 0;
-    const p_val = parseFloat($('#p_libre').val()) || 0;
-    surface = L_val*l_val; 
-    volume = surface*p_val;
-  }
-  
-  const debit = t_renouv > 0 ? volume / t_renouv : 0;
+    if(forme==="rectangle"){
+      const L_val = parseFloat($('#L').val()) || 0;
+      const l_val = parseFloat($('#l').val()) || 0;
+      const p_val = parseFloat($('#p').val()) || 0;
+      surface = L_val*l_val; 
+      volume = surface*p_val;
+    } else if(forme==="carre"){
+      const c_val = parseFloat($('#cote').val()) || 0;
+      const p_val = parseFloat($('#p_carre').val()) || 0;
+      surface = c_val*c_val; 
+      volume = surface*p_val;
+    } else if(forme==="ronde"){
+      const D_val = parseFloat($('#D_piscine').val()) || 0;
+      const p_val = parseFloat($('#p_r').val()) || 0;
+      surface = Math.PI*Math.pow(D_val/2,2); 
+      volume = surface*p_val;
+    } else if(forme==="ovale"){
+      const a_val = parseFloat($('#a_ovale').val()) || 0;
+      const b_val = parseFloat($('#b_ovale').val()) || 0;
+      const p_val = parseFloat($('#p_o').val()) || 0;
+      surface = Math.PI*(a_val/2)*(b_val/2); 
+      volume = surface*p_val;
+    } else if(forme==="libre"){
+      const L_val = parseFloat($('#L_libre').val()) || 0;
+      const l_val = parseFloat($('#l_libre').val()) || 0;
+      const p_val = parseFloat($('#p_libre').val()) || 0;
+      surface = L_val*l_val; 
+      volume = surface*p_val;
+    }
+    
+    const debit = t_renouv > 0 ? volume / t_renouv : 0;
 
-  // Canalisations
-  const DN = parseFloat($('#D').val()) / 1000 || 0.05;
-  const v_asp = parseFloat($('#v_asp').val()) || 1.5;
-  const v_ref = parseFloat($('#v_ref').val()) || 2;
-  
-  const mat = $('#materiau').val();
-  let lambda = 0.02;
-  if(mat === "PVC_souple") lambda = 0.035;
-  else if(mat === "Turbulent") lambda = 0.316;
-  else if(mat === "PE") lambda = 0.025;
-  
-  const L_asp = parseFloat($('#L_asp').val()) || 0;
-  const L_ref = parseFloat($('#L_ref').val()) || 0;
-  
-  const H_fric_asp = DN > 0 ? lambda * L_asp / DN * Math.pow(v_asp,2)/(2*9.81) : 0;
-  const H_fric_ref = DN > 0 ? lambda * L_ref / DN * Math.pow(v_ref,2)/(2*9.81) : 0;
+    // Canalisations
+    const DN = parseFloat($('#D').val()) / 1000 || 0.05;
+    const v_asp = parseFloat($('#v_asp').val()) || 1.5;
+    const v_ref = parseFloat($('#v_ref').val()) || 2;
+    
+    const mat = $('#materiau').val();
+    let lambda = 0.02;
+    if(mat === "PVC_souple") lambda = 0.035;
+    else if(mat === "Turbulent") lambda = 0.316;
+    else if(mat === "PE") lambda = 0.025;
+    
+    const L_asp = parseFloat($('#L_asp').val()) || 0;
+    const L_ref = parseFloat($('#L_ref').val()) || 0;
+    
+    const H_fric_asp = DN > 0 ? lambda * L_asp / DN * Math.pow(v_asp,2)/(2*9.81) : 0;
+    const H_fric_ref = DN > 0 ? lambda * L_ref / DN * Math.pow(v_ref,2)/(2*9.81) : 0;
 
-  // Pertes singulières
-  const c90C_asp = parseFloat($('#coudes90C_asp').val()) || 0;
-  const c90G_asp = parseFloat($('#coudes90G_asp').val()) || 0;
-  const tes_asp = parseFloat($('#tes_asp').val()) || 0;
-  const vannes_asp = parseFloat($('#vannes_asp').val()) || 0;
-  
-  const c90C_ref = parseFloat($('#coudes90C_ref').val()) || 0;
-  const c90G_ref = parseFloat($('#coudes90G_ref').val()) || 0;
-  const tes_ref = parseFloat($('#tes_ref').val()) || 0;
-  const vannes_ref = parseFloat($('#vannes_ref').val()) || 0;
-  
-  const H_sing_asp = calcSing(c90C_asp, c90G_asp, tes_asp, vannes_asp, v_asp, lambda, DN);
-  const H_sing_ref = calcSing(c90C_ref, c90G_ref, tes_ref, vannes_ref, v_ref, lambda, DN);
+    // Pertes singulières
+    const c90C_asp = parseFloat($('#coudes90C_asp').val()) || 0;
+    const c90G_asp = parseFloat($('#coudes90G_asp').val()) || 0;
+    const tes_asp = parseFloat($('#tes_asp').val()) || 0;
+    const vannes_asp = parseFloat($('#vannes_asp').val()) || 0;
+    
+    const c90C_ref = parseFloat($('#coudes90C_ref').val()) || 0;
+    const c90G_ref = parseFloat($('#coudes90G_ref').val()) || 0;
+    const tes_ref = parseFloat($('#tes_ref').val()) || 0;
+    const vannes_ref = parseFloat($('#vannes_ref').val()) || 0;
+    
+    const H_sing_asp = calcSing(c90C_asp, c90G_asp, tes_asp, vannes_asp, v_asp, lambda, DN);
+    const H_sing_ref = calcSing(c90C_ref, c90G_ref, tes_ref, vannes_ref, v_ref, lambda, DN);
 
-  const H_geo_val = parseFloat($('#H_geo').val()) || 0;
-  const dp_filtre_val = parseFloat($('#dp_filtre').val()) || 0;
+    const H_geo_val = parseFloat($('#H_geo').val()) || 0;
+    const dp_filtre_val = parseFloat($('#dp_filtre').val()) || 0;
 
-  const H_total_asp = H_sing_asp + H_fric_asp;
-  const H_total_ref = H_sing_ref + H_fric_ref;
-  const H_total = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
+    const H_total_asp = H_sing_asp + H_fric_asp;
+    const H_total_ref = H_sing_ref + H_fric_ref;
+    const H_total = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-  // Affichage
-  const html = `
+    // Affichage
+    const html = `
 <b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
 <b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
 <b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br><hr>
@@ -366,13 +333,16 @@ function calculerResultats(){
 <small>≈ ${mceToBar(H_total)} ${t.en_bar} | ${mceToPsi(H_total)} ${t.en_psi}</small>
 `;
 
-  $('#res').html(html);
-  $('#res_droite').html(html);
-  $('#res-droite-empty').hide();
+    $('#res').html(html);
+    $('#resultats-content').html(html);
+  } catch(e) {
+    console.error("Erreur de calcul:", e);
+    $('#resultats-content').html('<p class="text-danger">Erreur de calcul. Vérifiez les données saisies.</p>');
+  }
 }
 
 // ====== PDF ======
-$('#btn-pdf').on('click', function(){
+$(document).on('click', '#btn-pdf', function(){
   html2pdf().from(document.getElementById('res')).save();
 });
 
@@ -383,8 +353,8 @@ function setLanguage(lang){
 
   // Titres
   $('#main-title').text(t.title);
-  $('#res-droite-title').text(t.resultats);
-  $('#res-droite-empty').text(t.en_attente);
+  $('#res_droite h5').text(t.resultats);
+  $('#resultats-content').html(t.en_attente);
   
   // Boutons
   $('.btn-primary').text(t.suivant);
@@ -392,103 +362,99 @@ function setLanguage(lang){
   $('.logout-btn').text(t.logout);
   
   // Onglets
-  $('#tab-piscine').text(t.piscine_tab);
-  $('#tab-canalisations').text(t.canalisations_tab);
-  $('#tab-pertes').text(t.pertes_tab);
-  $('#tab-pression').text(t.pression_tab);
-  $('#tab-pieces').text(t.pieces_tab);
-  $('#tab-parametres').text(t.parametres_tab);
-  $('#tab-inversee').text(t.inversee_tab);
-  $('#tab-resultats').text(t.resultats_tab);
+  $('.nav-link').each(function(index){
+    if(index < t.tabs.length){
+      $(this).text(t.tabs[index]);
+    }
+  });
 
-  // Piscine
-  $('#label-forme').text(t.forme);
-  $('#label-rectangle').text(t.rectangle);
-  $('#label-carre').text(t.carre);
-  $('#label-ronde').text(t.ronde);
-  $('#label-ovale').text(t.ovale);
-  $('#label-libre').text(t.libre);
-  $('#label-L').text(t.longueur);
-  $('#label-l').text(t.largeur);
-  $('#label-p').text(t.profondeur);
-  $('#label-cote').text(t.cote);
-  $('#label-pcarre').text(t.profondeur);
-  $('#label-diametre').text(t.diametre);
-  $('#label-pr').text(t.profondeur);
-  $('#label-grandaxe').text(t.grand_axe);
-  $('#label-petitaxe').text(t.petit_axe);
-  $('#label-po').text(t.profondeur);
-  $('#label-Llibre').text(t.longueur_approx);
-  $('#label-llibre').text(t.largeur_approx);
-  $('#label-plibre').text(t.profondeur);
-  $('#label-temps').text(t.temps_recycl);
-
-  // Canalisations
-  $('#label-diametre-canalisation').text(t.diametre_canalisation);
-  $('#label-materiau').text(t.materiau);
-  $('#label-aspiration').text(t.aspiration);
-  $('#label-refoulement').text(t.refoulement);
-  $('#label-Lasp').text(t.longueur_asp);
-  $('#label-vasp').text(t.vitesse_asp);
-  $('#label-Lref').text(t.longueur_ref);
-  $('#label-vref').text(t.vitesse_ref);
+  // Labels et textes
+  $('h6:contains("Forme")').text(t.forme);
+  $('label:contains("Rectangulaire")').text(t.rectangle);
+  $('label:contains("Carrée")').text(t.carre);
+  $('label:contains("Ronde")').text(t.ronde);
+  $('label:contains("Ovale")').text(t.ovale);
+  $('label:contains("Libre")').text(t.libre);
   
-  // Options matériau
-  $('#opt-PVC_rigide').text(t.option_PVC_rigide);
-  $('#opt-PVC_souple').text(t.option_PVC_souple);
-  $('#opt-PE').text(t.option_PE);
-  $('#opt-Turbulent').text(t.option_Turbulent);
-
-  // Pertes singulières
-  $('#label-aspiration-sing').text(t.aspiration_tab);
-  $('#label-refoulement-sing').text(t.refoulement_tab);
-  $('#label-c90Casp').text(t.coudes90C);
-  $('#label-c90Gasp').text(t.coudes90G);
-  $('#label-tesasp').text(t.tes);
-  $('#label-vannesasp').text(t.vannes);
-  $('#label-c90Cref').text(t.coudes90C);
-  $('#label-c90Gref').text(t.coudes90G);
-  $('#label-tesref').text(t.tes);
-  $('#label-vannesref').text(t.vannes);
-
-  // Pression
-  $('#label-Hgeo').text(t.hauteur_geo);
-  $('#label-dpfiltre').text(t.perte_filtre);
-
-  // Pièces
-  $('#label-skimmer').text(t.skimmers);
-  $('#label-bonde').text(t.bondes);
-  $('#label-refoulement-pieces').text(t.refoulements);
-  $('#label-cascade').text(t.cascade);
-
-  // Paramètres
-  $('#label-type-tuyau').text(t.type_tuyau);
-  $('#label-section-int').text(t.section_int);
-
-  // Étude inversée
-  $('#label-activer-inversee').text(t.activer_inversee);
-  $('#text-inversee').text(t.inversee_text);
-  $('#label-Qinv').text(t.debit_total);
-  $('#label-Hinv').text(t.pertes_totales_label);
-
-  // Résultats
-  $('#label-resultats').text(t.resultats);
+  $('#rectangle-fields label:eq(0)').text(t.longueur);
+  $('#rectangle-fields label:eq(1)').text(t.largeur);
+  $('#rectangle-fields label:eq(2)').text(t.profondeur);
+  $('#carre-fields label:eq(0)').text(t.cote);
+  $('#carre-fields label:eq(1)').text(t.profondeur);
+  $('#ronde-fields label:eq(0)').text(t.diametre);
+  $('#ronde-fields label:eq(1)').text(t.profondeur);
+  $('#ovale-fields label:eq(0)').text(t.grand_axe);
+  $('#ovale-fields label:eq(1)').text(t.petit_axe);
+  $('#ovale-fields label:eq(2)').text(t.profondeur);
+  $('#libre-fields label:eq(0)').text(t.longueur_approx);
+  $('#libre-fields label:eq(1)').text(t.largeur_approx);
+  $('#libre-fields label:eq(2)').text(t.profondeur);
+  
+  $('#piscine label:contains("Temps")').text(t.temps_recycl);
+  $('#canalisations label:contains("Diamètre")').text(t.diametre_canalisation);
+  $('#canalisations label:contains("Matériau")').text(t.materiau);
+  $('#canalisations h6:contains("Aspiration")').text(t.aspiration);
+  $('#canalisations h6:contains("Refoulement")').text(t.refoulement);
+  $('#canalisations label:contains("Longueur aspiration")').text(t.longueur_asp);
+  $('#canalisations label:contains("Vitesse aspiration")').text(t.vitesse_asp);
+  $('#canalisations label:contains("Longueur refoulement")').text(t.longueur_ref);
+  $('#canalisations label:contains("Vitesse refoulement")').text(t.vitesse_ref);
+  
+  $('#materiau option[value="PVC_rigide"]').text(t.option_PVC_rigide);
+  $('#materiau option[value="PVC_souple"]').text(t.option_PVC_souple);
+  $('#materiau option[value="PE"]').text(t.option_PE);
+  $('#materiau option[value="Turbulent"]').text(t.option_Turbulent);
+  
+  $('#pertes_singulieres h6:eq(0)').text(t.aspiration_tab);
+  $('#pertes_singulieres h6:eq(1)').text(t.refoulement_tab);
+  $('#pertes_singulieres label:contains("Coudes 90° court")').text(t.coudes90C);
+  $('#pertes_singulieres label:contains("Coudes 90° grand")').text(t.coudes90G);
+  $('#pertes_singulieres label:contains("Tés")').text(t.tes);
+  $('#pertes_singulieres label:contains("Vannes")').text(t.vannes);
+  
+  $('#pression label:contains("Hauteur")').text(t.hauteur_geo);
+  $('#pression label:contains("Perte filtre")').text(t.perte_filtre);
+  
+  $('#pieces label:contains("Skimmers")').text(t.skimmers);
+  $('#pieces label:contains("Bondes")').text(t.bondes);
+  $('#pieces label:contains("Refoulements")').text(t.refoulements);
+  $('#pieces label:contains("Cascade")').text(t.cascade);
+  
+  $('#parametres label:contains("Type")').text(t.type_tuyau);
+  $('#parametres label:contains("Section")').text(t.section_int);
+  
+  $('#inversee label:contains("Activer")').text(t.activer_inversee || "Activer étude inversée");
+  $('#inversee p').text(t.inversee_text || "Entrez les débits et pertes pour calcul des vitesses et NPSH");
+  $('#inversee label:contains("Débit")').text(t.debit_total || "Débit total (m3/h)");
+  $('#inversee label:contains("Pertes")').text(t.pertes_totales_label || "Pertes totales (mCE)");
 
   calculerResultats();
 }
 
-$('#lang-select').on('change', function(){ setLanguage($(this).val()); });
-
 // ====== INITIALISATION ======
 $(document).ready(function(){
-  $('input[name="forme"]').on('change', choixForme);
+  // Gestion des changements de forme
+  $('input[name="forme"]').on('change', function(){
+    choixForme();
+    calculerResultats();
+  });
+  
+  // Gestion des événements pour recalculer
   $('input, select').on('input change', function(){
     calculerResultats();
   });
+  
+  // Inverse study toggle
   $('#activer_inversee').on('change', function(){
     $('#inversee_content').toggle(this.checked);
   });
-  setLanguage('fr');
+  
+  // Sélecteur de langue
+  $('#lang-select').on('change', function(){ 
+    setLanguage($(this).val()); 
+  });
+  
+  // Initialisation
   choixForme();
-  calculerResultats();
+  setLanguage('fr');
 });

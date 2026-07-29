@@ -347,4 +347,445 @@ window.calculerResultats = function(){
 
     // Stocker les résultats pour le rapport
     resultatsGlobaux = {
-      surface:
+      surface: surface,
+      volume: volume,
+      debit: debit,
+      H_sing_asp: H_sing_asp,
+      H_sing_ref: H_sing_ref,
+      H_geo_val: H_geo_val,
+      dp_filtre_val: dp_filtre_val,
+      H_fric_asp: H_fric_asp,
+      H_fric_ref: H_fric_ref,
+      H_total_asp: H_total_asp,
+      H_total_ref: H_total_ref,
+      H_total: H_total,
+      forme: forme,
+      t_renouv: t_renouv,
+      DN: DN * 1000, // en mm pour l'affichage
+      v_asp: v_asp,
+      v_ref: v_ref,
+      lambda: lambda,
+      mat: mat
+    };
+
+    // Affichage formaté
+    const html = `
+<b>${t.surface} :</b> ${surface.toFixed(2)} m²<br>
+<b>${t.volume} :</b> ${volume.toFixed(2)} m³<br>
+<b>${t.debit} :</b> ${debit.toFixed(2)} m³/h<br>
+<b>${t.diametre_interieur} :</b> ${(DN * 1000).toFixed(1)} mm<br><hr>
+<b>${t.pertes_sing_asp} :</b> ${H_sing_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_sing_asp)} ${t.en_bar} | ${mceToPsi(H_sing_asp)} ${t.en_psi}</small><br>
+<b>${t.pertes_sing_ref} :</b> ${H_sing_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_sing_ref)} ${t.en_bar} | ${mceToPsi(H_sing_ref)} ${t.en_psi}</small><br>
+<b>${t.hauteur} :</b> ${H_geo_val.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_geo_val)} ${t.en_bar} | ${mceToPsi(H_geo_val)} ${t.en_psi}</small><br>
+<b>${t.filtre} :</b> ${dp_filtre_val.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(dp_filtre_val)} ${t.en_bar} | ${mceToPsi(dp_filtre_val)} ${t.en_psi}</small><br>
+<b>${t.friction} ${t.aspiration.toLowerCase()} :</b> ${H_fric_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_fric_asp)} ${t.en_bar} | ${mceToPsi(H_fric_asp)} ${t.en_psi}</small><br>
+<b>${t.friction} ${t.refoulement.toLowerCase()} :</b> ${H_fric_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_fric_ref)} ${t.en_bar} | ${mceToPsi(H_fric_ref)} ${t.en_psi}</small><br><hr>
+<b>${t.total_asp} :</b> ${H_total_asp.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_asp)} ${t.en_bar} | ${mceToPsi(H_total_asp)} ${t.en_psi}</small><br>
+<b>${t.total_ref} :</b> ${H_total_ref.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total_ref)} ${t.en_bar} | ${mceToPsi(H_total_ref)} ${t.en_psi}</small><br>
+<b>${t.pertes_totales} :</b> ${H_total.toFixed(2)} mCE<br>
+<small>≈ ${mceToBar(H_total)} ${t.en_bar} | ${mceToPsi(H_total)} ${t.en_psi}</small>
+`;
+
+    $('#res').html(html);
+    $('#resultats-content').html(html);
+    $('#resultats-content').show();
+    
+  } catch(e) {
+    console.error("Erreur de calcul:", e);
+    const errorHtml = '<p class="text-danger">Erreur de calcul. Vérifiez les données saisies.</p>';
+    $('#res').html(errorHtml);
+    $('#resultats-content').html(errorHtml);
+  }
+};
+
+// ====== OUVERTURE DU RAPPORT DANS UNE NOUVELLE FENÊTRE ======
+window.ouvrirRapport = function(){
+  const t = translations[currentLang];
+  const r = resultatsGlobaux;
+  
+  // Date et heure actuelles
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR');
+  const heureStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+  
+  // Forme de la piscine
+  const formeLabels = {
+    'rectangle': t.rectangle,
+    'carre': t.carre,
+    'ronde': t.ronde,
+    'ovale': t.ovale,
+    'libre': t.libre
+  };
+  const formeLabel = formeLabels[r.forme] || t.rectangle;
+  
+  // Matériau
+  const matLabels = {
+    'PVC_rigide': t.option_PVC_rigide,
+    'PVC_souple': t.option_PVC_souple,
+    'PE': t.option_PE,
+    'Turbulent': t.option_Turbulent
+  };
+  const matLabel = matLabels[r.mat] || 'PVC rigide';
+  
+  // Créer le contenu HTML du rapport
+  const rapportHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${t.title} - ${t.rapport}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f5f5f5; 
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .rapport-container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .en-tete {
+      text-align: center;
+      border-bottom: 3px solid #003366;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .en-tete h1 {
+      color: #003366;
+      font-size: 24px;
+      margin: 0;
+    }
+    .en-tete h2 {
+      color: #0066cc;
+      font-size: 20px;
+      margin: 5px 0;
+    }
+    .en-tete .infos {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+    .section {
+      margin: 15px 0;
+    }
+    .section h3 {
+      color: #003366;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+    .ligne {
+      padding: 4px 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .ligne strong {
+      font-weight: 600;
+    }
+    .sous-ligne {
+      padding-left: 25px;
+      font-size: 13px;
+      color: #555;
+    }
+    .separateur {
+      border: 1px solid #eee;
+      margin: 10px 0;
+    }
+    .separateur-epais {
+      border: 2px solid #003366;
+      margin: 12px 0;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #003366;
+    }
+    .mention {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+    }
+    .mention p {
+      font-size: 13px;
+      color: #555;
+      font-style: italic;
+      margin: 0;
+      text-align: justify;
+    }
+    .pied-page {
+      text-align: center;
+      border-top: 2px solid #ccc;
+      padding-top: 15px;
+      margin-top: 25px;
+      font-size: 12px;
+      color: #999;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-imprimer {
+      background: #28a745;
+      color: white;
+    }
+    .btn-imprimer:hover {
+      background: #218838;
+    }
+    .btn-fermer {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-fermer:hover {
+      background: #c82333;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .rapport-container { box-shadow: none; padding: 20px; }
+      .actions { display: none; }
+      .btn-fermer { display: none; }
+    }
+    @media (max-width: 600px) {
+      .rapport-container { padding: 15px; }
+      .en-tete h1 { font-size: 20px; }
+      .en-tete h2 { font-size: 17px; }
+      .ligne { font-size: 13px; }
+      .total { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rapport-container" id="rapport">
+    <!-- EN-TÊTE -->
+    <div class="en-tete">
+      <h1>${t.rapport}</h1>
+      <h2>${t.title}</h2>
+      <div class="infos">
+        <span>${t.date} : ${dateStr}</span> &nbsp;|&nbsp; 
+        <span>${t.heure} : ${heureStr}</span>
+      </div>
+    </div>
+    
+    <!-- RÉSULTATS -->
+    <div class="section">
+      <h3>${t.resultats_title}</h3>
+      
+      <div class="ligne"><strong>${t.forme_piscine} :</strong> ${formeLabel}</div>
+      <div class="ligne"><strong>${t.surface} :</strong> ${r.surface.toFixed(2)} m²</div>
+      <div class="ligne"><strong>${t.volume} :</strong> ${r.volume.toFixed(2)} m³</div>
+      <div class="ligne"><strong>${t.debit} :</strong> ${r.debit.toFixed(2)} m³/h</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <h3 style="font-size:15px;">${t.diametre_interieur} : ${r.DN.toFixed(1)} mm</h3>
+      <div class="ligne"><strong>${t.materiau} :</strong> ${matLabel}</div>
+      <div class="ligne"><strong>${t.vitesse_ecoulement} ${t.aspiration.toLowerCase()} :</strong> ${r.v_asp.toFixed(2)} m/s</div>
+      <div class="ligne"><strong>${t.vitesse_ecoulement} ${t.refoulement.toLowerCase()} :</strong> ${r.v_ref.toFixed(2)} m/s</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.pertes_sing_asp} :</strong> ${r.H_sing_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_sing_asp)} ${t.en_bar} | ${mceToPsi(r.H_sing_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.pertes_sing_ref} :</strong> ${r.H_sing_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_sing_ref)} ${t.en_bar} | ${mceToPsi(r.H_sing_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.hauteur} :</strong> ${r.H_geo_val.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_geo_val)} ${t.en_bar} | ${mceToPsi(r.H_geo_val)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.filtre} :</strong> ${r.dp_filtre_val.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.dp_filtre_val)} ${t.en_bar} | ${mceToPsi(r.dp_filtre_val)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.friction} ${t.aspiration.toLowerCase()} :</strong> ${r.H_fric_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_fric_asp)} ${t.en_bar} | ${mceToPsi(r.H_fric_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.friction} ${t.refoulement.toLowerCase()} :</strong> ${r.H_fric_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_fric_ref)} ${t.en_bar} | ${mceToPsi(r.H_fric_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.total_asp} :</strong> ${r.H_total_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_total_asp)} ${t.en_bar} | ${mceToPsi(r.H_total_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.total_ref} :</strong> ${r.H_total_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_total_ref)} ${t.en_bar} | ${mceToPsi(r.H_total_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur-epais">
+    
+    <div class="section">
+      <div class="ligne total">${t.pertes_totales} : ${r.H_total.toFixed(2)} mCE</div>
+      <div class="sous-ligne" style="font-size:14px;">≈ ${mceToBar(r.H_total)} ${t.en_bar} | ${mceToPsi(r.H_total)} ${t.en_psi}</div>
+    </div>
+    
+    <!-- MENTION -->
+    <div class="mention">
+      <p>⚠️ ${t.mention}</p>
+    </div>
+    
+    <!-- PIED DE PAGE -->
+    <div class="pied-page">
+      ${t.title} - ${t.rapport} - ${dateStr} ${heureStr}
+    </div>
+    
+    <!-- BOUTONS D'ACTION -->
+    <div class="actions">
+      <button class="btn-imprimer" onclick="window.print()">${t.imprimer}</button>
+      <button class="btn-fermer" onclick="window.close()">${t.fermer}</button>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+  
+  // Ouvrir dans une nouvelle fenêtre
+  const nouvelleFenetre = window.open('', '_blank', 'width=900,height=800,scrollbars=yes,resizable=yes');
+  if (nouvelleFenetre) {
+    nouvelleFenetre.document.write(rapportHTML);
+    nouvelleFenetre.document.close();
+  } else {
+    alert('Veuillez autoriser les popups pour cette application.');
+  }
+};
+
+// ====== LANGUE ======
+function setLanguage(lang){
+  currentLang = lang;
+  const t = translations[lang];
+
+  // Général
+  $('#main-title').text(t.title);
+  $('#logout-btn').text(t.logout);
+  $('#lang-label').text(t.langue);
+  $('#btn-rapport').text('📄 ' + t.exporter);
+  $('#res-droite-title').text(t.resultats);
+  $('#resultats-content').text(t.en_attente);
+  
+  // Boutons suivants
+  $('.btn-primary').text(t.suivant);
+  
+  // Onglets
+  $('#tab-piscine').text(t.tab_piscine);
+  $('#tab-canalisations').text(t.tab_canalisations);
+  $('#tab-pertes').text(t.tab_pertes);
+  $('#tab-pression').text(t.tab_pression);
+  $('#tab-resultats').text(t.tab_resultats);
+  
+  // Piscine
+  $('#label-forme').text(t.forme);
+  $('#label-rectangle').text(t.rectangle);
+  $('#label-carre').text(t.carre);
+  $('#label-ronde').text(t.ronde);
+  $('#label-ovale').text(t.ovale);
+  $('#label-libre').text(t.libre);
+  $('#label-L').text(t.longueur);
+  $('#label-l').text(t.largeur);
+  $('#label-p').text(t.profondeur);
+  $('#label-cote').text(t.cote);
+  $('#label-pcarre').text(t.profondeur);
+  $('#label-diametre-piscine').text(t.diametre);
+  $('#label-pr').text(t.profondeur);
+  $('#label-grandaxe').text(t.grand_axe);
+  $('#label-petitaxe').text(t.petit_axe);
+  $('#label-po').text(t.profondeur);
+  $('#label-Llibre').text(t.longueur_approx);
+  $('#label-llibre').text(t.largeur_approx);
+  $('#label-plibre').text(t.profondeur);
+  $('#label-temps-recycl').text(t.temps_recycl);
+  
+  // Canalisations
+  $('#label-diametre-canalisation').text(t.diametre_canalisation);
+  $('#aide-diametre').text(t.aide_diametre);
+  $('#label-materiau').text(t.materiau);
+  $('#label-aspiration').text(t.aspiration);
+  $('#label-refoulement').text(t.refoulement);
+  $('#label-Lasp').text(t.longueur_asp);
+  $('#label-vasp').text(t.vitesse_asp);
+  $('#label-Lref').text(t.longueur_ref);
+  $('#label-vref').text(t.vitesse_ref);
+  $('#opt-PVC_rigide').text(t.option_PVC_rigide);
+  $('#opt-PVC_souple').text(t.option_PVC_souple);
+  $('#opt-PE').text(t.option_PE);
+  $('#opt-Turbulent').text(t.option_Turbulent);
+  
+  // Pertes singulières
+  $('#label-aspiration-sing').text(t.aspiration_tab);
+  $('#label-refoulement-sing').text(t.refoulement_tab);
+  $('#label-c90Casp').text(t.coudes90C);
+  $('#label-c90Gasp').text(t.coudes90G);
+  $('#label-tesasp').text(t.tes);
+  $('#label-vannesasp').text(t.vannes);
+  $('#label-c90Cref').text(t.coudes90C);
+  $('#label-c90Gref').text(t.coudes90G);
+  $('#label-tesref').text(t.tes);
+  $('#label-vannesref').text(t.vannes);
+  
+  // Pression
+  $('#label-Hgeo').text(t.hauteur_geo);
+  $('#label-dpfiltre').text(t.perte_filtre);
+  
+  // Résultats
+  $('#label-resultats-title').text(t.resultats_title);
+
+  calculerResultats();
+}
+
+// ====== INITIALISATION ======
+$(document).ready(function(){
+  console.log("Document ready - Initialisation");
+  
+  // Sélecteur de langue
+  $('#lang-select').on('change', function(){ 
+    console.log("Langue changée:", $(this).val());
+    setLanguage($(this).val()); 
+  });
+  
+  // Initialisation
+  choixForme();
+  setLanguage('fr');
+  
+  console.log("Initialisation terminée");
+});

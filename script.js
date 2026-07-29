@@ -256,17 +256,16 @@ const translations = {
 
 let currentLang = "fr";
 
-// ====== WIZARD ======
-function suivant(id){
+// ====== FONCTIONS GLOBALES ======
+window.suivant = function(id){
   $('.tab-pane').removeClass('show active');
   $(id).addClass('show active');
   $('.nav-link').removeClass('active');
   $(`a[href="${id}"]`).addClass('active');
   calculerResultats();
-}
+};
 
-// ====== FORMES DE PISCINE ======
-function choixForme(){
+window.choixForme = function(){
   const f = $('input[name="forme"]:checked').val();
   $('.forme-fields').hide();
   switch(f){
@@ -276,7 +275,12 @@ function choixForme(){
     case "ovale": $('#ovale-fields').show(); break;
     case "libre": $('#libre-fields').show(); break;
   }
-}
+  calculerResultats();
+};
+
+window.exporterPDF = function(){
+  html2pdf().from(document.getElementById('res')).save();
+};
 
 // ====== CONVERSIONS ======
 function mceToBar(val){ return (val*0.0981).toFixed(2); }
@@ -289,7 +293,7 @@ function calcSing(c90C, c90G, te, vanne, V, lambda, DN){
 }
 
 // ====== CALCUL PRINCIPAL ======
-function calculerResultats(){
+window.calculerResultats = function(){
   const t = translations[currentLang];
 
   try {
@@ -403,12 +407,7 @@ function calculerResultats(){
     $('#res').html(errorHtml);
     $('#resultats-content').html(errorHtml);
   }
-}
-
-// ====== PDF ======
-$(document).on('click', '#btn-pdf', function(){
-  html2pdf().from(document.getElementById('res')).save();
-});
+};
 
 // ====== LANGUE ======
 function setLanguage(lang){
@@ -520,31 +519,6 @@ function setLanguage(lang){
 // ====== INITIALISATION ======
 $(document).ready(function(){
   console.log("Document ready - Initialisation");
-  
-  // Gestion des changements de forme - Événement direct
-  $('input[name="forme"]').on('change', function(){
-    console.log("Forme changée:", $(this).val());
-    choixForme();
-    calculerResultats();
-  });
-  
-  // Gestion des changements de forme - Version class
-  $('.forme-radio').on('change', function(){
-    console.log("Forme changée (class):", $(this).val());
-    choixForme();
-    calculerResultats();
-  });
-  
-  // Gestion des événements pour recalculer - Tous les inputs avec classe input-calc
-  $(document).on('input change', '.input-calc', function(){
-    console.log("Input changé:", $(this).attr('id'));
-    calculerResultats();
-  });
-  
-  // Inverse study toggle
-  $('#activer_inversee').on('change', function(){
-    $('#inversee_content').toggle(this.checked);
-  });
   
   // Sélecteur de langue
   $('#lang-select').on('change', function(){ 

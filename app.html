@@ -59,9 +59,6 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
   <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#canalisations" id="tab-canalisations">Canalisations</a></li>
   <li class="nav-item"><a class="nav-link" href="#pertes_singulieres" data-toggle="tab" id="tab-pertes">Pertes singulières</a></li>
   <li class="nav-item"><a class="nav-link" href="#pression" data-toggle="tab" id="tab-pression">Pression & Filtre</a></li>
-  <li class="nav-item"><a class="nav-link" href="#pieces" data-toggle="tab" id="tab-pieces">Pièces à sceller</a></li>
-  <li class="nav-item"><a class="nav-link" href="#parametres" data-toggle="tab" id="tab-parametres">Paramètres</a></li>
-  <li class="nav-item"><a class="nav-link" href="#inversee" data-toggle="tab" id="tab-inversee">Étude inversée</a></li>
   <li class="nav-item"><a class="nav-link" href="#resultats_pdf" data-toggle="tab" id="tab-resultats">Résultats / PDF</a></li>
 </ul>
 
@@ -181,52 +178,7 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <input id="H_geo" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-dpfiltre">Perte filtre (mCE)</label>
 <input id="dp_filtre" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<button class="btn btn-primary mt-3" id="btn-suivant4" onclick="suivant('#pieces')">Suivant →</button>
-</div>
-
-<!-- PIECES A SCELLER -->
-<div class="tab-pane fade" id="pieces">
-<h6 id="label-pieces-title">Pièces à sceller</h6>
-<label id="label-skimmer">Skimmers</label>
-<input id="nb_skimmer" class="form-control mb-1 input-calc" type="number" oninput="calculerResultats()" value="1">
-<label id="label-bonde">Bondes de fond</label>
-<input id="nb_bonde" class="form-control mb-1 input-calc" type="number" oninput="calculerResultats()" value="1">
-<label id="label-refoulement-pieces">Refoulements</label>
-<input id="nb_refoulement" class="form-control mb-1 input-calc" type="number" oninput="calculerResultats()" value="1">
-<label id="label-cascade">Cascade</label>
-<input id="nb_cascade" class="form-control mb-1 input-calc" type="number" oninput="calculerResultats()" value="0">
-<button class="btn btn-primary mt-3" id="btn-suivant5" onclick="suivant('#parametres')">Suivant →</button>
-</div>
-
-<!-- PARAMETRES -->
-<div class="tab-pane fade" id="parametres">
-<h6 id="label-parametres-title">Paramètres utilisateur</h6>
-<label id="label-type-tuyau">Type de tuyau</label>
-<select id="type_tuyau" class="form-control mb-1 input-calc" onchange="calculerResultats()">
-  <option value="32" id="opt-32">32 mm extérieur</option>
-  <option value="50" selected id="opt-50">50 mm extérieur</option>
-  <option value="63" id="opt-63">63 mm extérieur</option>
-  <option value="75" id="opt-75">75 mm extérieur</option>
-</select>
-
-<label id="label-section-int">Section intérieure (mm)</label>
-<input id="section_int" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="40">
-
-<button class="btn btn-primary mt-3" id="btn-suivant6" onclick="suivant('#inversee')">Suivant →</button>
-</div>
-
-<!-- ETUDE INVERSEE -->
-<div class="tab-pane fade" id="inversee">
-<h6 id="label-inversee-title">Étude inversée (optionnelle)</h6>
-<label><input type="checkbox" id="activer_inversee" onchange="document.getElementById('inversee_content').style.display=this.checked?'block':'none';"> <span id="label-activer-inversee">Activer étude inversée</span></label>
-<div id="inversee_content" style="display:none;">
-  <p id="text-inversee">Entrez les débits et pertes pour calcul des vitesses et NPSH</p>
-  <label id="label-Qinv">Débit total (m3/h)</label>
-  <input id="Q_inversee" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-  <label id="label-Hinv">Pertes totales (mCE)</label>
-  <input id="H_inversee" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-</div>
-<button class="btn btn-primary mt-3" id="btn-suivant7" onclick="suivant('#resultats_pdf')">Suivant →</button>
+<button class="btn btn-primary mt-3" id="btn-suivant4" onclick="suivant('#resultats_pdf')">Suivant →</button>
 </div>
 
 <!-- RESULTATS PDF -->

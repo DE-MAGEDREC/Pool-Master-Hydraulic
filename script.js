@@ -12,9 +12,6 @@ const translations = {
     tab_canalisations: "Canalisations",
     tab_pertes: "Pertes singulières",
     tab_pression: "Pression & Filtre",
-    tab_pieces: "Pièces à sceller",
-    tab_parametres: "Paramètres",
-    tab_inversee: "Étude inversée",
     tab_resultats: "Résultats / PDF",
     forme: "Forme de la piscine",
     rectangle: "Rectangulaire",
@@ -52,23 +49,6 @@ const translations = {
     vannes: "Vannes",
     hauteur_geo: "Hauteur géométrique (m)",
     perte_filtre: "Perte filtre (mCE)",
-    pieces_title: "Pièces à sceller",
-    skimmers: "Skimmers",
-    bondes: "Bondes de fond",
-    refoulements: "Refoulements",
-    cascade: "Cascade",
-    parametres_title: "Paramètres utilisateur",
-    type_tuyau: "Type de tuyau",
-    section_int: "Section intérieure (mm)",
-    opt_32: "32 mm extérieur",
-    opt_50: "50 mm extérieur",
-    opt_63: "63 mm extérieur",
-    opt_75: "75 mm extérieur",
-    inversee_title: "Étude inversée (optionnelle)",
-    activer_inversee: "Activer étude inversée",
-    inversee_text: "Entrez les débits et pertes pour calcul des vitesses et NPSH",
-    debit_total: "Débit total (m3/h)",
-    pertes_totales_label: "Pertes totales (mCE)",
     resultats_title: "Résultats",
     surface: "Surface",
     volume: "Volume",
@@ -82,7 +62,10 @@ const translations = {
     total_ref: "Total refoulement",
     pertes_totales: "Pertes totales",
     en_bar: "Bar",
-    en_psi: "PSI"
+    en_psi: "PSI",
+    rapport: "RAPPORT D'ÉTUDE HYDRAULIQUE",
+    date: "Date",
+    heure: "Heure"
   },
   en: {
     title: "Pool Master Hydraulic",
@@ -96,9 +79,6 @@ const translations = {
     tab_canalisations: "Pipes",
     tab_pertes: "Singular losses",
     tab_pression: "Pressure & Filter",
-    tab_pieces: "Embedded parts",
-    tab_parametres: "Settings",
-    tab_inversee: "Reverse study",
     tab_resultats: "Results / PDF",
     forme: "Pool shape",
     rectangle: "Rectangular",
@@ -136,23 +116,6 @@ const translations = {
     vannes: "Valves",
     hauteur_geo: "Geometric height (m)",
     perte_filtre: "Filter loss (mCE)",
-    pieces_title: "Embedded parts",
-    skimmers: "Skimmers",
-    bondes: "Bottom drains",
-    refoulements: "Returns",
-    cascade: "Waterfall",
-    parametres_title: "User settings",
-    type_tuyau: "Pipe type",
-    section_int: "Internal section (mm)",
-    opt_32: "32 mm external",
-    opt_50: "50 mm external",
-    opt_63: "63 mm external",
-    opt_75: "75 mm external",
-    inversee_title: "Reverse study (optional)",
-    activer_inversee: "Enable reverse study",
-    inversee_text: "Enter flow rates and losses to calculate velocities and NPSH",
-    debit_total: "Total flow (m3/h)",
-    pertes_totales_label: "Total losses (mCE)",
     resultats_title: "Results",
     surface: "Surface",
     volume: "Volume",
@@ -166,7 +129,10 @@ const translations = {
     total_ref: "Total discharge",
     pertes_totales: "Total losses",
     en_bar: "Bar",
-    en_psi: "PSI"
+    en_psi: "PSI",
+    rapport: "HYDRAULIC STUDY REPORT",
+    date: "Date",
+    heure: "Time"
   },
   es: {
     title: "Pool Master Hydraulic",
@@ -180,9 +146,6 @@ const translations = {
     tab_canalisations: "Tuberías",
     tab_pertes: "Pérdidas singulares",
     tab_pression: "Presión & Filtro",
-    tab_pieces: "Piezas a instalar",
-    tab_parametres: "Parámetros",
-    tab_inversee: "Estudio inverso",
     tab_resultats: "Resultados / PDF",
     forme: "Forma de la piscina",
     rectangle: "Rectangular",
@@ -220,23 +183,6 @@ const translations = {
     vannes: "Válvulas",
     hauteur_geo: "Altura geométrica (m)",
     perte_filtre: "Pérdida filtro (mCE)",
-    pieces_title: "Piezas a instalar",
-    skimmers: "Skimmers",
-    bondes: "Drenajes de fondo",
-    refoulements: "Retornos",
-    cascade: "Cascada",
-    parametres_title: "Parámetros usuario",
-    type_tuyau: "Tipo de tubería",
-    section_int: "Sección interna (mm)",
-    opt_32: "32 mm exterior",
-    opt_50: "50 mm exterior",
-    opt_63: "63 mm exterior",
-    opt_75: "75 mm exterior",
-    inversee_title: "Estudio inverso (opcional)",
-    activer_inversee: "Activar estudio inverso",
-    inversee_text: "Ingrese caudales y pérdidas para calcular velocidades y NPSH",
-    debit_total: "Caudal total (m3/h)",
-    pertes_totales_label: "Pérdidas totales (mCE)",
     resultats_title: "Resultados",
     surface: "Superficie",
     volume: "Volumen",
@@ -250,7 +196,10 @@ const translations = {
     total_ref: "Total impulsión",
     pertes_totales: "Pérdidas totales",
     en_bar: "Bar",
-    en_psi: "PSI"
+    en_psi: "PSI",
+    rapport: "INFORME DE ESTUDIO HIDRÁULICO",
+    date: "Fecha",
+    heure: "Hora"
   }
 };
 
@@ -276,10 +225,6 @@ window.choixForme = function(){
     case "libre": $('#libre-fields').show(); break;
   }
   calculerResultats();
-};
-
-window.exporterPDF = function(){
-  html2pdf().from(document.getElementById('res')).save();
 };
 
 // ====== CONVERSIONS ======
@@ -409,6 +354,51 @@ window.calculerResultats = function(){
   }
 };
 
+// ====== EXPORT PDF PROFESSIONNEL ======
+window.exporterPDF = function(){
+  const t = translations[currentLang];
+  
+  // Récupérer le contenu des résultats
+  const contenu = $('#res').html();
+  
+  // Date et heure actuelles
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR');
+  const heureStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+  
+  // Créer le contenu PDF formaté
+  const pdfContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 794px; margin: 0 auto;">
+      <div style="text-align: center; border-bottom: 3px solid #003366; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="color: #003366; font-size: 24px; margin: 0;">${t.rapport}</h1>
+        <h2 style="color: #0066cc; font-size: 20px; margin: 5px 0;">${t.title}</h2>
+        <div style="font-size: 14px; color: #666; margin-top: 10px;">
+          <span>${t.date} : ${dateStr}</span> &nbsp;|&nbsp; 
+          <span>${t.heure} : ${heureStr}</span>
+        </div>
+      </div>
+      <div style="font-size: 14px; line-height: 1.8;">
+        ${contenu}
+      </div>
+      <div style="text-align: center; border-top: 2px solid #ccc; padding-top: 15px; margin-top: 30px; font-size: 12px; color: #999;">
+        ${t.title} - ${t.rapport} - ${dateStr} ${heureStr}
+      </div>
+    </div>
+  `;
+  
+  // Options du PDF
+  const opt = {
+    margin: 10,
+    filename: `${t.title}_${dateStr.replace(/\//g, '-')}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  
+  // Générer le PDF
+  html2pdf().set(opt).from(pdfContent).save();
+};
+
 // ====== LANGUE ======
 function setLanguage(lang){
   currentLang = lang;
@@ -430,9 +420,6 @@ function setLanguage(lang){
   $('#tab-canalisations').text(t.tab_canalisations);
   $('#tab-pertes').text(t.tab_pertes);
   $('#tab-pression').text(t.tab_pression);
-  $('#tab-pieces').text(t.tab_pieces);
-  $('#tab-parametres').text(t.tab_parametres);
-  $('#tab-inversee').text(t.tab_inversee);
   $('#tab-resultats').text(t.tab_resultats);
   
   // Piscine
@@ -486,29 +473,6 @@ function setLanguage(lang){
   // Pression
   $('#label-Hgeo').text(t.hauteur_geo);
   $('#label-dpfiltre').text(t.perte_filtre);
-  
-  // Pièces
-  $('#label-pieces-title').text(t.pieces_title);
-  $('#label-skimmer').text(t.skimmers);
-  $('#label-bonde').text(t.bondes);
-  $('#label-refoulement-pieces').text(t.refoulements);
-  $('#label-cascade').text(t.cascade);
-  
-  // Paramètres
-  $('#label-parametres-title').text(t.parametres_title);
-  $('#label-type-tuyau').text(t.type_tuyau);
-  $('#label-section-int').text(t.section_int);
-  $('#opt-32').text(t.opt_32);
-  $('#opt-50').text(t.opt_50);
-  $('#opt-63').text(t.opt_63);
-  $('#opt-75').text(t.opt_75);
-  
-  // Étude inversée
-  $('#label-inversee-title').text(t.inversee_title);
-  $('#label-activer-inversee').text(t.activer_inversee);
-  $('#text-inversee').text(t.inversee_text);
-  $('#label-Qinv').text(t.debit_total);
-  $('#label-Hinv').text(t.pertes_totales_label);
   
   // Résultats
   $('#label-resultats-title').text(t.resultats_title);

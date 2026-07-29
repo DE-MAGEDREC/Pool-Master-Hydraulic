@@ -37,8 +37,10 @@ const translations = {
     refoulement: "Refoulement",
     longueur_asp: "Longueur aspiration (m)",
     vitesse_asp: "Vitesse aspiration (m/s)",
+    aide_vitesse_asp: "⚠️ Valeur recommandée : 1.5 m/s",
     longueur_ref: "Longueur refoulement (m)",
     vitesse_ref: "Vitesse refoulement (m/s)",
+    aide_vitesse_ref: "⚠️ Valeur recommandée : 2.0 m/s",
     option_PVC_rigide: "PVC rigide",
     option_PVC_souple: "PVC souple",
     option_PE: "Polyéthylène",
@@ -117,8 +119,10 @@ const translations = {
     refoulement: "Discharge",
     longueur_asp: "Suction length (m)",
     vitesse_asp: "Suction velocity (m/s)",
+    aide_vitesse_asp: "⚠️ Recommended value: 1.5 m/s",
     longueur_ref: "Discharge length (m)",
     vitesse_ref: "Discharge velocity (m/s)",
+    aide_vitesse_ref: "⚠️ Recommended value: 2.0 m/s",
     option_PVC_rigide: "Rigid PVC",
     option_PVC_souple: "Flexible PVC",
     option_PE: "Polyethylene",
@@ -197,8 +201,10 @@ const translations = {
     refoulement: "Impulsión",
     longueur_asp: "Longitud aspiración (m)",
     vitesse_asp: "Velocidad aspiración (m/s)",
+    aide_vitesse_asp: "⚠️ Valor recomendado: 1.5 m/s",
     longueur_ref: "Longitud impulsión (m)",
     vitesse_ref: "Velocidad impulsión (m/s)",
+    aide_vitesse_ref: "⚠️ Valor recomendado: 2.0 m/s",
     option_PVC_rigide: "PVC rígido",
     option_PVC_souple: "PVC flexible",
     option_PE: "Polietileno",
@@ -303,9 +309,9 @@ function getKValues(dn) {
 
 // ====== VALEURS PAR DÉFAUT ======
 const DEFAULT_VALUES = {
-  L: '10',
-  l: '5',
-  p: '1.5',
+  L: '',
+  l: '',
+  p: '',
   cote: '',
   p_carre: '',
   D_piscine: '',
@@ -322,7 +328,7 @@ const DEFAULT_VALUES = {
   L_asp: '10',
   v_asp: '1.5',
   L_ref: '15',
-  v_ref: '2',
+  v_ref: '2.0',
   coudes90C_asp: '2',
   coudes90G_asp: '1',
   coudes45_asp: '0',
@@ -364,6 +370,7 @@ window.choixForme = function(){
 window.resetAll = function(){
   const t = translations[currentLang];
   
+  // Réinitialiser tous les champs avec les valeurs par défaut
   Object.keys(DEFAULT_VALUES).forEach(function(key) {
     if (key === 'forme') {
       $('input[name="forme"][value="' + DEFAULT_VALUES.forme + '"]').prop('checked', true);
@@ -379,8 +386,13 @@ window.resetAll = function(){
     }
   });
   
+  // Forcer la mise à jour des champs de forme
   choixForme();
+  
+  // Recalculer les résultats
   calculerResultats();
+  
+  // Afficher un message de confirmation
   alert(t.reset_confirm);
 };
 
@@ -444,7 +456,7 @@ window.calculerResultats = function(){
     console.log("Coefficients K utilisés:", kValues);
     
     const v_asp = parseFloat($('#v_asp').val()) || 1.5;
-    const v_ref = parseFloat($('#v_ref').val()) || 2;
+    const v_ref = parseFloat($('#v_ref').val()) || 2.0;
     
     const mat = $('#materiau').val();
     let lambda = 0.02;
@@ -781,6 +793,11 @@ function setLanguage(lang){
   $('#label-vasp').text(t.vitesse_asp);
   $('#label-Lref').text(t.longueur_ref);
   $('#label-vref').text(t.vitesse_ref);
+  
+  // Aides pour les vitesses
+  $('label-vasp + small').text(t.aide_vitesse_asp);
+  $('label-vref + small').text(t.aide_vitesse_ref);
+  
   $('#opt-PVC_rigide').text(t.option_PVC_rigide);
   $('#opt-PVC_souple').text(t.option_PVC_souple);
   $('#opt-PE').text(t.option_PE);

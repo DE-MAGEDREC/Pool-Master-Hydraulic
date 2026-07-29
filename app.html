@@ -158,23 +158,27 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <!-- PERTES SINGULIERES -->
 <div class="tab-pane fade" id="pertes_singulieres">
 <h6 id="label-aspiration-sing">Aspiration</h6>
-<label id="label-c90Casp">Coude 90° court rayon (K=1.50)</label>
+<label id="label-c90Casp">Coude 90° court rayon</label>
 <input id="coudes90C_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-c90Gasp">Coude 90° grand rayon (K=0.35)</label>
+<label id="label-c90Gasp">Coude 90° grand rayon</label>
 <input id="coudes90G_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-tesasp">Té 90° dérivation (K=1.80)</label>
+<label id="label-c45asp">Coude 45°</label>
+<input id="coudes45_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesasp">Té 90° dérivation</label>
 <input id="tes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-vannesasp">Vanne à boisseau sphérique (K=0.05)</label>
+<label id="label-vannesasp">Vanne à boisseau sphérique</label>
 <input id="vannes_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <h6 id="label-refoulement-sing">Refoulement</h6>
-<label id="label-c90Cref">Coude 90° court rayon (K=1.50)</label>
+<label id="label-c90Cref">Coude 90° court rayon</label>
 <input id="coudes90C_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-c90Gref">Coude 90° grand rayon (K=0.35)</label>
+<label id="label-c90Gref">Coude 90° grand rayon</label>
 <input id="coudes90G_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-tesref">Té 90° dérivation (K=1.80)</label>
+<label id="label-c45ref">Coude 45°</label>
+<input id="coudes45_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<label id="label-tesref">Té 90° dérivation</label>
 <input id="tes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
-<label id="label-vannesref">Vanne à boisseau sphérique (K=0.05)</label>
+<label id="label-vannesref">Vanne à boisseau sphérique</label>
 <input id="vannes_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 
 <button class="btn btn-primary mt-3" id="btn-suivant3" onclick="suivant('#pression')">Suivant →</button>

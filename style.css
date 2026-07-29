@@ -83,3 +83,19 @@
   cursor: pointer;
   z-index: 999;
 }
+
+/* Styles pour les labels */
+label {
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.form-control {
+  margin-bottom: 10px;
+}
+
+h6 {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}

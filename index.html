@@ -69,4 +69,13 @@ window.register = () => {
   const error = document.getElementById('error');
   
   createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(c =>
+    .then(c => {
+      sendEmailVerification(c.user);
+      alert("Compte créé. Vérifiez votre email.");
+    })
+    .catch(e => error.innerText = e.message);
+};
+</script>
+
+</body>
+</html>

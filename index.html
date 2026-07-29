@@ -46,6 +46,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 window.login = () => {
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const error = document.getElementById('error');
+  
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(c => {
       if (!c.user.emailVerified) {
@@ -59,6 +63,10 @@ window.login = () => {
 };
 
 window.register = () => {
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const error = document.getElementById('error');
+  
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(c => {
       sendEmailVerification(c.user);

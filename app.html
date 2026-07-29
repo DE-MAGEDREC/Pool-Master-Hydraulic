@@ -27,9 +27,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 onAuthStateChanged(auth, user => {
-  if (!user || !user.emailVerified) {
+  if (!user) {
     window.location.href = "index.html";
   }
+  // Supprimer la vérification email
 });
 
 window.logout = () => signOut(auth).then(() => location.href="index.html");

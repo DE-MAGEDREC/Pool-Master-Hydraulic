@@ -145,12 +145,18 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 <input id="L_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-vasp">Vitesse aspiration (m/s)</label>
 <input id="v_asp" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<small style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;">
+  ⚠️ Valeur recommandée : 1.5 m/s
+</small>
 
 <h6 id="label-refoulement">Refoulement</h6>
 <label id="label-Lref">Longueur refoulement (m)</label>
 <input id="L_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
 <label id="label-vref">Vitesse refoulement (m/s)</label>
 <input id="v_ref" class="form-control mb-1 input-calc" oninput="calculerResultats()" value="">
+<small style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;">
+  ⚠️ Valeur recommandée : 2.0 m/s
+</small>
 
 <button class="btn btn-primary mt-3" id="btn-suivant2" onclick="suivant('#pertes_singulieres')">Suivant →</button>
 </div>

@@ -20,7 +20,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Fonctions exportées pour être utilisées dans index.html
 export const login = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
@@ -41,7 +40,6 @@ export const onAuthChange = (callback) => {
   return onAuthStateChanged(auth, callback);
 };
 
-// Pour une utilisation dans app.html
 export const checkAuth = () => {
   return new Promise((resolve) => {
     onAuthStateChanged(auth, (user) => {

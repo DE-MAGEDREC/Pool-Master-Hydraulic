@@ -88,6 +88,7 @@
 label {
   font-weight: 500;
   margin-top: 8px;
+  display: block;
 }
 
 .form-control {

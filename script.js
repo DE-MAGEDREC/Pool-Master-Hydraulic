@@ -1,26 +1,26 @@
-// ====== TRADUCTIONS ======
+// ====== TRADUCTIONS COMPLÈTES ======
 const translations = {
   fr: {
+    // Général
     title: "Pool Master Hydraulic",
-    tabs: ["Piscine", "Canalisations", "Pertes singulières", "Pression & Filtre", "Pièces à sceller", "Paramètres", "Étude inversée", "Résultats / PDF"],
-    suivant: "Suivant →",
-    surface: "Surface",
-    volume: "Volume",
-    debit: "Débit filtration",
-    hauteur: "Hauteur géométrique",
-    filtre: "Perte filtre",
-    friction: "Friction canalisation",
-    pertes_sing_asp: "Pertes singulières aspiration",
-    pertes_sing_ref: "Pertes singulières refoulement",
-    total_asp: "Total aspiration",
-    total_ref: "Total refoulement",
-    pertes_totales: "Pertes totales",
-    exporter: "Exporter PDF",
     logout: "Déconnexion",
-    en_bar: "Bar",
-    en_psi: "PSI",
+    langue: "Langue :",
+    suivant: "Suivant →",
+    exporter: "Exporter PDF",
     resultats: "Résultats",
     en_attente: "En attente de données…",
+    
+    // Onglets
+    tab_piscine: "Piscine",
+    tab_canalisations: "Canalisations",
+    tab_pertes: "Pertes singulières",
+    tab_pression: "Pression & Filtre",
+    tab_pieces: "Pièces à sceller",
+    tab_parametres: "Paramètres",
+    tab_inversee: "Étude inversée",
+    tab_resultats: "Résultats / PDF",
+    
+    // Piscine
     forme: "Forme de la piscine",
     rectangle: "Rectangulaire",
     carre: "Carrée",
@@ -37,6 +37,8 @@ const translations = {
     longueur_approx: "Longueur approx. (m)",
     largeur_approx: "Largeur approx. (m)",
     temps_recycl: "Temps recyclage (h)",
+    
+    // Canalisations
     diametre_canalisation: "Diamètre canalisation (mm)",
     materiau: "Matériau",
     aspiration: "Aspiration",
@@ -45,46 +47,84 @@ const translations = {
     vitesse_asp: "Vitesse aspiration (m/s)",
     longueur_ref: "Longueur refoulement (m)",
     vitesse_ref: "Vitesse refoulement (m/s)",
-    coudes90C: "Coudes 90° court rayon",
-    coudes90G: "Coudes 90° grand rayon",
-    tes: "Tés",
-    vannes: "Vannes",
-    hauteur_geo: "Hauteur géométrique (m)",
-    perte_filtre: "Perte filtre (mCE)",
-    skimmers: "Skimmers",
-    bondes: "Bondes de fond",
-    refoulements: "Refoulements",
-    cascade: "Cascade",
-    type_tuyau: "Type de tuyau",
-    section_int: "Section intérieure (mm)",
     option_PVC_rigide: "PVC rigide",
     option_PVC_souple: "PVC souple",
     option_PE: "Polyéthylène",
     option_Turbulent: "Turbulent",
+    
+    // Pertes singulières
     aspiration_tab: "Aspiration",
-    refoulement_tab: "Refoulement"
-  },
-  en: {
-    title: "Pool Master Hydraulic",
-    tabs: ["Pool", "Pipes", "Singular losses", "Pressure & Filter", "Embedded parts", "Settings", "Reverse study", "Results / PDF"],
-    suivant: "Next →",
+    refoulement_tab: "Refoulement",
+    coudes90C: "Coudes 90° court rayon",
+    coudes90G: "Coudes 90° grand rayon",
+    tes: "Tés",
+    vannes: "Vannes",
+    
+    // Pression
+    hauteur_geo: "Hauteur géométrique (m)",
+    perte_filtre: "Perte filtre (mCE)",
+    
+    // Pièces
+    pieces_title: "Pièces à sceller",
+    skimmers: "Skimmers",
+    bondes: "Bondes de fond",
+    refoulements: "Refoulements",
+    cascade: "Cascade",
+    
+    // Paramètres
+    parametres_title: "Paramètres utilisateur",
+    type_tuyau: "Type de tuyau",
+    section_int: "Section intérieure (mm)",
+    opt_32: "32 mm extérieur",
+    opt_50: "50 mm extérieur",
+    opt_63: "63 mm extérieur",
+    opt_75: "75 mm extérieur",
+    
+    // Étude inversée
+    inversee_title: "Étude inversée (optionnelle)",
+    activer_inversee: "Activer étude inversée",
+    inversee_text: "Entrez les débits et pertes pour calcul des vitesses et NPSH",
+    debit_total: "Débit total (m3/h)",
+    pertes_totales_label: "Pertes totales (mCE)",
+    
+    // Résultats
+    resultats_title: "Résultats",
     surface: "Surface",
     volume: "Volume",
-    debit: "Filtration flow",
-    hauteur: "Geometric height",
-    filtre: "Filter loss",
-    friction: "Pipe friction",
-    pertes_sing_asp: "Suction singular losses",
-    pertes_sing_ref: "Discharge singular losses",
-    total_asp: "Total suction",
-    total_ref: "Total discharge",
-    pertes_totales: "Total losses",
-    exporter: "Export PDF",
-    logout: "Logout",
+    debit: "Débit filtration",
+    hauteur: "Hauteur géométrique",
+    filtre: "Perte filtre",
+    friction: "Friction canalisation",
+    pertes_sing_asp: "Pertes singulières aspiration",
+    pertes_sing_ref: "Pertes singulières refoulement",
+    total_asp: "Total aspiration",
+    total_ref: "Total refoulement",
+    pertes_totales: "Pertes totales",
     en_bar: "Bar",
-    en_psi: "PSI",
+    en_psi: "PSI"
+  },
+  
+  en: {
+    // Général
+    title: "Pool Master Hydraulic",
+    logout: "Logout",
+    langue: "Language:",
+    suivant: "Next →",
+    exporter: "Export PDF",
     resultats: "Results",
     en_attente: "Waiting for data…",
+    
+    // Onglets
+    tab_piscine: "Pool",
+    tab_canalisations: "Pipes",
+    tab_pertes: "Singular losses",
+    tab_pression: "Pressure & Filter",
+    tab_pieces: "Embedded parts",
+    tab_parametres: "Settings",
+    tab_inversee: "Reverse study",
+    tab_resultats: "Results / PDF",
+    
+    // Piscine
     forme: "Pool shape",
     rectangle: "Rectangular",
     carre: "Square",
@@ -101,6 +141,8 @@ const translations = {
     longueur_approx: "Approx. length (m)",
     largeur_approx: "Approx. width (m)",
     temps_recycl: "Recycling time (h)",
+    
+    // Canalisations
     diametre_canalisation: "Pipe diameter (mm)",
     materiau: "Material",
     aspiration: "Suction",
@@ -109,46 +151,84 @@ const translations = {
     vitesse_asp: "Suction velocity (m/s)",
     longueur_ref: "Discharge length (m)",
     vitesse_ref: "Discharge velocity (m/s)",
-    coudes90C: "90° elbows short radius",
-    coudes90G: "90° elbows long radius",
-    tes: "Tees",
-    vannes: "Valves",
-    hauteur_geo: "Geometric height (m)",
-    perte_filtre: "Filter loss (mCE)",
-    skimmers: "Skimmers",
-    bondes: "Bottom drains",
-    refoulements: "Returns",
-    cascade: "Waterfall",
-    type_tuyau: "Pipe type",
-    section_int: "Internal section (mm)",
     option_PVC_rigide: "Rigid PVC",
     option_PVC_souple: "Flexible PVC",
     option_PE: "Polyethylene",
     option_Turbulent: "Turbulent",
+    
+    // Pertes singulières
     aspiration_tab: "Suction",
-    refoulement_tab: "Discharge"
-  },
-  es: {
-    title: "Pool Master Hydraulic",
-    tabs: ["Piscina", "Tuberías", "Pérdidas singulares", "Presión & Filtro", "Piezas a instalar", "Parámetros", "Estudio inverso", "Resultados / PDF"],
-    suivant: "Siguiente →",
-    surface: "Superficie",
-    volume: "Volumen",
-    debit: "Caudal filtración",
-    hauteur: "Altura geométrica",
-    filtre: "Pérdida filtro",
-    friction: "Fricción tuberías",
-    pertes_sing_asp: "Pérdidas succión",
-    pertes_sing_ref: "Pérdidas impulsión",
-    total_asp: "Total aspiración",
-    total_ref: "Total impulsión",
-    pertes_totales: "Pérdidas totales",
-    exporter: "Exportar PDF",
-    logout: "Cerrar sesión",
+    refoulement_tab: "Discharge",
+    coudes90C: "90° elbows short radius",
+    coudes90G: "90° elbows long radius",
+    tes: "Tees",
+    vannes: "Valves",
+    
+    // Pression
+    hauteur_geo: "Geometric height (m)",
+    perte_filtre: "Filter loss (mCE)",
+    
+    // Pièces
+    pieces_title: "Embedded parts",
+    skimmers: "Skimmers",
+    bondes: "Bottom drains",
+    refoulements: "Returns",
+    cascade: "Waterfall",
+    
+    // Paramètres
+    parametres_title: "User settings",
+    type_tuyau: "Pipe type",
+    section_int: "Internal section (mm)",
+    opt_32: "32 mm external",
+    opt_50: "50 mm external",
+    opt_63: "63 mm external",
+    opt_75: "75 mm external",
+    
+    // Étude inversée
+    inversee_title: "Reverse study (optional)",
+    activer_inversee: "Enable reverse study",
+    inversee_text: "Enter flow rates and losses to calculate velocities and NPSH",
+    debit_total: "Total flow (m3/h)",
+    pertes_totales_label: "Total losses (mCE)",
+    
+    // Résultats
+    resultats_title: "Results",
+    surface: "Surface",
+    volume: "Volume",
+    debit: "Filtration flow",
+    hauteur: "Geometric height",
+    filtre: "Filter loss",
+    friction: "Pipe friction",
+    pertes_sing_asp: "Suction singular losses",
+    pertes_sing_ref: "Discharge singular losses",
+    total_asp: "Total suction",
+    total_ref: "Total discharge",
+    pertes_totales: "Total losses",
     en_bar: "Bar",
-    en_psi: "PSI",
+    en_psi: "PSI"
+  },
+  
+  es: {
+    // Général
+    title: "Pool Master Hydraulic",
+    logout: "Cerrar sesión",
+    langue: "Idioma:",
+    suivant: "Siguiente →",
+    exporter: "Exportar PDF",
     resultats: "Resultados",
     en_attente: "Esperando datos…",
+    
+    // Onglets
+    tab_piscine: "Piscina",
+    tab_canalisations: "Tuberías",
+    tab_pertes: "Pérdidas singulares",
+    tab_pression: "Presión & Filtro",
+    tab_pieces: "Piezas a instalar",
+    tab_parametres: "Parámetros",
+    tab_inversee: "Estudio inverso",
+    tab_resultats: "Resultados / PDF",
+    
+    // Piscine
     forme: "Forma de la piscina",
     rectangle: "Rectangular",
     carre: "Cuadrada",
@@ -165,6 +245,8 @@ const translations = {
     longueur_approx: "Largo aprox. (m)",
     largeur_approx: "Ancho aprox. (m)",
     temps_recycl: "Tiempo reciclaje (h)",
+    
+    // Canalisations
     diametre_canalisation: "Diámetro tubería (mm)",
     materiau: "Material",
     aspiration: "Aspiración",
@@ -173,24 +255,61 @@ const translations = {
     vitesse_asp: "Velocidad aspiración (m/s)",
     longueur_ref: "Longitud impulsión (m)",
     vitesse_ref: "Velocidad impulsión (m/s)",
-    coudes90C: "Codos 90° radio corto",
-    coudes90G: "Codos 90° radio largo",
-    tes: "Tes",
-    vannes: "Válvulas",
-    hauteur_geo: "Altura geométrica (m)",
-    perte_filtre: "Pérdida filtro (mCE)",
-    skimmers: "Skimmers",
-    bondes: "Drenajes de fondo",
-    refoulements: "Retornos",
-    cascade: "Cascada",
-    type_tuyau: "Tipo de tubería",
-    section_int: "Sección interna (mm)",
     option_PVC_rigide: "PVC rígido",
     option_PVC_souple: "PVC flexible",
     option_PE: "Polietileno",
     option_Turbulent: "Turbulento",
+    
+    // Pertes singulières
     aspiration_tab: "Aspiración",
-    refoulement_tab: "Impulsión"
+    refoulement_tab: "Impulsión",
+    coudes90C: "Codos 90° radio corto",
+    coudes90G: "Codos 90° radio largo",
+    tes: "Tes",
+    vannes: "Válvulas",
+    
+    // Pression
+    hauteur_geo: "Altura geométrica (m)",
+    perte_filtre: "Pérdida filtro (mCE)",
+    
+    // Pièces
+    pieces_title: "Piezas a instalar",
+    skimmers: "Skimmers",
+    bondes: "Drenajes de fondo",
+    refoulements: "Retornos",
+    cascade: "Cascada",
+    
+    // Paramètres
+    parametres_title: "Parámetros usuario",
+    type_tuyau: "Tipo de tubería",
+    section_int: "Sección interna (mm)",
+    opt_32: "32 mm exterior",
+    opt_50: "50 mm exterior",
+    opt_63: "63 mm exterior",
+    opt_75: "75 mm exterior",
+    
+    // Étude inversée
+    inversee_title: "Estudio inverso (opcional)",
+    activer_inversee: "Activar estudio inverso",
+    inversee_text: "Ingrese caudales y pérdidas para calcular velocidades y NPSH",
+    debit_total: "Caudal total (m3/h)",
+    pertes_totales_label: "Pérdidas totales (mCE)",
+    
+    // Résultats
+    resultats_title: "Resultados",
+    surface: "Superficie",
+    volume: "Volumen",
+    debit: "Caudal filtración",
+    hauteur: "Altura geométrica",
+    filtre: "Pérdida filtro",
+    friction: "Fricción tuberías",
+    pertes_sing_asp: "Pérdidas succión",
+    pertes_sing_ref: "Pérdidas impulsión",
+    total_asp: "Total aspiración",
+    total_ref: "Total impulsión",
+    pertes_totales: "Pérdidas totales",
+    en_bar: "Bar",
+    en_psi: "PSI"
   }
 };
 
@@ -333,11 +452,16 @@ function calculerResultats(){
 <small>≈ ${mceToBar(H_total)} ${t.en_bar} | ${mceToPsi(H_total)} ${t.en_psi}</small>
 `;
 
+    // Mise à jour des deux zones de résultats
     $('#res').html(html);
     $('#resultats-content').html(html);
+    $('#resultats-content').show();
+    
   } catch(e) {
     console.error("Erreur de calcul:", e);
-    $('#resultats-content').html('<p class="text-danger">Erreur de calcul. Vérifiez les données saisies.</p>');
+    const errorHtml = '<p class="text-danger">Erreur de calcul. Vérifiez les données saisies.</p>';
+    $('#res').html(errorHtml);
+    $('#resultats-content').html(errorHtml);
   }
 }
 
@@ -351,82 +475,102 @@ function setLanguage(lang){
   currentLang = lang;
   const t = translations[lang];
 
-  // Titres
+  // Général
   $('#main-title').text(t.title);
-  $('#res_droite h5').text(t.resultats);
-  $('#resultats-content').html(t.en_attente);
-  
-  // Boutons
+  $('#logout-btn').text(t.logout);
+  $('#lang-label').text(t.langue);
   $('.btn-primary').text(t.suivant);
   $('#btn-pdf').text(t.exporter);
-  $('.logout-btn').text(t.logout);
+  $('#res-droite-title').text(t.resultats);
+  $('#resultats-content').text(t.en_attente);
   
   // Onglets
-  $('.nav-link').each(function(index){
-    if(index < t.tabs.length){
-      $(this).text(t.tabs[index]);
-    }
-  });
-
-  // Labels et textes
-  $('h6:contains("Forme")').text(t.forme);
-  $('label:contains("Rectangulaire")').text(t.rectangle);
-  $('label:contains("Carrée")').text(t.carre);
-  $('label:contains("Ronde")').text(t.ronde);
-  $('label:contains("Ovale")').text(t.ovale);
-  $('label:contains("Libre")').text(t.libre);
+  $('#tab-piscine').text(t.tab_piscine);
+  $('#tab-canalisations').text(t.tab_canalisations);
+  $('#tab-pertes').text(t.tab_pertes);
+  $('#tab-pression').text(t.tab_pression);
+  $('#tab-pieces').text(t.tab_pieces);
+  $('#tab-parametres').text(t.tab_parametres);
+  $('#tab-inversee').text(t.tab_inversee);
+  $('#tab-resultats').text(t.tab_resultats);
   
-  $('#rectangle-fields label:eq(0)').text(t.longueur);
-  $('#rectangle-fields label:eq(1)').text(t.largeur);
-  $('#rectangle-fields label:eq(2)').text(t.profondeur);
-  $('#carre-fields label:eq(0)').text(t.cote);
-  $('#carre-fields label:eq(1)').text(t.profondeur);
-  $('#ronde-fields label:eq(0)').text(t.diametre);
-  $('#ronde-fields label:eq(1)').text(t.profondeur);
-  $('#ovale-fields label:eq(0)').text(t.grand_axe);
-  $('#ovale-fields label:eq(1)').text(t.petit_axe);
-  $('#ovale-fields label:eq(2)').text(t.profondeur);
-  $('#libre-fields label:eq(0)').text(t.longueur_approx);
-  $('#libre-fields label:eq(1)').text(t.largeur_approx);
-  $('#libre-fields label:eq(2)').text(t.profondeur);
+  // Piscine
+  $('#label-forme').text(t.forme);
+  $('#label-rectangle').text(t.rectangle);
+  $('#label-carre').text(t.carre);
+  $('#label-ronde').text(t.ronde);
+  $('#label-ovale').text(t.ovale);
+  $('#label-libre').text(t.libre);
+  $('#label-L').text(t.longueur);
+  $('#label-l').text(t.largeur);
+  $('#label-p').text(t.profondeur);
+  $('#label-cote').text(t.cote);
+  $('#label-pcarre').text(t.profondeur);
+  $('#label-diametre-piscine').text(t.diametre);
+  $('#label-pr').text(t.profondeur);
+  $('#label-grandaxe').text(t.grand_axe);
+  $('#label-petitaxe').text(t.petit_axe);
+  $('#label-po').text(t.profondeur);
+  $('#label-Llibre').text(t.longueur_approx);
+  $('#label-llibre').text(t.largeur_approx);
+  $('#label-plibre').text(t.profondeur);
+  $('#label-temps-recycl').text(t.temps_recycl);
   
-  $('#piscine label:contains("Temps")').text(t.temps_recycl);
-  $('#canalisations label:contains("Diamètre")').text(t.diametre_canalisation);
-  $('#canalisations label:contains("Matériau")').text(t.materiau);
-  $('#canalisations h6:contains("Aspiration")').text(t.aspiration);
-  $('#canalisations h6:contains("Refoulement")').text(t.refoulement);
-  $('#canalisations label:contains("Longueur aspiration")').text(t.longueur_asp);
-  $('#canalisations label:contains("Vitesse aspiration")').text(t.vitesse_asp);
-  $('#canalisations label:contains("Longueur refoulement")').text(t.longueur_ref);
-  $('#canalisations label:contains("Vitesse refoulement")').text(t.vitesse_ref);
+  // Canalisations
+  $('#label-diametre-canalisation').text(t.diametre_canalisation);
+  $('#label-materiau').text(t.materiau);
+  $('#label-aspiration').text(t.aspiration);
+  $('#label-refoulement').text(t.refoulement);
+  $('#label-Lasp').text(t.longueur_asp);
+  $('#label-vasp').text(t.vitesse_asp);
+  $('#label-Lref').text(t.longueur_ref);
+  $('#label-vref').text(t.vitesse_ref);
+  $('#opt-PVC_rigide').text(t.option_PVC_rigide);
+  $('#opt-PVC_souple').text(t.option_PVC_souple);
+  $('#opt-PE').text(t.option_PE);
+  $('#opt-Turbulent').text(t.option_Turbulent);
   
-  $('#materiau option[value="PVC_rigide"]').text(t.option_PVC_rigide);
-  $('#materiau option[value="PVC_souple"]').text(t.option_PVC_souple);
-  $('#materiau option[value="PE"]').text(t.option_PE);
-  $('#materiau option[value="Turbulent"]').text(t.option_Turbulent);
+  // Pertes singulières
+  $('#label-aspiration-sing').text(t.aspiration_tab);
+  $('#label-refoulement-sing').text(t.refoulement_tab);
+  $('#label-c90Casp').text(t.coudes90C);
+  $('#label-c90Gasp').text(t.coudes90G);
+  $('#label-tesasp').text(t.tes);
+  $('#label-vannesasp').text(t.vannes);
+  $('#label-c90Cref').text(t.coudes90C);
+  $('#label-c90Gref').text(t.coudes90G);
+  $('#label-tesref').text(t.tes);
+  $('#label-vannesref').text(t.vannes);
   
-  $('#pertes_singulieres h6:eq(0)').text(t.aspiration_tab);
-  $('#pertes_singulieres h6:eq(1)').text(t.refoulement_tab);
-  $('#pertes_singulieres label:contains("Coudes 90° court")').text(t.coudes90C);
-  $('#pertes_singulieres label:contains("Coudes 90° grand")').text(t.coudes90G);
-  $('#pertes_singulieres label:contains("Tés")').text(t.tes);
-  $('#pertes_singulieres label:contains("Vannes")').text(t.vannes);
+  // Pression
+  $('#label-Hgeo').text(t.hauteur_geo);
+  $('#label-dpfiltre').text(t.perte_filtre);
   
-  $('#pression label:contains("Hauteur")').text(t.hauteur_geo);
-  $('#pression label:contains("Perte filtre")').text(t.perte_filtre);
+  // Pièces
+  $('#label-pieces-title').text(t.pieces_title);
+  $('#label-skimmer').text(t.skimmers);
+  $('#label-bonde').text(t.bondes);
+  $('#label-refoulement-pieces').text(t.refoulements);
+  $('#label-cascade').text(t.cascade);
   
-  $('#pieces label:contains("Skimmers")').text(t.skimmers);
-  $('#pieces label:contains("Bondes")').text(t.bondes);
-  $('#pieces label:contains("Refoulements")').text(t.refoulements);
-  $('#pieces label:contains("Cascade")').text(t.cascade);
+  // Paramètres
+  $('#label-parametres-title').text(t.parametres_title);
+  $('#label-type-tuyau').text(t.type_tuyau);
+  $('#label-section-int').text(t.section_int);
+  $('#opt-32').text(t.opt_32);
+  $('#opt-50').text(t.opt_50);
+  $('#opt-63').text(t.opt_63);
+  $('#opt-75').text(t.opt_75);
   
-  $('#parametres label:contains("Type")').text(t.type_tuyau);
-  $('#parametres label:contains("Section")').text(t.section_int);
+  // Étude inversée
+  $('#label-inversee-title').text(t.inversee_title);
+  $('#label-activer-inversee').text(t.activer_inversee);
+  $('#text-inversee').text(t.inversee_text);
+  $('#label-Qinv').text(t.debit_total);
+  $('#label-Hinv').text(t.pertes_totales_label);
   
-  $('#inversee label:contains("Activer")').text(t.activer_inversee || "Activer étude inversée");
-  $('#inversee p').text(t.inversee_text || "Entrez les débits et pertes pour calcul des vitesses et NPSH");
-  $('#inversee label:contains("Débit")').text(t.debit_total || "Débit total (m3/h)");
-  $('#inversee label:contains("Pertes")').text(t.pertes_totales_label || "Pertes totales (mCE)");
+  // Résultats
+  $('#label-resultats-title').text(t.resultats_title);
 
   calculerResultats();
 }

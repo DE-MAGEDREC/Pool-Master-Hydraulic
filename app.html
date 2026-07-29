@@ -79,61 +79,61 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <div class="forme-fields mt-2" id="rectangle-fields">
   <label id="label-L">Longueur (m)</label>
-  <input id="L" class="form-control mb-1" value="10">
+  <input id="L" class="form-control mb-1 input-calc" value="10">
   <label id="label-l">Largeur (m)</label>
-  <input id="l" class="form-control mb-1" value="5">
+  <input id="l" class="form-control mb-1 input-calc" value="5">
   <label id="label-p">Profondeur (m)</label>
-  <input id="p" class="form-control mb-1" value="1.5">
+  <input id="p" class="form-control mb-1 input-calc" value="1.5">
 </div>
 
 <div class="forme-fields mt-2" id="carre-fields" style="display:none">
   <label id="label-cote">Côté (m)</label>
-  <input id="cote" class="form-control mb-1" value="5">
+  <input id="cote" class="form-control mb-1 input-calc" value="5">
   <label id="label-pcarre">Profondeur (m)</label>
-  <input id="p_carre" class="form-control mb-1" value="1.5">
+  <input id="p_carre" class="form-control mb-1 input-calc" value="1.5">
 </div>
 
 <div class="forme-fields mt-2" id="ronde-fields" style="display:none">
   <label id="label-diametre-piscine">Diamètre (m)</label>
-  <input id="D_piscine" class="form-control mb-1" value="6">
+  <input id="D_piscine" class="form-control mb-1 input-calc" value="6">
   <label id="label-pr">Profondeur (m)</label>
-  <input id="p_r" class="form-control mb-1" value="1.5">
+  <input id="p_r" class="form-control mb-1 input-calc" value="1.5">
 </div>
 
 <div class="forme-fields mt-2" id="ovale-fields" style="display:none">
   <label id="label-grandaxe">Grand axe (m)</label>
-  <input id="a_ovale" class="form-control mb-1" value="8">
+  <input id="a_ovale" class="form-control mb-1 input-calc" value="8">
   <label id="label-petitaxe">Petit axe (m)</label>
-  <input id="b_ovale" class="form-control mb-1" value="4">
+  <input id="b_ovale" class="form-control mb-1 input-calc" value="4">
   <label id="label-po">Profondeur (m)</label>
-  <input id="p_o" class="form-control mb-1" value="1.5">
+  <input id="p_o" class="form-control mb-1 input-calc" value="1.5">
 </div>
 
 <div class="forme-fields mt-2" id="libre-fields" style="display:none">
   <label id="label-Llibre">Longueur approx. (m)</label>
-  <input id="L_libre" class="form-control mb-1" value="10">
+  <input id="L_libre" class="form-control mb-1 input-calc" value="10">
   <label id="label-llibre">Largeur approx. (m)</label>
-  <input id="l_libre" class="form-control mb-1" value="5">
+  <input id="l_libre" class="form-control mb-1 input-calc" value="5">
   <label id="label-plibre">Profondeur (m)</label>
-  <input id="p_libre" class="form-control mb-1" value="1.5">
+  <input id="p_libre" class="form-control mb-1 input-calc" value="1.5">
 </div>
 
 <label id="label-temps-recycl">Temps recyclage (h)</label>
-<input id="t_recycl" class="form-control mt-2" value="5">
+<input id="t_recycl" class="form-control mt-2 input-calc" value="5">
 
-<button class="btn btn-primary mt-3" onclick="suivant('#canalisations')" id="btn-suivant1">Suivant →</button>
+<button class="btn btn-primary mt-3" onclick="suivant('#canalisations')">Suivant →</button>
 </div>
 
 <!-- CANALISATIONS -->
 <div class="tab-pane fade" id="canalisations">
 <label id="label-diametre-canalisation">Diamètre intérieur canalisation (mm)</label>
-<input id="D" class="form-control mb-1" value="46">
+<input id="D" class="form-control mb-1 input-calc" value="46">
 <small style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;" id="aide-diametre">
   ⚠️ Exemple : PVC 50 mm PN16 → diamètre intérieur = 46 mm
 </small>
 
 <label id="label-materiau">Matériau</label>
-<select id="materiau" class="form-control mb-2">
+<select id="materiau" class="form-control mb-2 input-calc">
   <option value="PVC_rigide" id="opt-PVC_rigide">PVC rigide</option>
   <option value="PVC_souple" id="opt-PVC_souple">PVC souple</option>
   <option value="PE" id="opt-PE">Polyéthylène</option>
@@ -142,70 +142,68 @@ window.logout = () => signOut(auth).then(() => location.href="index.html");
 
 <h6 id="label-aspiration">Aspiration</h6>
 <label id="label-Lasp">Longueur aspiration (m)</label>
-<input id="L_asp" class="form-control mb-1" value="10">
+<input id="L_asp" class="form-control mb-1 input-calc" value="10">
 <label id="label-vasp">Vitesse aspiration (m/s)</label>
-<input id="v_asp" class="form-control mb-1" value="1.5">
+<input id="v_asp" class="form-control mb-1 input-calc" value="1.5">
 <small style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;" id="aide-vasp">
   ⚠️ Valeur de référence : 1.5 m/s
 </small>
 
 <h6 id="label-refoulement">Refoulement</h6>
 <label id="label-Lref">Longueur refoulement (m)</label>
-<input id="L_ref" class="form-control mb-1" value="15">
+<input id="L_ref" class="form-control mb-1 input-calc" value="15">
 <label id="label-vref">Vitesse refoulement (m/s)</label>
-<input id="v_ref" class="form-control mb-1" value="2.0">
+<input id="v_ref" class="form-control mb-1 input-calc" value="2.0">
 <small style="color: #666; font-size: 12px; display: block; margin-bottom: 10px;" id="aide-vref">
   ⚠️ Valeur de référence : 2.0 m/s
 </small>
 
-<button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')" id="btn-suivant2">Suivant →</button>
+<button class="btn btn-primary mt-3" onclick="suivant('#pertes_singulieres')">Suivant →</button>
 </div>
 
 <!-- PERTES SINGULIERES -->
 <div class="tab-pane fade" id="pertes_singulieres">
 <h6 id="label-aspiration-sing">Aspiration</h6>
 <label id="label-c90Casp">Coude 90° court rayon</label>
-<input id="coudes90C_asp" class="form-control mb-1" value="2">
+<input id="coudes90C_asp" class="form-control mb-1 input-calc" value="2">
 <label id="label-c90Gasp">Coude 90° grand rayon</label>
-<input id="coudes90G_asp" class="form-control mb-1" value="1">
+<input id="coudes90G_asp" class="form-control mb-1 input-calc" value="1">
 <label id="label-c45asp">Coude 45°</label>
-<input id="coudes45_asp" class="form-control mb-1" value="0">
+<input id="coudes45_asp" class="form-control mb-1 input-calc" value="0">
 <label id="label-tesasp">Té 90° dérivation</label>
-<input id="tes_asp" class="form-control mb-1" value="1">
+<input id="tes_asp" class="form-control mb-1 input-calc" value="1">
 <label id="label-vannesasp">Vanne à boisseau sphérique</label>
-<input id="vannes_asp" class="form-control mb-1" value="1">
+<input id="vannes_asp" class="form-control mb-1 input-calc" value="1">
 
 <h6 id="label-refoulement-sing">Refoulement</h6>
 <label id="label-c90Cref">Coude 90° court rayon</label>
-<input id="coudes90C_ref" class="form-control mb-1" value="3">
+<input id="coudes90C_ref" class="form-control mb-1 input-calc" value="3">
 <label id="label-c90Gref">Coude 90° grand rayon</label>
-<input id="coudes90G_ref" class="form-control mb-1" value="2">
+<input id="coudes90G_ref" class="form-control mb-1 input-calc" value="2">
 <label id="label-c45ref">Coude 45°</label>
-<input id="coudes45_ref" class="form-control mb-1" value="0">
+<input id="coudes45_ref" class="form-control mb-1 input-calc" value="0">
 <label id="label-tesref">Té 90° dérivation</label>
-<input id="tes_ref" class="form-control mb-1" value="1">
+<input id="tes_ref" class="form-control mb-1 input-calc" value="1">
 <label id="label-vannesref">Vanne à boisseau sphérique</label>
-<input id="vannes_ref" class="form-control mb-1" value="1">
+<input id="vannes_ref" class="form-control mb-1 input-calc" value="1">
 
-<button class="btn btn-primary mt-3" onclick="suivant('#pression')" id="btn-suivant3">Suivant →</button>
+<button class="btn btn-primary mt-3" onclick="suivant('#pression')">Suivant →</button>
 </div>
 
 <!-- PRESSION & FILTRE -->
 <div class="tab-pane fade" id="pression">
 <label id="label-Hgeo">Hauteur géométrique (m)</label>
-<input id="H_geo" class="form-control mb-1" value="0">
+<input id="H_geo" class="form-control mb-1 input-calc" value="0">
 <label id="label-dpfiltre">Perte filtre (mCE)</label>
-<input id="dp_filtre" class="form-control mb-1" value="3">
-<button class="btn btn-primary mt-3" onclick="suivant('#resultats_pdf')" id="btn-suivant4">Suivant →</button>
+<input id="dp_filtre" class="form-control mb-1 input-calc" value="3">
+<button class="btn btn-primary mt-3" onclick="suivant('#resultats_pdf')">Suivant →</button>
 </div>
 
 <!-- RESULTATS RAPPORT -->
 <div class="tab-pane fade" id="resultats_pdf">
 <h6 id="label-resultats-title">Résultats</h6>
 <div id="res"></div>
-<div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-  <button id="btn-rapport" class="btn btn-success">📄 Afficher le rapport complet</button>
-</div>
+<button id="btn-rapport" class="btn btn-success mt-3">📄 Afficher le rapport complet</button>
 </div>
 
 </div>

@@ -5,14 +5,14 @@ const translations = {
     logout: "Déconnexion",
     langue: "Langue :",
     suivant: "Suivant →",
-    exporter: "Exporter PDF",
+    exporter: "Afficher le rapport",
     resultats: "Résultats",
     en_attente: "En attente de données…",
     tab_piscine: "Piscine",
     tab_canalisations: "Canalisations",
     tab_pertes: "Pertes singulières",
     tab_pression: "Pression & Filtre",
-    tab_resultats: "Résultats / PDF",
+    tab_resultats: "Résultats / Rapport",
     forme: "Forme de la piscine",
     rectangle: "Rectangulaire",
     carre: "Carrée",
@@ -67,21 +67,23 @@ const translations = {
     date: "Date",
     heure: "Heure",
     forme_piscine: "Forme de la piscine",
-    mention: "Les valeurs présentées dans ce rapport sont indicatives et permettent une approche dimensionnelle. Pour une étude détaillée, veuillez consulter un bureau d'études spécialisé."
+    mention: "Les valeurs présentées dans ce rapport sont indicatives et permettent une approche dimensionnelle. Pour une étude détaillée, veuillez consulter un bureau d'études spécialisé.",
+    imprimer: "🖨️ Imprimer",
+    fermer: "✖ Fermer"
   },
   en: {
     title: "Pool Master Hydraulic",
     logout: "Logout",
     langue: "Language:",
     suivant: "Next →",
-    exporter: "Export PDF",
+    exporter: "View report",
     resultats: "Results",
     en_attente: "Waiting for data…",
     tab_piscine: "Pool",
     tab_canalisations: "Pipes",
     tab_pertes: "Singular losses",
     tab_pression: "Pressure & Filter",
-    tab_resultats: "Results / PDF",
+    tab_resultats: "Results / Report",
     forme: "Pool shape",
     rectangle: "Rectangular",
     carre: "Square",
@@ -136,21 +138,23 @@ const translations = {
     date: "Date",
     heure: "Time",
     forme_piscine: "Pool shape",
-    mention: "The values presented in this report are indicative and allow a dimensional approach. For a detailed study, please consult a specialized engineering firm."
+    mention: "The values presented in this report are indicative and allow a dimensional approach. For a detailed study, please consult a specialized engineering firm.",
+    imprimer: "🖨️ Print",
+    fermer: "✖ Close"
   },
   es: {
     title: "Pool Master Hydraulic",
     logout: "Cerrar sesión",
     langue: "Idioma:",
     suivant: "Siguiente →",
-    exporter: "Exportar PDF",
+    exporter: "Ver informe",
     resultats: "Resultados",
     en_attente: "Esperando datos…",
     tab_piscine: "Piscina",
     tab_canalisations: "Tuberías",
     tab_pertes: "Pérdidas singulares",
     tab_pression: "Presión & Filtro",
-    tab_resultats: "Resultados / PDF",
+    tab_resultats: "Resultados / Informe",
     forme: "Forma de la piscina",
     rectangle: "Rectangular",
     carre: "Cuadrada",
@@ -205,7 +209,9 @@ const translations = {
     date: "Fecha",
     heure: "Hora",
     forme_piscine: "Forma de la piscina",
-    mention: "Los valores presentados en este informe son indicativos y permiten un enfoque dimensional. Para un estudio detallado, consulte una oficina de ingeniería especializada."
+    mention: "Los valores presentados en este informe son indicativos y permiten un enfoque dimensional. Para un estudio detallado, consulte una oficina de ingeniería especializada.",
+    imprimer: "🖨️ Imprimir",
+    fermer: "✖ Cerrar"
   }
 };
 
@@ -326,7 +332,7 @@ window.calculerResultats = function(){
     const H_total_ref = H_sing_ref + H_fric_ref;
     const H_total = H_total_asp + H_total_ref + H_geo_val + dp_filtre_val;
 
-    // Stocker les résultats pour le PDF
+    // Stocker les résultats pour le rapport
     resultatsGlobaux = {
       surface: surface,
       volume: volume,
@@ -340,7 +346,8 @@ window.calculerResultats = function(){
       H_total_asp: H_total_asp,
       H_total_ref: H_total_ref,
       H_total: H_total,
-      forme: forme
+      forme: forme,
+      t_renouv: t_renouv
     };
 
     // Affichage formaté
@@ -380,8 +387,8 @@ window.calculerResultats = function(){
   }
 };
 
-// ====== EXPORT PDF PROFESSIONNEL ======
-window.exporterPDF = function(){
+// ====== OUVERTURE DU RAPPORT DANS UNE NOUVELLE FENÊTRE ======
+window.ouvrirRapport = function(){
   const t = translations[currentLang];
   const r = resultatsGlobaux;
   
@@ -400,103 +407,252 @@ window.exporterPDF = function(){
   };
   const formeLabel = formeLabels[r.forme] || t.rectangle;
   
-  // Créer le contenu PDF formaté avec TOUS les résultats - COMMENCE EN HAUT
-  const pdfContent = `
-    <div style="font-family: Arial, sans-serif; padding: 15px; max-width: 794px; margin: 0 auto; page-break-after: avoid;">
-      <!-- EN-TÊTE -->
-      <div style="text-align: center; border-bottom: 3px solid #003366; padding-bottom: 12px; margin-bottom: 15px;">
-        <h1 style="color: #003366; font-size: 22px; margin: 0; padding: 0;">${t.rapport}</h1>
-        <h2 style="color: #0066cc; font-size: 18px; margin: 3px 0;">${t.title}</h2>
-        <div style="font-size: 13px; color: #666; margin-top: 8px;">
-          <span>${t.date} : ${dateStr}</span> &nbsp;|&nbsp; 
-          <span>${t.heure} : ${heureStr}</span>
-        </div>
-      </div>
-      
-      <!-- RÉSULTATS -->
-      <div style="font-size: 13px; line-height: 1.7; padding: 5px 0;">
-        <h3 style="color: #003366; border-bottom: 1px solid #ccc; padding-bottom: 5px; font-size: 16px; margin-top: 0;">${t.resultats_title}</h3>
-        
-        <div style="margin: 8px 0;">
-          <div><strong>${t.forme_piscine} :</strong> ${formeLabel}</div>
-          <div><strong>${t.surface} :</strong> ${r.surface.toFixed(2)} m²</div>
-          <div><strong>${t.volume} :</strong> ${r.volume.toFixed(2)} m³</div>
-          <div><strong>${t.debit} :</strong> ${r.debit.toFixed(2)} m³/h</div>
-        </div>
-        
-        <hr style="border: 1px solid #eee; margin: 8px 0;">
-        
-        <div style="margin: 8px 0;">
-          <div><strong>${t.pertes_sing_asp} :</strong> ${r.H_sing_asp.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_sing_asp)} ${t.en_bar} | ${mceToPsi(r.H_sing_asp)} ${t.en_psi}</div>
-          
-          <div style="margin-top: 6px;"><strong>${t.pertes_sing_ref} :</strong> ${r.H_sing_ref.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_sing_ref)} ${t.en_bar} | ${mceToPsi(r.H_sing_ref)} ${t.en_psi}</div>
-        </div>
-        
-        <hr style="border: 1px solid #eee; margin: 8px 0;">
-        
-        <div style="margin: 8px 0;">
-          <div><strong>${t.hauteur} :</strong> ${r.H_geo_val.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_geo_val)} ${t.en_bar} | ${mceToPsi(r.H_geo_val)} ${t.en_psi}</div>
-          
-          <div style="margin-top: 6px;"><strong>${t.filtre} :</strong> ${r.dp_filtre_val.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.dp_filtre_val)} ${t.en_bar} | ${mceToPsi(r.dp_filtre_val)} ${t.en_psi}</div>
-        </div>
-        
-        <hr style="border: 1px solid #eee; margin: 8px 0;">
-        
-        <div style="margin: 8px 0;">
-          <div><strong>${t.friction} ${t.aspiration.toLowerCase()} :</strong> ${r.H_fric_asp.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_fric_asp)} ${t.en_bar} | ${mceToPsi(r.H_fric_asp)} ${t.en_psi}</div>
-          
-          <div style="margin-top: 6px;"><strong>${t.friction} ${t.refoulement.toLowerCase()} :</strong> ${r.H_fric_ref.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_fric_ref)} ${t.en_bar} | ${mceToPsi(r.H_fric_ref)} ${t.en_psi}</div>
-        </div>
-        
-        <hr style="border: 1px solid #eee; margin: 8px 0;">
-        
-        <div style="margin: 8px 0;">
-          <div><strong>${t.total_asp} :</strong> ${r.H_total_asp.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_total_asp)} ${t.en_bar} | ${mceToPsi(r.H_total_asp)} ${t.en_psi}</div>
-          
-          <div style="margin-top: 6px;"><strong>${t.total_ref} :</strong> ${r.H_total_ref.toFixed(2)} mCE</div>
-          <div style="padding-left: 20px; font-size: 12px; color: #555;">≈ ${mceToBar(r.H_total_ref)} ${t.en_bar} | ${mceToPsi(r.H_total_ref)} ${t.en_psi}</div>
-        </div>
-        
-        <hr style="border: 2px solid #003366; margin: 10px 0;">
-        
-        <div style="margin: 8px 0; font-size: 15px;">
-          <div><strong style="color: #003366; font-size: 17px;">${t.pertes_totales} :</strong> <span style="font-size: 17px; font-weight: bold; color: #003366;">${r.H_total.toFixed(2)} mCE</span></div>
-          <div style="padding-left: 20px; font-size: 13px; color: #555;">≈ ${mceToBar(r.H_total)} ${t.en_bar} | ${mceToPsi(r.H_total)} ${t.en_psi}</div>
-        </div>
-      </div>
-      
-      <!-- MENTION INDICATIVE -->
-      <div style="margin-top: 20px; padding: 12px; background-color: #f8f9fa; border-left: 4px solid #ffc107; border-radius: 4px;">
-        <p style="font-size: 12px; color: #555; margin: 0; font-style: italic; text-align: justify;">
-          ⚠️ ${t.mention}
-        </p>
-      </div>
-      
-      <!-- PIED DE PAGE -->
-      <div style="text-align: center; border-top: 2px solid #ccc; padding-top: 12px; margin-top: 20px; font-size: 11px; color: #999;">
-        ${t.title} - ${t.rapport} - ${dateStr} ${heureStr}
+  // Créer le contenu HTML du rapport
+  const rapportHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${t.title} - ${t.rapport}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f5f5f5; 
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .rapport-container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .en-tete {
+      text-align: center;
+      border-bottom: 3px solid #003366;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .en-tete h1 {
+      color: #003366;
+      font-size: 24px;
+      margin: 0;
+    }
+    .en-tete h2 {
+      color: #0066cc;
+      font-size: 20px;
+      margin: 5px 0;
+    }
+    .en-tete .infos {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+    }
+    .section {
+      margin: 15px 0;
+    }
+    .section h3 {
+      color: #003366;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+    .ligne {
+      padding: 4px 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .ligne strong {
+      font-weight: 600;
+    }
+    .sous-ligne {
+      padding-left: 25px;
+      font-size: 13px;
+      color: #555;
+    }
+    .separateur {
+      border: 1px solid #eee;
+      margin: 10px 0;
+    }
+    .separateur-epais {
+      border: 2px solid #003366;
+      margin: 12px 0;
+    }
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #003366;
+    }
+    .mention {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+    }
+    .mention p {
+      font-size: 13px;
+      color: #555;
+      font-style: italic;
+      margin: 0;
+      text-align: justify;
+    }
+    .pied-page {
+      text-align: center;
+      border-top: 2px solid #ccc;
+      padding-top: 15px;
+      margin-top: 25px;
+      font-size: 12px;
+      color: #999;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-imprimer {
+      background: #28a745;
+      color: white;
+    }
+    .btn-imprimer:hover {
+      background: #218838;
+    }
+    .btn-fermer {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-fermer:hover {
+      background: #c82333;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .rapport-container { box-shadow: none; padding: 20px; }
+      .actions { display: none; }
+      .btn-fermer { display: none; }
+    }
+    @media (max-width: 600px) {
+      .rapport-container { padding: 15px; }
+      .en-tete h1 { font-size: 20px; }
+      .en-tete h2 { font-size: 17px; }
+      .ligne { font-size: 13px; }
+      .total { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rapport-container" id="rapport">
+    <!-- EN-TÊTE -->
+    <div class="en-tete">
+      <h1>${t.rapport}</h1>
+      <h2>${t.title}</h2>
+      <div class="infos">
+        <span>${t.date} : ${dateStr}</span> &nbsp;|&nbsp; 
+        <span>${t.heure} : ${heureStr}</span>
       </div>
     </div>
+    
+    <!-- RÉSULTATS -->
+    <div class="section">
+      <h3>${t.resultats_title}</h3>
+      
+      <div class="ligne"><strong>${t.forme_piscine} :</strong> ${formeLabel}</div>
+      <div class="ligne"><strong>${t.surface} :</strong> ${r.surface.toFixed(2)} m²</div>
+      <div class="ligne"><strong>${t.volume} :</strong> ${r.volume.toFixed(2)} m³</div>
+      <div class="ligne"><strong>${t.debit} :</strong> ${r.debit.toFixed(2)} m³/h</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.pertes_sing_asp} :</strong> ${r.H_sing_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_sing_asp)} ${t.en_bar} | ${mceToPsi(r.H_sing_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.pertes_sing_ref} :</strong> ${r.H_sing_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_sing_ref)} ${t.en_bar} | ${mceToPsi(r.H_sing_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.hauteur} :</strong> ${r.H_geo_val.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_geo_val)} ${t.en_bar} | ${mceToPsi(r.H_geo_val)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.filtre} :</strong> ${r.dp_filtre_val.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.dp_filtre_val)} ${t.en_bar} | ${mceToPsi(r.dp_filtre_val)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.friction} ${t.aspiration.toLowerCase()} :</strong> ${r.H_fric_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_fric_asp)} ${t.en_bar} | ${mceToPsi(r.H_fric_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.friction} ${t.refoulement.toLowerCase()} :</strong> ${r.H_fric_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_fric_ref)} ${t.en_bar} | ${mceToPsi(r.H_fric_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur">
+    
+    <div class="section">
+      <div class="ligne"><strong>${t.total_asp} :</strong> ${r.H_total_asp.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_total_asp)} ${t.en_bar} | ${mceToPsi(r.H_total_asp)} ${t.en_psi}</div>
+      
+      <div class="ligne" style="margin-top:6px;"><strong>${t.total_ref} :</strong> ${r.H_total_ref.toFixed(2)} mCE</div>
+      <div class="sous-ligne">≈ ${mceToBar(r.H_total_ref)} ${t.en_bar} | ${mceToPsi(r.H_total_ref)} ${t.en_psi}</div>
+    </div>
+    
+    <hr class="separateur-epais">
+    
+    <div class="section">
+      <div class="ligne total">${t.pertes_totales} : ${r.H_total.toFixed(2)} mCE</div>
+      <div class="sous-ligne" style="font-size:14px;">≈ ${mceToBar(r.H_total)} ${t.en_bar} | ${mceToPsi(r.H_total)} ${t.en_psi}</div>
+    </div>
+    
+    <!-- MENTION -->
+    <div class="mention">
+      <p>⚠️ ${t.mention}</p>
+    </div>
+    
+    <!-- PIED DE PAGE -->
+    <div class="pied-page">
+      ${t.title} - ${t.rapport} - ${dateStr} ${heureStr}
+    </div>
+    
+    <!-- BOUTONS D'ACTION -->
+    <div class="actions">
+      <button class="btn-imprimer" onclick="window.print()">${t.imprimer}</button>
+      <button class="btn-fermer" onclick="window.close()">${t.fermer}</button>
+    </div>
+  </div>
+</body>
+</html>
   `;
   
-  // Options du PDF - Marge minimale pour commencer en haut
-  const opt = {
-    margin: [5, 8, 5, 8], // [top, right, bottom, left]
-    filename: `${t.title}_${dateStr.replace(/\//g, '-')}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, logging: false },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  
-  // Générer le PDF
-  html2pdf().set(opt).from(pdfContent).save();
+  // Ouvrir dans une nouvelle fenêtre
+  const nouvelleFenetre = window.open('', '_blank', 'width=900,height=800,scrollbars=yes,resizable=yes');
+  if (nouvelleFenetre) {
+    nouvelleFenetre.document.write(rapportHTML);
+    nouvelleFenetre.document.close();
+  } else {
+    // Fallback si la fenêtre est bloquée
+    alert('Veuillez autoriser les popups pour cette application.');
+  }
 };
 
 // ====== LANGUE ======
@@ -508,7 +664,7 @@ function setLanguage(lang){
   $('#main-title').text(t.title);
   $('#logout-btn').text(t.logout);
   $('#lang-label').text(t.langue);
-  $('#btn-pdf').text(t.exporter);
+  $('#btn-rapport').text('📄 ' + t.exporter);
   $('#res-droite-title').text(t.resultats);
   $('#resultats-content').text(t.en_attente);
   

@@ -20,24 +20,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(c => {
-      if (!c.user.emailVerified) {
-        error.innerText = "Veuillez vérifier votre email";
-        signOut(auth);
-        return;
-      }
-      location.href = "app.html";
-    })
-    .catch(e => error.innerText = e.message);
+// Fonctions exportées pour être utilisées dans index.html
+export const login = (email, password) => {
+  return signInWithEmailAndPassword(auth, email, password);
 };
 
-window.register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(c => {
-      sendEmailVerification(c.user);
-      alert("Compte créé. Vérifiez votre email.");
-    })
-    .catch(e => error.innerText = e.message);
+export const register = (email, password) => {
+  return createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const verifyEmail = (user) => {
+  return sendEmailVerification(user);
+};
+
+export const logout = () => {
+  return signOut(auth);
+};
+
+export const onAuthChange = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};
+
+// Pour une utilisation dans app.html
+export const checkAuth = () => {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+      resolve(user);
+    });
+  });
 };

@@ -525,3 +525,24 @@ $(document).ready(function() {
   choixForme();
   setLanguage('fr');
 });
+
+// ====== PROTECTION CONTRE LA COPIE ======
+// Désactiver le clic droit
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    alert('📋 Copie interdite sur cette application');
+});
+
+// Désactiver les raccourcis clavier de copie
+document.addEventListener('keydown', function(e) {
+    // Ctrl+C, Ctrl+U, Ctrl+S
+    if (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's')) {
+        e.preventDefault();
+        alert('⚠️ Action interdite');
+    }
+    // Touche F12 (outils de développement)
+    if (e.key === 'F12') {
+        e.preventDefault();
+        alert('⚠️ Action interdite');
+    }
+});
